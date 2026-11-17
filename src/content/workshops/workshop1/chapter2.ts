@@ -65,7 +65,7 @@ export const chapter2: Chapter = {
           expectedOutput:
             "metric_int   is : <class 'int'>\nmetric_float is : <class 'float'>\nmetric_str   is : <class 'str'>\nmetric_bool  is : <class 'bool'>\nmetric_none  is : <class 'NoneType'>",
           whyItHappens:
-            "CPython stores an object header containing a pointer to its type definition struct in C.",
+            "Every value in Python carries its own type metadata, allowing type() to inspect and return its class directly.",
           edgeCases:
             "• Checking for None: Always use identity operator `is None` or `is not None` rather than equality `== None`, because custom classes could override `__eq__`, whereas `is` checks memory address.",
         },
@@ -112,7 +112,7 @@ export const chapter2: Chapter = {
           description: "Prompting the user, reading input, casting to numeric types, and validating.",
           code: `# Simulating user input in queued environment\n# Type values into the 'Program Input' drawer before running!\nuser_name = "Jordan Lee"  # Simulated input\nuser_credits_str = "120"   # Simulated input\n\n# Casting input to integer\ncredits = int(user_credits_str)\nremaining_required = 160 - credits\n\nprint("Student Name    :", user_name)\nprint("Current Credits :", credits)\nprint("Credits to Grad :", remaining_required)`,
           explanation:
-            "In interactive terminals, input() pauses for keyboard input. In our Pyodide WASM environment, lines can be pre-queued in the 'Program Input' drawer.",
+            "In interactive terminals, input() pauses execution and waits for keyboard input. In our interactive editor, inputs can be typed or queued in the 'Program Input' tab.",
           stepByStepWalkthrough: [
             "Line 6: Converts string '120' to integer 120.",
             "Line 7: Subtracts 120 from 160 to calculate credits remaining (40).",
@@ -121,7 +121,7 @@ export const chapter2: Chapter = {
           expectedOutput:
             "Student Name    : Jordan Lee\nCurrent Credits : 120\nCredits to Grad : 40",
           whyItHappens:
-            "Explicit casting transforms the raw character sequence into an integer operable by the CPU's ALU.",
+            "Explicit casting converts a string of digit characters into an actual numeric value so arithmetic can be performed.",
           edgeCases:
             "• User pressing Enter without typing anything: input() returns the empty string \"\". If you attempt int(\"\"), Python raises ValueError: invalid literal for int() with base 10: ''. Always validate or guard inputs.\n• User typing letters when a number is expected: int('abc') immediately raises ValueError.",
         },
@@ -150,7 +150,7 @@ export const chapter2: Chapter = {
           expectedOutput:
             "Holder   : DR. MAYA PATEL\nID       : 000042\nBalance  : $14,250.88\nGrowth   : 8.5%\nNet Next : $15,455.07",
           whyItHappens:
-            "Python's compiler transforms f-strings into optimized string building bytecode during AST generation.",
+            "Python evaluates expressions inside the curly braces '{ }' at runtime, converts them to strings, and interpolates them directly into the output text.",
           edgeCases:
             "• Escaping literal braces: If you need to print a literal '{' or '}' in an f-string, double them: f'{{Literal}} {val}' prints '{Literal} 42'.\n• Nested quotes: Avoid using the exact same quotation mark inside the curly braces as the outer f-string in older Python versions: use f'Score: {data[\"key\"]}' with alternating quotes.",
         },

@@ -39,7 +39,7 @@ export const chapter6: Chapter = {
           expectedOutput:
             "Initial thresholds : [30, 60, 80]\nUpdated thresholds : [35, 60, 80]\nHigh-risk tiers     : [60, 80]\nIs 60 in thresholds : True",
           whyItHappens:
-            "Lists in CPython are dynamic arrays of memory pointers pointing to object structures.",
+            "Lists are ordered, mutable collections where items can be accessed, reassigned, or sliced directly by their zero-based index.",
           edgeCases:
             "• The Reference Aliasing Trap: Writing `b = a` does NOT copy a list! It merely creates a second variable pointing to the EXACT same memory array! Modifying `b[0] = 999` also changes `a[0]`! To create an independent clone, write: `b = a.copy()` or `b = a[:]` or `b = list(a)`.\n• IndexError: Just like strings, accessing `scores[10]` when length is 3 raises `IndexError: list index out of range`.",
         },

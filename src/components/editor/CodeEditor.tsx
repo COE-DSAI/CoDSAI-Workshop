@@ -192,7 +192,7 @@ export function CodeEditor({
           <span className="font-semibold text-slate-200">{title}</span>
           <span className="flex items-center gap-1 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
             <Cpu className="h-2.5 w-2.5 text-emerald-400" />
-            Pyodide WASM
+            Python 3.11
           </span>
         </div>
 

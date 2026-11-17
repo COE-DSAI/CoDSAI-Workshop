@@ -9,7 +9,7 @@ export const chapter1: Chapter = {
   introduction:
     "Welcome to the Center of Excellence's Python, Data Science & Machine Learning Workshop Series. Python has become the lingua franca of computational science, artificial intelligence, automated reasoning, and backend infrastructure. In this foundational chapter, you will deconstruct how computers execute code, how the Python interpreter transforms human-readable text into machine instructions, and how to write, format, and debug fundamental Python statements.",
   learningObjectives: [
-    "Explain the hardware execution model: source code, bytecode compilation, and the Python Virtual Machine (PVM)",
+    "Understand how the Python interpreter executes code sequentially from top to bottom",
     "Master the print() function with single/multiple arguments, custom separators (sep), and line endings (end)",
     "Document software effectively using single-line (#), inline, and multi-line docstring comments",
     "Evaluate mathematical expressions using arithmetic operators (+, -, *, /, //, %, **) adhering to PEMDAS precedence",
@@ -23,17 +23,17 @@ export const chapter1: Chapter = {
       content:
         "Every digital computer operates on a simple cycle: fetch instructions from memory (RAM), decode them in the Central Processing Unit (CPU), execute arithmetic or logic, and store the result. However, writing raw machine code (binary zeros and ones) or low-level assembly is prohibitively slow and error-prone for humans.\n\nPython was created by Guido van Rossum in 1991 with an overarching architectural priority: **developer velocity and conceptual readability**. Unlike languages requiring explicit memory management (C/C++) or verbose boilerplate (Java), Python provides a clean syntax resembling mathematical pseudocode. In data science and AI, where researchers iterate rapidly over statistical algorithms, Python's simplicity allows practitioners to focus on mathematical models rather than mechanical memory allocation.",
       callout: {
-        type: "note",
-        title: "Architecture Note: The Pyodide In-Browser Sandbox",
+        type: "tip",
+        title: "Hands-On Interactive Practice",
         content:
-          "In this learning platform, Python does not run on a remote server. Instead, CPython 3.11 has been compiled into WebAssembly (WASM) and executes locally inside your web browser via a dedicated Web Worker thread. This ensures complete privacy, zero server lag, and instantaneous execution.",
+          "Every code example on this platform can be run and edited directly in the code editor on your screen. Modifying values, testing variations, and observing the immediate output is the most effective way to build programming intuition.",
       },
     },
     {
       id: "w1-ch1-s2",
-      title: "1.2 How Code Executes: Source Code to Bytecode",
+      title: "1.2 How Python Runs Your Code",
       content:
-        "When you write Python instructions, you produce plain ASCII/Unicode text known as **source code** (typically stored in `.py` files).\n\nWhen you trigger execution, Python executes a two-stage process:\n1. **Compilation to Bytecode**: The Python parser reads your text line by line. It checks for grammar errors and converts valid syntax into a compact, platform-independent binary instruction set called **bytecode** (`.pyc` files).\n2. **Virtual Machine Interpretation**: The **Python Virtual Machine (PVM)** loops through the bytecode instructions, translating each opcode into the native CPU instructions of your operating system.\n\nBecause compilation happens automatically in memory, Python is termed an **interpreted language**.",
+        "When you write Python instructions, you are writing **source code** in plain text (typically saved in files ending in `.py`).\n\nWhen you run a Python script, the Python interpreter reads your instructions from top to bottom, translates each statement into actions the computer can execute, and outputs the result immediately.\n\nBecause Python executes instructions directly without requiring you to run a separate manual compilation step, it is known as an **interpreted language**. This allows you to write code, test it instantly, and fix errors quickly.",
       codeExamples: [
         {
           id: "w1-ch1-ex1",
@@ -58,17 +58,17 @@ export const chapter1: Chapter = {
           id: "w1-ch1-ex2",
           title: "Statement 2: Multi-Argument print() with Custom sep and end",
           description: "Controlling the delimiter between arguments and the final trailing character.",
-          code: `# Multi-argument print with custom separator\nprint("Node", "Weight", "Bias", sep=" | ")\nprint("Alpha", 0.85, 0.12, sep=" -> ")\n\n# Suppressing the default newline with end=""\nprint("Connecting to Pyodide WASM Runtime", end="... ")\nprint("CONNECTED [OK]")`,
+          code: `# Multi-argument print with custom separator\nprint("Node", "Weight", "Bias", sep=" | ")\nprint("Alpha", 0.85, 0.12, sep=" -> ")\n\n# Suppressing the default newline with end=""\nprint("Initializing security scanner", end="... ")\nprint("READY [OK]")`,
           explanation:
             "print() accepts optional keyword parameters: 'sep' defines what string is placed between multiple comma-separated arguments (default is a single space ' '), and 'end' defines what character is appended at the very end of the output (default is newline '\\n').",
           stepByStepWalkthrough: [
             "Line 2: Outputs each string separated by ' | ' instead of spaces.",
             "Line 3: Outputs strings and numbers separated by ' -> '.",
             "Line 6: Sets end='... ', keeping the console cursor on the same line.",
-            "Line 7: Appends 'CONNECTED [OK]' immediately on the same line.",
+            "Line 7: Appends 'READY [OK]' immediately on the same line.",
           ],
           expectedOutput:
-            "Node | Weight | Bias\nAlpha -> 0.85 -> 0.12\nConnecting to Pyodide WASM Runtime... CONNECTED [OK]",
+            "Node | Weight | Bias\nAlpha -> 0.85 -> 0.12\nInitializing security scanner... READY [OK]",
           whyItHappens:
             "Overriding 'end' allows you to build single-line progress outputs or format continuous data streams.",
           edgeCases:
@@ -89,7 +89,7 @@ export const chapter1: Chapter = {
           expectedOutput:
             "[SYSTEM REPORT]\nStatus : Active\nCluster: CoE-Alpha-01\n\tSecurity Metric:\t98.5%\n\tVerdict:\t\"CLEAN\"",
           whyItHappens:
-            "The Python parser replaces escape sequences with their respective ASCII control code values during AST construction.",
+            "Python recognizes the backslash '\\' as a special escape character that signals a control code rather than ordinary text.",
           edgeCases:
             "• Windows file paths: print('C:\\Users\\notes.txt') can trigger bugs because '\\U' or '\\n' is interpreted as an escape sequence. Fix by using raw strings: print(r'C:\\Users\\notes.txt') or forward slashes: print('C:/Users/notes.txt').",
         },
@@ -99,7 +99,7 @@ export const chapter1: Chapter = {
       id: "w1-ch1-s3",
       title: "1.3 Python Comments & Code Documentation",
       content:
-        "Code is read far more often than it is written. Clean, professional code requires meaningful documentation.\n\nPython provides two primary mechanisms for documentation:\n- **Single-Line Comments (`#`)**: Ignored entirely by the interpreter. Used to clarify non-obvious algorithms, mathematical rationales, or implementation caveats.\n- **Docstrings (`\"\"\"...\"\"\"`)**: Retained in the compiled bytecode under the object's `__doc__` attribute. Used to document modules, classes, and functions for automated documentation generators.",
+        "Code is read far more often than it is written. Clean, professional code requires meaningful documentation.\n\nPython provides two primary mechanisms for documentation:\n- **Single-Line Comments (`#`)**: Ignored entirely by the interpreter. Used to clarify non-obvious algorithms, mathematical rationales, or implementation caveats.\n- **Docstrings (`\"\"\"...\"\"\"`)**: Multi-line documentation strings placed at the top of files, functions, or modules. Python preserves docstrings so they can be read by help tools and other developers.",
       codeExamples: [
         {
           id: "w1-ch1-ex4",
@@ -115,7 +115,7 @@ export const chapter1: Chapter = {
             "Line 11: Emits the variable value.",
           ],
           expectedOutput: "Active Risk Ceiling: 75",
-          whyItHappens: "Python's lexer skips whitespace and comment tokens before compiling bytecode.",
+          whyItHappens: "The Python interpreter ignores any text following the '#' symbol on that line, allowing you to add human explanations.",
           edgeCases:
             "• Putting '#' inside a string literal: print('ID #01') will NOT be treated as a comment! The '#' is part of the string: 'ID #01'.",
         },
@@ -299,7 +299,7 @@ print("=" * 40)`,
   },
   recap: {
     keyConcepts: [
-      "Python programs execute in a two-stage process: parsing/bytecode compilation followed by PVM virtual machine execution.",
+      "Python is an interpreted language that executes statements sequentially from top to bottom.",
       "print() emits strings to stdout and accepts 'sep' (inter-item delimiter) and 'end' (trailing character, default newline).",
       "Arithmetic operators follow PEMDAS precedence: parentheses override standard order; true division (/) always yields float.",
       "Floor division (//) truncates down toward negative infinity; modulo (%) computes the remainder.",
@@ -329,13 +329,12 @@ print("=" * 40)`,
     ],
     glossary: [
       {
-        term: "Bytecode",
-        definition: "A platform-independent intermediate binary code generated by the Python compiler before execution by the virtual machine.",
-        context: "Stored in .pyc cache files to accelerate module loading.",
+        term: "Interpreter",
+        definition: "The software program that reads and executes Python code directly, line by line, without requiring manual compilation.",
       },
       {
-        term: "PVM (Python Virtual Machine)",
-        definition: "The software execution engine of CPython that reads bytecode instructions and translates them to host CPU operations.",
+        term: "Standard Output (stdout)",
+        definition: "The default text output stream where print() writes messages to be displayed on the screen or terminal.",
       },
       {
         term: "Traceback",
@@ -416,7 +415,7 @@ print("=" * 40)`,
       "Why is floating point arithmetic inexact in binary computing?",
     ],
     liveCodingCheckpoints: [
-      "All students have run print('Hello World') in Pyodide.",
+      "All students have run print('Hello World') in the interactive code editor.",
       "Intentionally produce and fix a NameError by typing Print().",
     ],
   },

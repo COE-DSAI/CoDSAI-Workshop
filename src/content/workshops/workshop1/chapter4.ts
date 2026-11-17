@@ -66,7 +66,7 @@ export const chapter4: Chapter = {
           expectedOutput:
             "Should quarantine : True\nSafe division ran without crash: False",
           whyItHappens:
-            "Short-circuit evaluation is built directly into Python's bytecode compiler (JUMP_IF_FALSE_OR_POP opcodes).",
+            "Python evaluates boolean expressions from left to right and stops evaluating as soon as the final outcome is mathematically determined (short-circuiting).",
           edgeCases:
             "• 'and' and 'or' Return the Actual Operand: In Python, `x or y` does not strictly return a boolean! It returns the first truthy operand, or the last operand if all are falsy. E.g.: `'' or 'default_user'` returns `'default_user'`! `0 or 42` returns `42`.\n• Operator Precedence Ambiguity: `False and False or True` evaluates to `True` because `and` binds before `or`! Always use explicit parentheses `()` for clarity in production code.",
         },
@@ -103,7 +103,7 @@ export const chapter4: Chapter = {
       id: "w1-ch4-s4",
       title: "4.4 The if, elif, and else Decision Ladder",
       content:
-        "The `if-elif-else` statement is Python's mechanism for multi-branch decision making.\n\n### Execution Flow:\n1. Python checks the first `if condition:`.\n2. If True, it executes that block and **skips all remaining elif and else blocks**.\n3. If False, it proceeds down to the next `elif condition:` in sequential order.\n4. If none of the conditions evaluate to True, the final `else:` block executes as a fallback.\n\n### Indentation Syntax:\nPython does not use `{}` braces. Every code block is defined strictly by **4 spaces of indentation**. Consistent indentation is enforced by the compiler.",
+        "The `if-elif-else` statement is Python's mechanism for multi-branch decision making.\n\n### Execution Flow:\n1. Python checks the first `if condition:`.\n2. If True, it executes that block and **skips all remaining elif and else blocks**.\n3. If False, it proceeds down to the next `elif condition:` in sequential order.\n4. If none of the conditions evaluate to True, the final `else:` block executes as a fallback.\n\n### Indentation Syntax:\nPython does not use `{}` braces. Every code block is defined strictly by **4 spaces of indentation**. Consistent indentation is strictly enforced by the Python interpreter.",
       codeExamples: [
         {
           id: "w1-ch4-ex4",

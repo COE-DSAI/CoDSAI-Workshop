@@ -38,7 +38,7 @@ export default async function WorkshopDetailPage({
 
   // Live session schedule (120 minutes allocation)
   const liveSchedule = [
-    { time: "00:00 – 00:08", duration: "8m", phase: "Introduction & Python Environment", focus: "Interpreter architecture, execution model, Pyodide setup", ch: 1 },
+    { time: "00:00 – 00:08", duration: "8m", phase: "Introduction & Python Environment", focus: "How Python runs your code, interactive environment, print() output", ch: 1 },
     { time: "00:08 – 00:23", duration: "15m", phase: "Variables, Types & Input/Output", focus: "Primitive types, casting, f-strings, interactive input()", ch: 2 },
     { time: "00:23 – 00:38", duration: "15m", phase: "Strings & Text Normalization", focus: ".strip(), .lower(), slicing, substring search with 'in'", ch: 3 },
     { time: "00:38 – 00:53", duration: "15m", phase: "Conditional Logic & Branching", focus: "if / elif / else trees, boolean operators, truthiness", ch: 4 },

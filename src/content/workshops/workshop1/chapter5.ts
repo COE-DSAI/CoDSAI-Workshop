@@ -97,7 +97,7 @@ export const chapter5: Chapter = {
           whyItHappens:
             "The while loop tests the condition before entering the body. If initial condition is False, it executes 0 times.",
           edgeCases:
-            "• Infinite Loops: Forgetting `current_score = current_score * 2` leaves the score at 5 forever, locking the CPU in an infinite loop. Always ensure loop state changes monotonically toward termination.\n• In Pyodide WASM, our runtime worker monitors infinite loops and allows you to terminate and reset the execution thread safely.",
+            "• Infinite Loops: Forgetting to update `current_score` leaves the score at 5 forever, creating an infinite loop. Always ensure the loop variable moves toward the termination condition on every cycle.\n• Halting Stuck Execution: If your code accidentally enters an infinite loop, click the 'Stop' button in the editor toolbar to halt execution immediately.",
         },
       ],
     },

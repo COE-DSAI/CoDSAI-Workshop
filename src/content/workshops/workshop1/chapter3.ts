@@ -151,7 +151,7 @@ export const chapter3: Chapter = {
           expectedOutput:
             "'urgent' in subject : False\n'prize' in subject  : True\n'verify' in subject : True\nPosition of 'prize' : 39\nPosition of missing : -1",
           whyItHappens:
-            "CPython implements the Boyer-Moore-Horspool substring search algorithm for fast scanning.",
+            "Python scans the string efficiently to verify whether the target substring exists within the text sequence.",
           edgeCases:
             "• The Empty String Trapped: `'' in any_string` is ALWAYS `True`! Python defines the empty string as existing at every position in any sequence.\n• Case sensitivity: `'FREE' in 'free prize'` is `False`. Always normalize to `.lower()` before performing membership checks.",
         },

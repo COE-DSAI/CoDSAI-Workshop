@@ -17,7 +17,7 @@ import { workshop1Python } from "@/content/workshops/workshop1-python";
 
 export default function HomePage() {
   const timetable = [
-    { time: "00:00 – 00:08", duration: "8m", title: "Introduction & Python Environment", desc: "Source code, interpreters, Pyodide environment, print()", ch: 1 },
+    { time: "00:00 – 00:08", duration: "8m", title: "Introduction & Python Environment", desc: "How Python runs your code, interactive editor, print() output", ch: 1 },
     { time: "00:08 – 00:23", duration: "15m", title: "Variables, Types & Input/Output", desc: "Strings, ints, floats, booleans, type(), input(), f-strings", ch: 2 },
     { time: "00:23 – 00:38", duration: "15m", title: "Strings & Text Normalization", desc: ".strip(), .lower(), slicing, substring search with 'in'", ch: 3 },
     { time: "00:38 – 00:53", duration: "15m", title: "Conditional Logic & Decision Trees", desc: "if, elif, else, comparison operators, logical and/or/not", ch: 4 },
@@ -64,7 +64,7 @@ export default function HomePage() {
                 </h1>
 
                 <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-                  An intensive, browser-based learning platform. Progress from the absolute fundamentals of Python syntax to engineering a complete, rule-based message security application with real-time in-browser code execution.
+                  An intensive, hands-on learning platform. Progress from the absolute fundamentals of Python syntax to engineering a complete, rule-based message security application with live interactive code execution.
                 </p>
 
                 <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -96,7 +96,7 @@ export default function HomePage() {
                 <div className="mt-8 flex flex-wrap items-center gap-6 text-xs text-slate-500 pt-6 border-t border-slate-100">
                   <div className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    <span>In-Browser Python 3 Runtime (Pyodide WASM)</span>
+                    <span>Interactive Python 3.11 Environment</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />

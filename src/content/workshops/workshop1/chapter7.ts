@@ -149,7 +149,7 @@ export const chapter7: Chapter = {
           expectedOutput:
             "Score 85 elevated : True\nScore 50 elevated : False",
           whyItHappens:
-            "CPython stores local variables in a fast array indexed by bytecode offsets.",
+            "Python creates an isolated local scope whenever a function is called, ensuring local variables do not leak or collide with outside code.",
           edgeCases:
             "• UnboundLocalError: If you assign to a variable anywhere inside a function (e.g. `count = count + 1`), Python classifies `count` as a LOCAL variable for the ENTIRE function! If you try to read it before that assignment, Python crashes with `UnboundLocalError: local variable 'count' referenced before assignment`.\n• Pure Functions: In AI and data science, prefer **pure functions** that accept inputs via parameters and return outputs via return, without reading or mutating global state.",
         },
