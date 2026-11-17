@@ -13,13 +13,18 @@ import {
   Code2,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
   Copy,
   Check,
   Award,
   Play,
   ArrowRight,
+  ShieldAlert,
+  FileCode,
+  Flame,
 } from "lucide-react";
-import { Chapter, Workshop } from "@/types/curriculum";
+import { Chapter, Workshop, ChapterAssignment } from "@/types/curriculum";
 
 interface ChapterArticleProps {
   workshop: Workshop;
@@ -29,6 +34,7 @@ interface ChapterArticleProps {
   prevChapter?: Chapter;
   nextChapter?: Chapter;
   onSelectCodeExample?: (code: string) => void;
+  onSelectAssignment?: (assignment: ChapterAssignment) => void;
 }
 
 export function ChapterArticle({
@@ -39,15 +45,29 @@ export function ChapterArticle({
   prevChapter,
   nextChapter,
   onSelectCodeExample,
+  onSelectAssignment,
 }: ChapterArticleProps) {
   const [selectedQuizAnswers, setSelectedQuizAnswers] = useState<Record<string, string | number>>({});
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
+  const [activeAssignmentHint, setActiveAssignmentHint] = useState<number>(-1);
+  const [showAssignmentSolution, setShowAssignmentSolution] = useState<boolean>(false);
+  const [copiedAssignmentCode, setCopiedAssignmentCode] = useState<boolean>(false);
 
   const handleCopy = async (id: string, code: string) => {
     try {
       await navigator.clipboard.writeText(code);
       setCopiedCodeId(id);
       setTimeout(() => setCopiedCodeId(null), 2000);
+    } catch {
+      // Ignore
+    }
+  };
+
+  const handleCopyAssignment = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedAssignmentCode(true);
+      setTimeout(() => setCopiedAssignmentCode(false), 2000);
     } catch {
       // Ignore
     }
@@ -139,10 +159,10 @@ export function ChapterArticle({
       </header>
 
       {/* Main Chapter Sections */}
-      <div className="space-y-12">
+      <div className="space-y-14">
         {chapter.sections.map((section) => (
           <section key={section.id} id={section.id} className="scroll-mt-20">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-3 border-b border-slate-200/80 pb-2">
               {section.title}
             </h2>
 
@@ -176,7 +196,7 @@ export function ChapterArticle({
               </div>
             )}
 
-            {/* Code Examples with Walkthrough */}
+            {/* Code Examples with Walkthrough & Edge Cases */}
             {section.codeExamples && section.codeExamples.length > 0 && (
               <div className="mt-6 space-y-6">
                 {section.codeExamples.map((ex) => (
@@ -257,6 +277,19 @@ export function ChapterArticle({
                         </div>
                       )}
 
+                      {/* Edge Cases & Special Cases */}
+                      {ex.edgeCases && (
+                        <div className="mt-3 rounded bg-amber-950/30 p-2.5 font-mono text-xs border border-amber-800/40 text-amber-300">
+                          <span className="text-[10px] uppercase font-bold text-amber-400 flex items-center gap-1.5 mb-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            Edge Cases &amp; Special Considerations:
+                          </span>
+                          <p className="text-[11px] font-sans text-amber-200/90 leading-relaxed whitespace-pre-line">
+                            {ex.edgeCases}
+                          </p>
+                        </div>
+                      )}
+
                       {ex.whyItHappens && (
                         <p className="mt-2 text-[11px] text-slate-400 italic">
                           Why it happens: {ex.whyItHappens}
@@ -281,7 +314,7 @@ export function ChapterArticle({
             </h2>
           </div>
           <p className="text-xs text-slate-500 mb-6">
-            Apply what you just learned. Load the starter code into the workspace, implement the solution, and run the automated test checks.
+            Work through these exercises to build muscle memory before attempting the formal chapter assignment.
           </p>
 
           <div className="space-y-6">
@@ -315,6 +348,161 @@ export function ChapterArticle({
                 )}
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Chapter Assignment Section (NEW) */}
+      {chapter.assignment && (
+        <section id="assignment" className="mt-14 border-t-2 border-purple-200 pt-8 scroll-mt-20">
+          <div className="rounded-xl border border-purple-200 bg-gradient-to-b from-purple-50/40 to-white p-6 sm:p-7 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-mono font-bold uppercase text-purple-800 border border-purple-200">
+                  Chapter {formattedNumber} Assignment
+                </span>
+                <span className="text-xs font-semibold text-purple-700">
+                  Mandatory Milestone
+                </span>
+              </div>
+
+              {onSelectAssignment && (
+                <button
+                  type="button"
+                  onClick={() => onSelectAssignment(chapter.assignment!)}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-purple-700 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-purple-800 transition-colors"
+                >
+                  <Play className="h-3.5 w-3.5 fill-white" />
+                  <span>Load Assignment into Python Editor</span>
+                </button>
+              )}
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              {chapter.assignment.title}
+            </h2>
+
+            {/* Scenario */}
+            <div className="mt-4 text-xs sm:text-sm text-slate-700 leading-relaxed bg-white/80 p-4 rounded-lg border border-purple-100">
+              <span className="font-semibold text-purple-900 block mb-1">
+                Practical Scenario:
+              </span>
+              <p>{chapter.assignment.scenario}</p>
+            </div>
+
+            {/* Specific Requirements Checklist */}
+            <div className="mt-5">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block mb-2.5">
+                Implementation Requirements:
+              </span>
+              <ul className="space-y-2 text-xs text-slate-700">
+                {chapter.assignment.requirements.map((req, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 leading-relaxed bg-white p-2.5 rounded border border-slate-200/70">
+                    <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Edge Cases & Special Conditions to Handle */}
+            <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50/70 p-4 text-xs">
+              <div className="flex items-center gap-2 font-bold text-amber-900 mb-2">
+                <ShieldAlert className="h-4 w-4 text-amber-700 shrink-0" />
+                <span>Edge Cases &amp; Special Conditions to Address:</span>
+              </div>
+              <ul className="space-y-1.5 text-amber-950">
+                {chapter.assignment.edgeCasesToHandle.map((ec, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">•</span>
+                    <span>{ec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Starter Code Scaffold Preview */}
+            <div className="mt-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold text-slate-700">
+                  Starter Template Code:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleCopyAssignment(chapter.assignment!.starterCode)}
+                  className="inline-flex items-center gap-1 text-xs text-purple-700 hover:text-purple-900 font-medium"
+                >
+                  {copiedAssignmentCode ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                  <span>{copiedAssignmentCode ? "Copied" : "Copy Template"}</span>
+                </button>
+              </div>
+
+              <pre className="rounded-lg bg-[#0B1220] p-3 font-mono text-xs text-slate-200 border border-slate-800 overflow-x-auto max-h-56 leading-relaxed">
+                <code>{chapter.assignment.starterCode}</code>
+              </pre>
+            </div>
+
+            {/* Progressive 3-Tier Hints */}
+            <div className="mt-5 pt-4 border-t border-purple-100">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-2">
+                Progressive Hints:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {(["Concept Hint", "Approach Hint", "Implementation Detail"] as const).map((label, hIdx) => {
+                  const isOpen = activeAssignmentHint === hIdx;
+                  return (
+                    <button
+                      key={hIdx}
+                      type="button"
+                      onClick={() => setActiveAssignmentHint(isOpen ? -1 : hIdx)}
+                      className={`text-left rounded-md p-2.5 text-xs transition-colors border ${
+                        isOpen
+                          ? "bg-purple-100 border-purple-300 text-purple-950 font-semibold"
+                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-mono text-[10px] uppercase text-purple-700">Hint {hIdx + 1}</span>
+                        {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      </div>
+                      <span className="block text-[11px] font-medium">{label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {activeAssignmentHint >= 0 && (
+                <div className="mt-3 p-3.5 rounded-lg bg-purple-50/80 border border-purple-200 text-xs text-purple-950 leading-relaxed">
+                  <strong className="block mb-1 text-purple-900">
+                    Hint {activeAssignmentHint + 1}:
+                  </strong>
+                  {chapter.assignment.hints[activeAssignmentHint]}
+                </div>
+              )}
+            </div>
+
+            {/* Reference Solution Toggle */}
+            <div className="mt-5 pt-4 border-t border-purple-100">
+              <button
+                type="button"
+                onClick={() => setShowAssignmentSolution(!showAssignmentSolution)}
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5"
+              >
+                <span>{showAssignmentSolution ? "Hide Reference Solution" : "Reveal Reference Solution"}</span>
+                {showAssignmentSolution ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              </button>
+
+              {showAssignmentSolution && (
+                <div className="mt-3 space-y-3">
+                  <pre className="rounded-lg bg-[#0B1220] p-4 font-mono text-xs text-emerald-300 border border-slate-800 overflow-x-auto leading-relaxed">
+                    <code>{chapter.assignment.referenceSolution}</code>
+                  </pre>
+                  <p className="text-xs text-slate-600 leading-relaxed bg-white p-3 rounded border border-slate-200">
+                    <strong>Solution Architecture:</strong> {chapter.assignment.solutionExplanation}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}

@@ -6,10 +6,8 @@ import {
   Minimize2,
   Code2,
   BookOpen,
-  PanelLeftClose,
-  PanelLeftOpen,
 } from "lucide-react";
-import { Workshop, Chapter } from "@/types/curriculum";
+import { Workshop, Chapter, ChapterAssignment, ExerciseTestCase } from "@/types/curriculum";
 import { SidebarNav } from "./SidebarNav";
 import { ChapterArticle } from "./ChapterArticle";
 import { CodeEditor } from "@/components/editor/CodeEditor";
@@ -35,10 +33,46 @@ export function ChapterExperienceView({
   const [focusMode, setFocusMode] = useState<boolean>(false);
   const [mobileTab, setMobileTab] = useState<"reading" | "editor">("reading");
   const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
-  const [editorCode, setEditorCode] = useState<string>(
-    chapter.exercises && chapter.exercises.length > 0
-      ? chapter.exercises[0].starterCode
-      : '# Python 3 Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '!")\n'
+  
+  const defaultCode = chapter.assignment
+    ? chapter.assignment.starterCode
+    : chapter.exercises && chapter.exercises.length > 0
+    ? chapter.exercises[0].starterCode
+    : '# Python 3 Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '!")\n';
+
+  const [editorCode, setEditorCode] = useState<string>(defaultCode);
+  const [editorHints, setEditorHints] = useState<readonly [string, string, string] | undefined>(
+    chapter.assignment
+      ? chapter.assignment.hints
+      : chapter.exercises && chapter.exercises.length > 0
+      ? chapter.exercises[0].hints
+      : undefined
+  );
+  const [editorSolution, setEditorSolution] = useState<string | undefined>(
+    chapter.assignment
+      ? chapter.assignment.referenceSolution
+      : chapter.exercises && chapter.exercises.length > 0
+      ? chapter.exercises[0].solution
+      : undefined
+  );
+  const [editorSolutionExplanation, setEditorSolutionExplanation] = useState<string | undefined>(
+    chapter.assignment
+      ? chapter.assignment.solutionExplanation
+      : chapter.exercises && chapter.exercises.length > 0
+      ? chapter.exercises[0].solutionExplanation
+      : undefined
+  );
+  const [editorTestCases, setEditorTestCases] = useState<readonly ExerciseTestCase[] | undefined>(
+    chapter.assignment
+      ? chapter.assignment.testCases
+      : chapter.exercises && chapter.exercises.length > 0
+      ? chapter.exercises[0].testCases
+      : undefined
+  );
+  const [editorTitle, setEditorTitle] = useState<string>(
+    chapter.assignment
+      ? `Assignment — ${chapter.assignment.title}`
+      : `Python 3 Workspace — Ch ${chapter.number}`
   );
 
   const chapterKey = `${workshop.slug}/${chapter.slug}`;
@@ -61,13 +95,23 @@ export function ChapterExperienceView({
 
   const handleSelectCodeExample = (code: string) => {
     setEditorCode(code);
-    // On tablet and mobile, automatically switch to editor tab so student sees code loaded
+    setEditorTitle(`Python 3 Code Snippet`);
+    setMobileTab("editor");
+  };
+
+  const handleSelectAssignment = (assignment: ChapterAssignment) => {
+    setEditorCode(assignment.starterCode);
+    setEditorHints(assignment.hints);
+    setEditorSolution(assignment.referenceSolution);
+    setEditorSolutionExplanation(assignment.solutionExplanation);
+    setEditorTestCases(assignment.testCases);
+    setEditorTitle(`Assignment — ${assignment.title}`);
     setMobileTab("editor");
   };
 
   return (
     <div className="flex h-[calc(100vh-72px)] overflow-hidden bg-[#F7F8FA]">
-      {/* 1. Left Sidebar Navigation (hidden in focus mode or on mobile/tablet) */}
+      {/* 1. Left Sidebar Navigation */}
       {!focusMode && (
         <SidebarNav
           workshop={workshop}
@@ -77,9 +121,9 @@ export function ChapterExperienceView({
         />
       )}
 
-      {/* 2. Central Content & Sub-navigation Area */}
+      {/* 2. Central Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top Chapter Status Bar */}
+        {/* Top Status Bar */}
         <div className="flex h-11 items-center justify-between border-b border-slate-200/80 bg-white px-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
             <span className="font-semibold text-slate-900 truncate">
@@ -88,7 +132,7 @@ export function ChapterExperienceView({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Mobile / Tablet Tab Switcher (< xl breakpoint) */}
+            {/* Mobile / Tablet Tab Switcher */}
             <div className="flex items-center rounded-md border border-slate-200 bg-slate-50 p-0.5 xl:hidden">
               <button
                 type="button"
@@ -141,7 +185,7 @@ export function ChapterExperienceView({
 
         {/* Split View Container */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Main Reading Area (Visible on desktop xl, or when mobileTab is reading on smaller screens) */}
+          {/* Main Reading Area */}
           <main
             className={`flex-1 overflow-y-auto ${
               mobileTab === "reading" ? "block" : "hidden xl:block"
@@ -155,42 +199,27 @@ export function ChapterExperienceView({
               prevChapter={prevChapter}
               nextChapter={nextChapter}
               onSelectCodeExample={handleSelectCodeExample}
+              onSelectAssignment={handleSelectAssignment}
             />
           </main>
 
-          {/* Right Workspace Panel (Visible on desktop xl, or when mobileTab is editor on smaller screens) */}
+          {/* Right Workspace Panel */}
           {(!focusMode || mobileTab === "editor") && (
             <aside
               className={`flex-col border-l border-slate-200 bg-slate-900 shrink-0 ${
                 mobileTab === "editor"
-                  ? "flex flex-1 xl:w-[480px] 2xl:w-[560px] xl:flex-none"
-                  : "hidden xl:flex w-[480px] 2xl:w-[560px]"
+                  ? "flex flex-1 xl:w-[500px] 2xl:w-[580px] xl:flex-none"
+                  : "hidden xl:flex w-[500px] 2xl:w-[580px]"
               }`}
             >
               <div className="h-full flex-1">
                 <CodeEditor
                   initialCode={editorCode}
-                  title={`Python 3 Workspace — Ch ${chapter.number}`}
-                  hints={
-                    chapter.exercises && chapter.exercises.length > 0
-                      ? chapter.exercises[0].hints
-                      : undefined
-                  }
-                  solution={
-                    chapter.exercises && chapter.exercises.length > 0
-                      ? chapter.exercises[0].solution
-                      : undefined
-                  }
-                  solutionExplanation={
-                    chapter.exercises && chapter.exercises.length > 0
-                      ? chapter.exercises[0].solutionExplanation
-                      : undefined
-                  }
-                  testCases={
-                    chapter.exercises && chapter.exercises.length > 0
-                      ? chapter.exercises[0].testCases
-                      : undefined
-                  }
+                  title={editorTitle}
+                  hints={editorHints}
+                  solution={editorSolution}
+                  solutionExplanation={editorSolutionExplanation}
+                  testCases={editorTestCases}
                 />
               </div>
             </aside>

@@ -110,6 +110,14 @@ export function SidebarNav({
                       → Practice Exercise
                     </a>
                   )}
+                  {chapter.assignment && (
+                    <a
+                      href="#assignment"
+                      className="block text-[11px] font-semibold text-purple-700 hover:text-purple-800 truncate py-0.5"
+                    >
+                      ★ Chapter Assignment
+                    </a>
+                  )}
                 </div>
               )}
             </div>

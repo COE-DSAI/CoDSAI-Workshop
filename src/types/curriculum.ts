@@ -103,6 +103,19 @@ export interface FacilitatorNote {
   readonly referenceSolutionNotes?: string;
 }
 
+export interface ChapterAssignment {
+  readonly id: string;
+  readonly title: string;
+  readonly scenario: string;
+  readonly requirements: readonly string[];
+  readonly edgeCasesToHandle: readonly string[];
+  readonly starterCode: string;
+  readonly testCases: readonly ExerciseTestCase[];
+  readonly hints: readonly [string, string, string];
+  readonly referenceSolution: string;
+  readonly solutionExplanation: string;
+}
+
 export interface Chapter {
   readonly id: string;
   readonly slug: string;
@@ -113,6 +126,7 @@ export interface Chapter {
   readonly learningObjectives: readonly string[];
   readonly sections: readonly ChapterSection[];
   readonly exercises: readonly Exercise[];
+  readonly assignment?: ChapterAssignment;
   readonly recap: ChapterRecap;
   readonly selfAssessment: readonly AssessmentQuestion[];
   readonly facilitatorNotes?: FacilitatorNote;
