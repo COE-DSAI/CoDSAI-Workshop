@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F7F8FA;
+  --surface: #FFFFFF;
+  --primary-text: #172033;
+  --secondary-text: #64748B;
+  --border-color: #E5E7EB;
+  --primary-blue: #2563EB;
+  --primary-blue-hover: #1D4ED8;
+  --success-green: #15803D;
+  --warning-amber: #D97706;
+  --error-red: #DC2626;
+  --code-bg: #0F172A;
+  --code-fg: #F8FAFC;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-primary-text: var(--primary-text);
+  --color-secondary-text: var(--secondary-text);
+  --color-border-color: var(--border-color);
+  --color-primary-blue: var(--primary-blue);
+  --color-primary-blue-hover: var(--primary-blue-hover);
+  --color-success-green: var(--success-green);
+  --color-warning-amber: var(--warning-amber);
+  --color-error-red: var(--error-red);
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--primary-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars for code and learning panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
