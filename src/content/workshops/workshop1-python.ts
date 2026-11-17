@@ -2,7 +2,7 @@ import { Workshop } from "@/types/curriculum";
 
 export const workshop1Python: Workshop = {
   id: "w1-python-foundations",
-  slug: "python",
+  slug: "python-foundations",
   number: 1,
   title: "Python Foundations: Build Inbox Guardian",
   subtitle: "Core Python Programming & Rule-Based Message Analysis",

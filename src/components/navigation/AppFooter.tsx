@@ -7,7 +7,7 @@ export function AppFooter() {
   return (
     <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Col 1 & 2: Brand Identity */}
           <div className="md:col-span-2">
             <OrganisationLogo variant="footer" />
@@ -22,94 +22,74 @@ export function AppFooter() {
                 {BRANDING.programmeTitle}
               </p>
               <p className="mt-3 text-xs leading-relaxed text-slate-500 max-w-sm">
-                A structured, self-contained educational platform designed for live workshops,
-                independent practice, comprehensive revision, and practical model development.
+                Official interactive learning platform for Workshop 1: Python Foundations. Built for live instructor delivery, independent practice, comprehensive revision, and capstone project development.
               </p>
             </div>
           </div>
 
-          {/* Col 3: Workshop Sequence */}
+          {/* Col 3: Workshop 1 Chapters */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
-              Curriculum Sequence
+              Workshop 1 Chapters
             </h4>
             <ul className="mt-3 space-y-2 text-xs">
               <li>
-                <Link href="/workshops/python" className="hover:text-blue-600 transition-colors">
-                  W1: Python Foundations
+                <Link href="/workshops/python-foundations/introduction-to-python" className="hover:text-blue-600 transition-colors">
+                  Ch 1: Introduction to Python
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/git-github" className="hover:text-blue-600 transition-colors">
-                  W2: Git & GitHub
+                <Link href="/workshops/python-foundations/variables-data-types-and-io" className="hover:text-blue-600 transition-colors">
+                  Ch 2: Variables & Data Types
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/numpy-pandas" className="hover:text-blue-600 transition-colors">
-                  W3: NumPy & Pandas
+                <Link href="/workshops/python-foundations/strings-and-text-processing" className="hover:text-blue-600 transition-colors">
+                  Ch 3: Strings & Text Processing
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/visualisation" className="hover:text-blue-600 transition-colors">
-                  W4: Data Visualisation
+                <Link href="/workshops/python-foundations/conditional-logic" className="hover:text-blue-600 transition-colors">
+                  Ch 4: Conditional Logic
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/ml-workflow" className="hover:text-blue-600 transition-colors">
-                  W5: Machine Learning 101
+                <Link href="/workshops/python-foundations/loops-and-repetition" className="hover:text-blue-600 transition-colors">
+                  Ch 5: Loops & Repetition
+                </Link>
+              </li>
+              <li>
+                <Link href="/workshops/python-foundations/collections-lists-and-dictionaries" className="hover:text-blue-600 transition-colors">
+                  Ch 6: Lists & Dictionaries
+                </Link>
+              </li>
+              <li>
+                <Link href="/workshops/python-foundations/functions-and-code-organisation" className="hover:text-blue-600 transition-colors">
+                  Ch 7: Functions & Code Organisation
+                </Link>
+              </li>
+              <li>
+                <Link href="/workshops/python-foundations/capstone-inbox-guardian" className="hover:text-blue-600 transition-colors font-medium text-slate-800">
+                  Ch 8: Capstone: Inbox Guardian
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Advanced Modules */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
-              Advanced & Applied
-            </h4>
-            <ul className="mt-3 space-y-2 text-xs">
-              <li>
-                <Link href="/workshops/regression" className="hover:text-blue-600 transition-colors">
-                  W6: Regression
-                </Link>
-              </li>
-              <li>
-                <Link href="/workshops/classification" className="hover:text-blue-600 transition-colors">
-                  W7: Classification
-                </Link>
-              </li>
-              <li>
-                <Link href="/workshops/model-evaluation" className="hover:text-blue-600 transition-colors">
-                  W8: Responsible ML & Evals
-                </Link>
-              </li>
-              <li>
-                <Link href="/workshops/streamlit" className="hover:text-blue-600 transition-colors">
-                  W9: Streamlit Apps
-                </Link>
-              </li>
-              <li>
-                <Link href="/workshops/project-sprint" className="hover:text-blue-600 transition-colors">
-                  W10: Portfolio Sprint
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 5: Resources */}
+          {/* Col 4: Platform Resources */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
               Learning Resources
             </h4>
             <ul className="mt-3 space-y-2 text-xs">
               <li>
-                <Link href="/projects/inbox-guardian" className="hover:text-blue-600 transition-colors font-medium text-slate-800">
+                <Link href="/projects/inbox-guardian" className="hover:text-blue-600 transition-colors font-semibold text-slate-800">
                   Inbox Guardian Project
                 </Link>
               </li>
               <li>
-                <Link href="/learn" className="hover:text-blue-600 transition-colors">
-                  Learner Dashboard
+                <Link href="/workshops/python-foundations" className="hover:text-blue-600 transition-colors">
+                  Workshop 1 Overview & Timetable
                 </Link>
               </li>
               <li>
@@ -119,7 +99,7 @@ export function AppFooter() {
               </li>
               <li>
                 <Link href="/facilitator" className="hover:text-blue-600 transition-colors">
-                  Facilitator Workbench
+                  Facilitator Console (120m Timer)
                 </Link>
               </li>
               <li>
@@ -136,7 +116,7 @@ export function AppFooter() {
             Official curriculum of the {BRANDING.organisationName}.
           </p>
           <p className="mt-2 sm:mt-0">
-            Educational resource for students, researchers, and practitioners.
+            Educational resource for students and workshop attendees.
           </p>
         </div>
       </div>

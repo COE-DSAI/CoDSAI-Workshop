@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
-  LayoutDashboard,
   FolderGit2,
   FileCheck2,
   Presentation,
@@ -35,9 +34,8 @@ export function AppHeader() {
   }, []);
 
   const navLinks = [
-    { href: "/learn", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/workshops", label: "Workshops", icon: BookOpen },
-    { href: "/projects", label: "Projects", icon: FolderGit2 },
+    { href: "/workshops/python-foundations", label: "Workshop 1 Curriculum", icon: BookOpen },
+    { href: "/projects/inbox-guardian", label: "Inbox Guardian Capstone", icon: FolderGit2 },
     { href: "/revision", label: "Revision Hub", icon: FileCheck2 },
     { href: "/facilitator", label: "Facilitator", icon: Presentation },
   ];
@@ -80,7 +78,7 @@ export function AppHeader() {
           <Link
             href="/revision?tab=search"
             className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-500 hover:border-slate-300 hover:bg-white transition-colors"
-            title="Search topics, syntax & concepts"
+            title="Search Python syntax, concepts & glossary"
           >
             <Search className="h-3.5 w-3.5 text-slate-400" />
             <span>Search Curriculum</span>
@@ -91,16 +89,16 @@ export function AppHeader() {
 
           {completedCount > 0 && (
             <Link
-              href="/learn"
+              href="/revision"
               className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors"
             >
               <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-              <span>{completedCount} Chapters Done</span>
+              <span>{completedCount}/8 Done</span>
             </Link>
           )}
 
           <Link
-            href="/workshops/python/introduction-to-python"
+            href="/workshops/python-foundations/introduction-to-python"
             className="rounded-md bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
             Start Learning
@@ -145,11 +143,11 @@ export function AppHeader() {
             })}
             <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-2">
               <Link
-                href="/workshops/python/introduction-to-python"
+                href="/workshops/python-foundations/introduction-to-python"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full text-center rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700"
               >
-                Start Learning Workshop 1
+                Start Workshop 1
               </Link>
             </div>
           </div>

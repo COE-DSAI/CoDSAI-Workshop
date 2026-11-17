@@ -1,26 +1,9 @@
 import { Workshop, Chapter, GlossaryTerm, SyntaxReference } from "@/types/curriculum";
 import { workshop1Python } from "./workshop1-python";
-import { workshop2Git } from "./workshop2-git";
-import { workshop3NumPyPandas } from "./workshop3-numpy-pandas";
-import { workshop4Visualization } from "./workshop4-visualization";
-import { workshop5MLWorkflow } from "./workshop5-ml-workflow";
-import { workshop6Regression } from "./workshop6-regression";
-import { workshop7Classification } from "./workshop7-classification";
-import { workshop8ModelEvaluation } from "./workshop8-model-evaluation";
-import { workshop9Streamlit } from "./workshop9-streamlit";
-import { workshop10ProjectSprint } from "./workshop10-project-sprint";
 
+// Modular Workshop Registry: currently focused exclusively on Workshop 1 as per scope override
 export const allWorkshops: readonly Workshop[] = [
   workshop1Python,
-  workshop2Git,
-  workshop3NumPyPandas,
-  workshop4Visualization,
-  workshop5MLWorkflow,
-  workshop6Regression,
-  workshop7Classification,
-  workshop8ModelEvaluation,
-  workshop9Streamlit,
-  workshop10ProjectSprint,
 ];
 
 export function getAllWorkshops(): readonly Workshop[] {
