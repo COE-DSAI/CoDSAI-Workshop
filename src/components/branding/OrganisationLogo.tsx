@@ -20,11 +20,11 @@ export function OrganisationLogo({
   const [imageError, setImageError] = useState(false);
   const [useFallbackJpg, setUseFallbackJpg] = useState(false);
 
-  // Dimensions based on context
+  // Proportions matching the reserved official asset slot
   const dimensions = {
-    header: { width: 180, height: 42 },
-    footer: { width: 160, height: 38 },
-    hero: { width: 240, height: 56 },
+    header: { width: 36, height: 36 },
+    footer: { width: 32, height: 32 },
+    hero: { width: 44, height: 44 },
   }[variant];
 
   const currentSrc = useFallbackJpg
@@ -33,22 +33,21 @@ export function OrganisationLogo({
 
   const handleImageError = () => {
     if (!useFallbackJpg) {
-      // Try jpg fallback
       setUseFallbackJpg(true);
     } else {
-      // Both png and jpg failed; show restrained neutral placeholder
       setImageError(true);
     }
   };
 
   return (
-    <div className={`inline-flex items-center gap-3 ${className}`}>
+    <div className={`inline-flex items-center gap-2.5 ${className}`}>
       <div
-        className="relative flex items-center justify-center overflow-hidden transition-all duration-150"
+        className="relative flex items-center justify-center shrink-0 transition-all duration-150"
         style={{
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
         }}
+        title="Center of Excellence: Data Science & Artificial Intelligence"
       >
         {!imageError ? (
           <Image
@@ -61,31 +60,34 @@ export function OrganisationLogo({
             onError={handleImageError}
           />
         ) : (
-          /* Restrained, neutral placeholder reserved for official asset */
+          /* Restrained, discreet architectural placeholder reserved for official asset */
           <div
-            className={`flex h-full w-full flex-col items-center justify-center rounded border px-2 py-1 text-center select-none ${
+            className={`flex h-full w-full items-center justify-center rounded border transition-colors select-none ${
               surface === "dark"
-                ? "border-slate-700 bg-slate-800/60 text-slate-400"
-                : "border-slate-300 bg-slate-50 text-slate-500"
+                ? "border-slate-700 bg-slate-800 text-slate-300"
+                : "border-slate-300/80 bg-slate-100 text-slate-700 shadow-2xs"
             }`}
-            title="Reserved slot for official Center of Excellence logo asset"
+            title="Reserved slot for /branding/center-of-excellence-logo.png"
+            aria-label="Official Center of Excellence Logo Slot"
           >
-            <span className="text-[10px] font-mono tracking-wider uppercase font-semibold">
-              Center of Excellence
-            </span>
-            <span className="text-[8px] font-mono tracking-tight text-slate-400">
-              [ Official Logo Slot ]
-            </span>
+            <div className="flex flex-col items-center justify-center leading-none">
+              <span className="text-[10px] font-bold tracking-tight font-mono text-slate-800">
+                CoE
+              </span>
+              <span className="text-[7px] font-mono tracking-tighter text-blue-600 font-semibold">
+                DSAI
+              </span>
+            </div>
           </div>
         )}
       </div>
 
       {showTagline && (
-        <div className="flex flex-col border-l border-slate-200 pl-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-800">
+        <div className="flex flex-col border-l border-slate-200 pl-2.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-900">
             {BRANDING.organisationLine1}
           </span>
-          <span className="text-[11px] font-medium text-slate-500">
+          <span className="text-[10px] font-medium tracking-wide text-slate-500">
             {BRANDING.organisationLine2}
           </span>
         </div>

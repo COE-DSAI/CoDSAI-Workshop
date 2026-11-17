@@ -16,6 +16,8 @@ import {
   Check,
   Code2,
   Calendar,
+  ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 import { workshop1Python } from "@/content/workshops/workshop1-python";
 
@@ -53,7 +55,8 @@ export function FacilitatorWorkbench() {
 
   const agendaSlots = [
     {
-      slot: "00–08 min",
+      slot: "00:00 – 00:08",
+      duration: "8 min",
       title: "Introduction to Python & Coding Environment",
       chapterNumber: 1,
       teachingGoal: "Ensure every student executes their first print() statement in the browser and recognizes syntax error tracebacks.",
@@ -66,7 +69,8 @@ export function FacilitatorWorkbench() {
       checkpoint: "All students have modified and run: print('Hello from Center of Excellence!').",
     },
     {
-      slot: "08–23 min",
+      slot: "00:08 – 00:23",
+      duration: "15 min",
       title: "Variables, Types, and Input/Output",
       chapterNumber: 2,
       teachingGoal: "Teach students to distinguish between strings and numbers, and master explicit type conversion.",
@@ -79,9 +83,24 @@ export function FacilitatorWorkbench() {
       checkpoint: "Students complete the profile generator using f-strings.",
     },
     {
-      slot: "23–38 min",
-      title: "Conditional Logic & Decision Branching",
+      slot: "00:23 – 00:38",
+      duration: "15 min",
+      title: "Strings & Text Processing",
       chapterNumber: 3,
+      teachingGoal: "Master text cleaning (.lower(), .strip()), slicing, and substring matching with 'in'.",
+      instructorNotes: "Emphasize that strings are immutable. Demonstrate that 's.lower()' returns a new string and doesn't modify 's' in place.",
+      misconceptions: [
+        "Thinking text.lower() changes the original variable without reassignment.",
+        "Off-by-one errors when using slice syntax text[0:5].",
+      ],
+      discussionPrompt: "Why is text cleaning the most critical preprocessing step for spam filtering and NLP?",
+      checkpoint: "Students write a function to detect whether 'urgent' appears inside a user's input string.",
+    },
+    {
+      slot: "00:38 – 00:53",
+      duration: "15 min",
+      title: "Conditional Logic & Decision Branching",
+      chapterNumber: 4,
       teachingGoal: "Structure clean decision trees using if/elif/else and strict 4-space indentation.",
       instructorNotes: "Demonstrate that Python evaluates conditions from top to bottom and stops at the first True branch.",
       misconceptions: [
@@ -92,61 +111,53 @@ export function FacilitatorWorkbench() {
       checkpoint: "Students implement the message risk classification rule.",
     },
     {
-      slot: "38–53 min",
+      slot: "00:53 – 01:08",
+      duration: "15 min",
       title: "Loops and Repetition",
-      chapterNumber: 4,
+      chapterNumber: 5,
       teachingGoal: "Master sequence iteration with for loops and condition-driven while loops.",
       instructorNotes: "Demonstrate range(5) generating 0, 1, 2, 3, 4. Show how 'break' terminates an infinite while True loop.",
       misconceptions: [
-        "Believing range(1, 5) includes the number 5.",
-        "Creating infinite while loops by forgetting to update the loop condition.",
+        "Thinking range(1, 5) includes the number 5 (it stops at 4).",
+        "Writing a while loop without modifying the counter variable (infinite loop).",
       ],
-      discussionPrompt: "When is a for loop better than a while loop in data engineering pipelines?",
-      checkpoint: "Students accumulate keyword matches across a list of test strings.",
+      discussionPrompt: "Why are loops fundamental to analyzing datasets of millions of records?",
+      checkpoint: "Students write a loop to print odd numbers up to 15.",
     },
     {
-      slot: "53–68 min",
+      slot: "01:08 – 01:20",
+      duration: "12 min",
       title: "Collections: Lists & Dictionaries",
-      chapterNumber: 5,
-      teachingGoal: "Establish lists of dictionaries as the standard in-memory representation of structured records.",
-      instructorNotes: "Show how a list of dictionaries directly mirrors rows and columns in a spreadsheet or database table.",
-      misconceptions: [
-        "Confusing list bracket syntax [] with dictionary curly braces {}.",
-        "Assuming dictionary keys can have duplicates (assigning to an existing key overwrites it).",
-      ],
-      discussionPrompt: "Why is dict['sender'] clearer and safer than list[0] for structured message data?",
-      checkpoint: "Students create an in-memory scan history log as a list of dictionaries.",
-    },
-    {
-      slot: "68–80 min",
-      title: "Functions & Code Organisation",
       chapterNumber: 6,
-      teachingGoal: "Equip students to decompose programs into reusable, modular functions with return values.",
-      instructorNotes: "Drive home the difference between print() and return. Explain that assigning x = print('hi') sets x to None.",
+      teachingGoal: "Store sequences in lists and key-value attributes in dictionaries.",
+      instructorNotes: "Draw a mental model comparing a list (ordered shelf by index 0, 1, 2) to a dictionary (labeled cubbies by key name).",
       misconceptions: [
-        "Confusing printing inside a function with returning a value to the caller.",
-        "Attempting to access a local variable outside its function definition.",
+        "Trying to access dictionary values using integer indexes instead of key names.",
+        "Attempting to modify a list while iterating over it.",
       ],
-      discussionPrompt: "Why is modular code drastically easier to debug and test in team projects?",
-      checkpoint: "Students write a pure function that takes a text string and returns a match count.",
+      discussionPrompt: "Why are JSON datasets and API payloads represented as lists of dictionaries in Python?",
+      checkpoint: "Students create an email message dictionary with sender, subject, and flags.",
     },
     {
-      slot: "80–85 min",
-      title: "Inbox Guardian Capstone Introduction",
+      slot: "01:20 – 01:32",
+      duration: "12 min",
+      title: "Functions & Code Organisation",
       chapterNumber: 7,
-      teachingGoal: "Walk through the architectural specification of Inbox Guardian and set expectations for the build sprint.",
-      instructorNotes: "Present the 6 milestone steps. Clarify that Inbox Guardian is a RULE-BASED application, not machine learning.",
+      teachingGoal: "Encapsulate logic into reusable functions with parameters and return values.",
+      instructorNotes: "Clarify the crucial difference between 'print()' inside a function and 'return'. Functions return data to callers.",
       misconceptions: [
-        "Students assuming this is an AI/ML model (clarify: rules are human-crafted heuristics).",
+        "Thinking print() inside a function is the same as returning a value.",
+        "Accessing local variables outside their function scope.",
       ],
-      discussionPrompt: "What are the inherent failure modes of human-crafted keyword rules?",
-      checkpoint: "All students have opened the Inbox Guardian scaffold in their editor.",
+      discussionPrompt: "How do functions help us collaborate on large codebases without naming collisions?",
+      checkpoint: "Students write calculate_risk_score(keywords, caps_ratio).",
     },
     {
-      slot: "85–112 min",
-      title: "Capstone Implementation: Build Sprint",
+      slot: "01:32 – 01:52",
+      duration: "20 min",
+      title: "Capstone: Build Inbox Guardian",
       chapterNumber: 8,
-      teachingGoal: "Guide students through assembling the 6 functions and completing the interactive CLI menu loop.",
+      teachingGoal: "Guide students through integrating all concepts to build the complete rule-based security scanner.",
       instructorNotes: "Circulate the room (or monitor chat). Help students debug function signatures and dictionary lookups.",
       misconceptions: [
         "Students forgetting to convert text to lowercase before matching.",
@@ -155,7 +166,8 @@ export function FacilitatorWorkbench() {
       checkpoint: "Students test batch scanning of the sample inbox and inspect output.",
     },
     {
-      slot: "112–120 min",
+      slot: "01:52 – 02:00",
+      duration: "8 min",
       title: "Showcase, Code Review & Workshop Recap",
       chapterNumber: 8,
       teachingGoal: "Have volunteer students share their working scanners and recap the 120-minute learning journey.",
@@ -168,231 +180,207 @@ export function FacilitatorWorkbench() {
     },
   ];
 
+  const currentSlot = agendaSlots[activeAgendaIndex];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Top Banner & Timer Bar */}
-      <div className="rounded-xl border border-slate-300 bg-white p-6 shadow-xs mb-8">
+      {/* Subtle Breadcrumb */}
+      <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-slate-800 transition-colors">
+          Home
+        </Link>
+        <span className="text-slate-300">/</span>
+        <Link href="/workshops/python-foundations" className="hover:text-slate-800 transition-colors">
+          Workshop 01
+        </Link>
+        <span className="text-slate-300">/</span>
+        <span className="text-slate-800 font-medium">Facilitator Workbench</span>
+      </nav>
+
+      {/* Top Banner & Live Timer Bar */}
+      <div className="mb-8 pb-8 border-b border-slate-200/80">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800 border border-purple-200">
-                Facilitator Console
-              </span>
-              <span className="text-xs text-slate-500 font-semibold">Workshop 1 Delivery</span>
-            </div>
-            <h1 className="mt-2 text-2xl font-extrabold text-slate-900">
-              Workshop 1: Python Foundations — Facilitator Workbench
+          <div className="max-w-2xl">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold block mb-2">
+              INSTRUCTOR WORKBENCH · 120-MINUTE LIVE DELIVERY
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 leading-tight">
+              Workshop 1: Python Foundations — Facilitator Console
             </h1>
-            <p className="mt-1 text-xs text-slate-600 max-w-xl leading-relaxed">
-              Official live delivery console for instructors. Includes minute-by-minute agendas, teaching objectives, live coding checkpoints, common misconceptions, and countdown timer.
+            <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Live delivery console for instructors. Includes minute-by-minute agendas, teaching objectives, live coding checkpoints, common misconceptions, and countdown timer.
             </p>
           </div>
 
-          {/* Session Timer */}
-          <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-900 p-4 text-white shadow-xs">
-            <Clock className="h-6 w-6 text-purple-400" />
+          {/* Session Timer Component */}
+          <div className="flex items-center gap-4 rounded-lg border border-slate-800 bg-[#0B1220] p-4 text-white shadow-md shrink-0">
+            <Clock className="h-5 w-5 text-blue-400" />
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-                Session Countdown
+              <span className="text-[10px] uppercase font-mono text-slate-400 block tracking-wider">
+                Session Timer
               </span>
-              <span className="text-3xl font-mono font-extrabold tracking-tight text-purple-300">
+              <span className="text-2xl font-mono font-bold tracking-tight text-slate-100">
                 {formatTimer(timerSeconds)}
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5 ml-3">
+            <div className="flex items-center gap-1.5 ml-2">
               <button
+                type="button"
                 onClick={() => setTimerRunning(!timerRunning)}
-                className={`rounded-lg p-2.5 text-white transition-colors ${
+                className={`rounded p-2 text-white transition-colors ${
                   timerRunning
                     ? "bg-amber-600 hover:bg-amber-500"
                     : "bg-emerald-600 hover:bg-emerald-500"
                 }`}
                 title={timerRunning ? "Pause timer" : "Start timer"}
               >
-                {timerRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-white" />}
+                {timerRunning ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-white" />}
               </button>
               <button
+                type="button"
                 onClick={() => resetTimer(120)}
-                className="rounded-lg bg-slate-800 p-2.5 text-slate-300 hover:bg-slate-700"
+                className="rounded bg-slate-800 p-2 text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
                 title="Reset to 120 minutes"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Agenda Breakdown & Instructor Resources */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left 2 Cols: 9 Master Agenda Slots */}
-        <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-xl border border-slate-300 bg-white p-6 shadow-xs">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Presentation className="h-5 w-5 text-purple-600" />
-                  Two-Hour Master Session Agenda
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Click any slot to review detailed teaching notes, discussion prompts, and checkpoints.
-                </p>
-              </div>
-              <span className="rounded bg-purple-50 px-2.5 py-1 text-xs font-mono font-bold text-purple-700">
-                120 Mins Total
+      {/* Main Grid: Agenda List & Active Slot Detail */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Agenda Slots Table */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="rounded-lg border border-slate-200/80 bg-white overflow-hidden">
+            <div className="border-b border-slate-200/80 px-4 py-3 bg-slate-50/70 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                120-Minute Master Agenda
+              </span>
+              <span className="text-xs text-slate-400 font-mono">
+                9 Delivery Slots
               </span>
             </div>
 
-            <div className="space-y-4">
-              {agendaSlots.map((slot, index) => {
-                const isSelected = index === activeAgendaIndex;
+            <div className="divide-y divide-slate-100">
+              {agendaSlots.map((slot, idx) => {
+                const isSelected = activeAgendaIndex === idx;
+                const isCapstone = slot.chapterNumber === 8;
+
                 return (
-                  <div
-                    key={index}
-                    className={`rounded-lg border p-4 transition-all ${
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveAgendaIndex(idx)}
+                    className={`w-full text-left p-3.5 transition-colors flex items-center justify-between ${
                       isSelected
-                        ? "border-purple-400 bg-purple-50/40 shadow-xs"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        ? "bg-blue-50/70 text-blue-900 border-l-3 border-blue-600"
+                        : "hover:bg-slate-50 text-slate-700"
                     }`}
                   >
-                    <div
-                      className="flex items-center justify-between cursor-pointer"
-                      onClick={() => setActiveAgendaIndex(index)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="rounded bg-purple-100 px-2.5 py-1 text-xs font-mono font-bold text-purple-800 shrink-0">
-                          {slot.slot}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-mono text-xs font-semibold text-slate-400 w-28 shrink-0">
+                        {slot.slot}
+                      </span>
+                      <div className="truncate">
+                        <span className="text-xs font-semibold block truncate text-slate-900">
+                          {slot.title}
                         </span>
-                        <h3 className="text-sm font-bold text-slate-900">{slot.title}</h3>
+                        <span className="text-[11px] text-slate-500 block truncate">
+                          Ch {slot.chapterNumber} · {slot.duration}
+                        </span>
                       </div>
-                      <Link
-                        href={`/workshops/python-foundations/${workshop1Python.chapters[Math.min(slot.chapterNumber - 1, 7)].slug}`}
-                        className="text-[11px] font-semibold text-blue-600 hover:underline shrink-0"
-                      >
-                        Chapter {slot.chapterNumber} →
-                      </Link>
                     </div>
 
-                    {isSelected && (
-                      <div className="mt-4 border-t border-slate-200/80 pt-3.5 space-y-3 text-xs">
-                        <div>
-                          <span className="font-bold text-purple-900 block mb-0.5">
-                            Teaching Goal:
-                          </span>
-                          <p className="text-slate-700 leading-relaxed">{slot.teachingGoal}</p>
-                        </div>
-
-                        <div>
-                          <span className="font-bold text-slate-800 block mb-0.5">
-                            Instructor Delivery Notes:
-                          </span>
-                          <p className="text-slate-600 leading-relaxed">{slot.instructorNotes}</p>
-                        </div>
-
-                        {slot.misconceptions.length > 0 && (
-                          <div className="rounded bg-amber-50 p-2.5 border border-amber-200 text-amber-950">
-                            <span className="font-bold flex items-center gap-1.5 mb-1">
-                              <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-                              Common Student Misconceptions to Address:
-                            </span>
-                            <ul className="list-disc pl-4 space-y-0.5 text-slate-800">
-                              {slot.misconceptions.map((m, i) => (
-                                <li key={i}>{m}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        <div className="rounded bg-blue-50 p-2.5 border border-blue-200 text-blue-950">
-                          <span className="font-bold block mb-0.5">
-                            Discussion Prompt:
-                          </span>
-                          <p className="italic">&quot;{slot.discussionPrompt}&quot;</p>
-                        </div>
-
-                        <div className="rounded bg-emerald-50 p-2.5 border border-emerald-200 text-emerald-950">
-                          <span className="font-bold block mb-0.5">
-                            Live Checkpoint:
-                          </span>
-                          <p>{slot.checkpoint}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    <ChevronRight className={`h-4 w-4 shrink-0 transition-transform ${
+                      isSelected ? "text-blue-600 translate-x-0.5" : "text-slate-300"
+                    }`} />
+                  </button>
                 );
               })}
             </div>
           </div>
         </div>
 
-        {/* Right Col: Facilitator Checklist & Quick Solutions */}
-        <div className="space-y-6">
-          {/* Pre-flight Facilitator Checklist */}
-          <div className="rounded-xl border border-slate-300 bg-white p-5 shadow-xs">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-3">
-              <CheckSquare className="h-4 w-4 text-purple-600" />
-              Live Workshop Delivery Checklist
-            </h3>
-            <ul className="space-y-2 text-xs text-slate-700">
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" defaultChecked />
-                <span>Verify projector display at 1080p and text zoom</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" defaultChecked />
-                <span>Test browser Pyodide WebAssembly runtime execution</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" defaultChecked />
-                <span>Start 120-minute session countdown timer</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" />
-                <span>Explain queued input() mechanism before Chapter 2</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" />
-                <span>Guide students to progressive hints (Hint 1, 2, 3)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" />
-                <span>Reserve 30 minutes for Capstone implementation</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 rounded text-purple-600" />
-                <span>Highlight boundary: rules vs future machine learning</span>
-              </li>
-            </ul>
-          </div>
+        {/* Right Column: Detailed Teaching Notes for Selected Slot */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="rounded-lg border border-slate-200/80 bg-white p-5 sticky top-24">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 font-semibold block">
+                  Active Agenda Slot
+                </span>
+                <h3 className="text-sm font-bold text-slate-900 mt-0.5">
+                  {currentSlot.title}
+                </h3>
+              </div>
+              <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-600 shrink-0">
+                {currentSlot.duration}
+              </span>
+            </div>
 
-          {/* Quick Links */}
-          <div className="rounded-xl border border-slate-300 bg-white p-5 shadow-xs">
-            <h3 className="text-sm font-bold text-slate-900 mb-3">
-              Instructor Quick Links
-            </h3>
-            <div className="space-y-2 text-xs">
-              <Link
-                href="/projects/inbox-guardian"
-                className="flex items-center justify-between p-2 rounded bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold"
-              >
-                <span>Inbox Guardian Project Scaffold</span>
-                <span>→</span>
-              </Link>
-              <Link
-                href="/workshops/python-foundations/capstone-inbox-guardian"
-                className="flex items-center justify-between p-2 rounded bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold"
-              >
-                <span>Chapter 8 Capstone Lesson</span>
-                <span>→</span>
-              </Link>
-              <Link
-                href="/revision"
-                className="flex items-center justify-between p-2 rounded bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold"
-              >
-                <span>Revision Hub & Syntax Guide</span>
-                <span>→</span>
-              </Link>
+            <div className="space-y-4 text-xs">
+              <div>
+                <span className="font-semibold text-slate-900 block mb-1">
+                  Teaching Goal:
+                </span>
+                <p className="text-slate-600 leading-relaxed">
+                  {currentSlot.teachingGoal}
+                </p>
+              </div>
+
+              <div>
+                <span className="font-semibold text-slate-900 block mb-1">
+                  Instructor Delivery Notes:
+                </span>
+                <p className="text-slate-600 leading-relaxed">
+                  {currentSlot.instructorNotes}
+                </p>
+              </div>
+
+              <div>
+                <span className="font-semibold text-slate-900 block mb-1 text-amber-900">
+                  Common Stumbling Blocks:
+                </span>
+                <ul className="space-y-1 text-slate-600">
+                  {currentSlot.misconceptions.map((m, i) => (
+                    <li key={i} className="flex items-start gap-1.5 leading-relaxed">
+                      <span className="text-amber-500 font-bold">•</span>
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded bg-slate-50 p-3 border border-slate-100">
+                <span className="font-semibold text-slate-900 block mb-1">
+                  Discussion Prompt:
+                </span>
+                <p className="text-slate-600 italic">
+                  &quot;{currentSlot.discussionPrompt}&quot;
+                </p>
+              </div>
+
+              <div className="rounded bg-emerald-50/60 p-3 border border-emerald-200">
+                <span className="font-semibold text-emerald-900 block mb-1">
+                  Hands-On Checkpoint:
+                </span>
+                <p className="text-emerald-950 font-medium">
+                  {currentSlot.checkpoint}
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href={`/workshops/${workshop1Python.slug}/${workshop1Python.chapters[currentSlot.chapterNumber - 1]?.slug || ""}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  <span>Open Chapter {currentSlot.chapterNumber} Material</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

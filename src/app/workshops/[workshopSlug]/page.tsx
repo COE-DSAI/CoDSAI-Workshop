@@ -2,19 +2,20 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  BookOpen,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
   ArrowRight,
-  Sparkles,
   ShieldCheck,
-  FolderGit2,
+  CheckCircle2,
   Calendar,
+  Terminal,
+  BookOpen,
+  Code2,
+  Cpu,
+  Layers,
 } from "lucide-react";
 import { AppHeader } from "@/components/navigation/AppHeader";
 import { AppFooter } from "@/components/navigation/AppFooter";
 import { getWorkshopBySlug, getAllWorkshops } from "@/content/workshops";
+import { CurriculumChapterList } from "@/components/chapter/CurriculumChapterList";
 
 export async function generateStaticParams() {
   const workshops = getAllWorkshops();
@@ -35,166 +36,361 @@ export default async function WorkshopDetailPage({
     notFound();
   }
 
-  const timetable = [
-    { time: "00–08 min", title: "Introduction to Python & Coding Environment", ch: 1 },
-    { time: "08–23 min", title: "Variables, Data Types, and Input/Output", ch: 2 },
-    { time: "23–38 min", title: "Conditional Logic & Decision Branching", ch: 3 },
-    { time: "38–53 min", title: "Loops and Repetition Patterns", ch: 4 },
-    { time: "53–68 min", title: "Collections: Lists & Dictionaries", ch: 5 },
-    { time: "68–80 min", title: "Functions & Code Organisation", ch: 6 },
-    { time: "80–85 min", title: "Inbox Guardian Capstone Introduction", ch: 7 },
-    { time: "85–112 min", title: "Capstone Implementation: Build Inbox Guardian", ch: 8 },
-    { time: "112–120 min", title: "Project Showcase & Workshop Recap", ch: 8 },
+  // Live session schedule (120 minutes allocation)
+  const liveSchedule = [
+    { time: "00:00 – 00:08", duration: "8m", phase: "Introduction & Python Environment", focus: "Interpreter architecture, execution model, Pyodide setup", ch: 1 },
+    { time: "00:08 – 00:23", duration: "15m", phase: "Variables, Types & Input/Output", focus: "Primitive types, casting, f-strings, interactive input()", ch: 2 },
+    { time: "00:23 – 00:38", duration: "15m", phase: "Strings & Text Normalization", focus: ".strip(), .lower(), slicing, substring search with 'in'", ch: 3 },
+    { time: "00:38 – 00:53", duration: "15m", phase: "Conditional Logic & Branching", focus: "if / elif / else trees, boolean operators, truthiness", ch: 4 },
+    { time: "00:53 – 01:08", duration: "15m", phase: "Repetition: For & While Loops", focus: "Iteration over sequences, range(), break, loop guards", ch: 5 },
+    { time: "01:08 – 01:20", duration: "12m", phase: "Collections: Lists & Dictionaries", focus: "List operations, dict key-value lookups, structured messages", ch: 6 },
+    { time: "01:20 – 01:32", duration: "12m", phase: "Functions & Modular Architecture", focus: "def, parameters, return values, clean code decomposition", ch: 7 },
+    { time: "01:32 – 01:52", duration: "20m", phase: "Capstone: Build Inbox Guardian", focus: "Rule-based scoring engine, urgency detection, batch scanning", ch: 8 },
+    { time: "01:52 – 02:00", duration: "8m", phase: "Review, Pitfalls & Next Steps", focus: "Code review, edge cases, foundation for future ML workshops", ch: 8 },
   ];
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
       <AppHeader />
 
-      <main className="flex-1 py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-500">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
+      <main className="flex-1">
+        {/* Top Container */}
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          {/* A. Breadcrumb */}
+          <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
+            <Link href="/" className="hover:text-slate-800 transition-colors">
               Home
             </Link>
-            <ChevronRight className="h-3 w-3 text-slate-400" />
-            <span className="font-semibold text-slate-800">Workshop 1: Python Foundations</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-400">Workshops</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-800 font-medium">Workshop 01: Python Foundations</span>
           </nav>
 
-          {/* Workshop Banner */}
-          <div className="rounded-xl border border-slate-300 bg-white p-6 sm:p-8 shadow-xs mb-8">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase font-mono text-blue-800">
-                Workshop 1
-              </span>
-              <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-                {workshop.difficulty}
-              </span>
-              <span className="flex items-center gap-1 text-xs text-slate-400 font-mono">
-                <Clock className="h-3.5 w-3.5" />
-                {workshop.durationMinutes} Minutes (2 Hours)
-              </span>
-              <span className="text-xs text-slate-400 font-mono">
-                8 Standalone Chapters
-              </span>
-            </div>
-
-            <h1 className="mt-4 text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
-              {workshop.title}
-            </h1>
-            <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-              {workshop.subtitle}
-            </p>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href={`/workshops/${workshop.slug}/${workshop.chapters[0].slug}`}
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-blue-700 transition-colors"
-              >
-                <span>Start Learning (Chapter 1)</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-
-              <Link
-                href="/projects/inbox-guardian"
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition-colors"
-              >
-                <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                <span>Featured Capstone: Inbox Guardian</span>
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left 2 Cols: 8 Chapters */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
-                <h2 className="text-lg font-bold text-slate-900 mb-1">
-                  Eight-Chapter Curriculum
-                </h2>
-                <p className="text-xs text-slate-500 mb-6">
-                  Every chapter is self-contained with first-principles explanations, runnable examples, and revision resources.
+          {/* B. Hero Section: Two-Column Editorial Layout */}
+          <section className="pb-12 border-b border-slate-200/80">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              {/* Left Column: Heading & Information */}
+              <div className="lg:col-span-7">
+                <p className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold">
+                  WORKSHOP 01 · BEGINNER · 120 MINUTES
                 </p>
 
-                <div className="space-y-3.5">
-                  {workshop.chapters.map((ch) => (
-                    <Link
-                      key={ch.id}
-                      href={`/workshops/${workshop.slug}/${ch.slug}`}
-                      className="group block rounded-lg border border-slate-200 p-4 transition-all hover:border-blue-400 hover:bg-slate-50/70"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-mono font-bold text-blue-700">
-                            {ch.number}
-                          </span>
-                          <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                            {ch.title}
-                          </h3>
-                        </div>
-                        <span className="text-xs text-slate-400 font-mono">
-                          {ch.estimatedMinutes} mins
-                        </span>
-                      </div>
+                <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15]">
+                  Python Foundations: Build Inbox Guardian
+                </h1>
 
-                      <p className="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed pl-8">
-                        {ch.introduction}
-                      </p>
+                <p className="mt-3 text-lg sm:text-xl font-medium text-slate-600">
+                  Core Python Programming &amp; Rule-Based Message Analysis
+                </p>
 
-                      <div className="mt-3 pl-8 flex items-center justify-between text-[11px] text-slate-400">
-                        <span>{ch.sections.length} Concept Sections • {ch.exercises.length} Exercises</span>
-                        <span className="font-semibold text-blue-600 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                          Open Lesson <ChevronRight className="h-3 w-3" />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+                <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
+                  An intensive, first-principles curriculum. Master syntax, branching logic, loop constructs, structured collections, and modular functions, then architect and test a complete rule-based email security analyzer in Python.
+                </p>
+
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  <Link
+                    href={`/workshops/${workshop.slug}/${workshop.chapters[0].slug}`}
+                    className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-blue-700 transition-colors"
+                  >
+                    <span>Start Learning</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+
+                  <Link
+                    href="/projects/inbox-guardian"
+                    className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-colors"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-blue-600" />
+                    <span>Explore Inbox Guardian</span>
+                  </Link>
+                </div>
+
+                <div className="mt-8 flex flex-wrap items-center gap-6 text-xs text-slate-500 pt-6 border-t border-slate-200/80">
+                  <div>
+                    <span className="font-semibold text-slate-900">8</span> Detailed Chapters
+                  </div>
+                  <span className="text-slate-300">•</span>
+                  <div>
+                    <span className="font-semibold text-slate-900">120</span> Min Session Schedule
+                  </div>
+                  <span className="text-slate-300">•</span>
+                  <div>
+                    <span className="font-semibold text-slate-900">Zero</span> Prior Coding Required
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Authentic Terminal Preview */}
+              <div className="lg:col-span-5">
+                <div className="rounded-lg border border-slate-800 bg-[#0B1220] shadow-xl overflow-hidden font-mono text-xs text-slate-300">
+                  {/* Title Bar */}
+                  <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800 bg-[#070D18]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80 inline-block" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" />
+                    </div>
+                    <span className="text-[10px] text-slate-400 tracking-wider">inbox_guardian.py — python3</span>
+                    <div className="w-8" />
+                  </div>
+
+                  {/* Terminal Session Content */}
+                  <div className="p-4 space-y-2 leading-relaxed text-[11px] sm:text-xs">
+                    <div className="text-slate-400">
+                      <span className="text-emerald-400 font-semibold">$</span> python3 inbox_guardian.py --inspect
+                    </div>
+                    <div className="text-blue-400 font-semibold">
+                      [INBOX GUARDIAN v1.0 · RULE-BASED SECURITY ENGINE]
+                    </div>
+                    <div className="text-slate-400">
+                      Message: &quot;URGENT: Claim your $500 gift card immediately!&quot;
+                    </div>
+                    <div className="pt-1 space-y-1 text-slate-300 text-[11px]">
+                      <div>&gt; Text normalization (.lower, .strip): <span className="text-emerald-400 font-semibold">COMPLETE</span></div>
+                      <div>&gt; Suspicious triggers matched: <span className="text-amber-400">[&apos;urgent&apos;, &apos;gift card&apos;]</span></div>
+                      <div>&gt; Urgency indicators matched: <span className="text-amber-400">[&apos;immediately!&apos;]</span></div>
+                      <div>&gt; Structural heuristics: <span className="text-slate-300">28.5% uppercase ratio (+15)</span></div>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-slate-800 flex justify-between items-center text-[11px]">
+                      <span className="text-slate-400">
+                        Total Risk Score: <strong className="text-rose-400 font-bold">70 / 100</strong>
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800 text-[10px] font-bold tracking-wide">
+                        QUARANTINE
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+          </section>
 
-            {/* Right Col: 2-Hour Timetable & Prerequisites */}
-            <div className="space-y-6">
-              {/* 2-Hour Session Timetable */}
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 text-blue-600" />
+          {/* C. Curriculum Section: Editorial List Layout */}
+          <section className="py-12">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                  Eight-Chapter Curriculum Path
+                </h2>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                  A structured technical progression from fundamental syntax to building a practical security application.
+                </p>
+              </div>
+              <span className="text-xs font-mono text-slate-400 shrink-0">
+                8 Chapters · 120 Minutes Combined Reading
+              </span>
+            </div>
+
+            <CurriculumChapterList workshop={workshop} />
+          </section>
+
+          {/* D. Timetable Section: Live Workshop Delivery Schedule */}
+          <section className="py-12 border-t border-slate-200/80">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
                   Two-Hour Workshop Timetable
-                </h3>
-                <div className="space-y-2 text-xs">
-                  {timetable.map((slot, i) => (
-                    <div key={i} className="flex items-start justify-between border-b border-slate-100 pb-1.5 gap-2">
-                      <span className="font-mono text-blue-700 font-bold shrink-0">{slot.time}</span>
-                      <span className="text-slate-700 text-right leading-tight">{slot.title}</span>
+                </h2>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                  The live instructor-led timeline for the 120-minute session. Note: Chapter reading times above reflect independent study.
+                </p>
+              </div>
+              <Link
+                href="/facilitator"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              >
+                <span>Open Facilitator Workbench</span>
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-slate-200/80 bg-white">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 uppercase tracking-wider font-semibold text-[11px]">
+                    <th className="py-3 px-4 font-mono w-32">Time</th>
+                    <th className="py-3 px-3 font-mono w-20">Duration</th>
+                    <th className="py-3 px-4">Workshop Topic &amp; Phase</th>
+                    <th className="py-3 px-4 hidden md:table-cell">Key Technical Deliverable</th>
+                    <th className="py-3 px-4 font-mono text-right w-24">Chapter</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-700">
+                  {liveSchedule.map((slot, idx) => {
+                    const isCapstone = slot.ch === 8;
+                    return (
+                      <tr
+                        key={idx}
+                        className={`transition-colors hover:bg-slate-50/80 ${
+                          isCapstone ? "bg-blue-50/30" : ""
+                        }`}
+                      >
+                        <td className="py-3 px-4 font-mono font-medium text-slate-900 shrink-0">
+                          {slot.time}
+                        </td>
+                        <td className="py-3 px-3 font-mono text-slate-500">
+                          {slot.duration}
+                        </td>
+                        <td className="py-3 px-4 font-medium text-slate-900">
+                          {slot.phase}
+                          {isCapstone && (
+                            <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-1.5 py-0.2 text-[10px] font-semibold text-blue-800">
+                              Capstone
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-slate-500 hidden md:table-cell">
+                          {slot.focus}
+                        </td>
+                        <td className="py-3 px-4 font-mono text-right text-slate-500">
+                          <Link
+                            href={`/workshops/${workshop.slug}/${workshop.chapters[slot.ch - 1]?.slug || ""}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            Ch {slot.ch}
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* E. Project Showcase: Inbox Guardian Deep-Dive */}
+          <section className="py-12 border-t border-slate-200/80">
+            <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+                <div className="flex-1 max-w-2xl">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 mb-3 border border-blue-200/80">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    <span>Featured Capstone Project</span>
+                  </div>
+
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                    Inbox Guardian: Rule-Based Message Security Scanner
+                  </h2>
+
+                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+                    Rather than building abstract toy exercises, students synthesize all 8 chapters into a practical command-line security tool. Inbox Guardian ingests simulated email messages, normalizes text, extracts features, calculates heuristic threat scores, and outputs quarantine verdicts.
+                  </p>
+
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3 rounded border border-slate-100 bg-slate-50/60">
+                      <span className="font-semibold text-slate-900 block mb-1">
+                        1. Text Normalization
+                      </span>
+                      <p className="text-slate-500 leading-relaxed">
+                        Applies .lower() and .strip() to defeat basic case obfuscation and leading/trailing whitespace bypasses.
+                      </p>
                     </div>
-                  ))}
+
+                    <div className="p-3 rounded border border-slate-100 bg-slate-50/60">
+                      <span className="font-semibold text-slate-900 block mb-1">
+                        2. Keyword &amp; Urgency Scoring
+                      </span>
+                      <p className="text-slate-500 leading-relaxed">
+                        Checks messages against categorized dictionaries of financial lures, urgent deadlines, and threat terms.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded border border-slate-100 bg-slate-50/60">
+                      <span className="font-semibold text-slate-900 block mb-1">
+                        3. Structural Heuristics
+                      </span>
+                      <p className="text-slate-500 leading-relaxed">
+                        Evaluates uppercase ratio, exclamation density, and suspicious link structures to calculate an aggregate risk rating.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded border border-slate-100 bg-slate-50/60">
+                      <span className="font-semibold text-slate-900 block mb-1">
+                        4. Batch Reporting
+                      </span>
+                      <p className="text-slate-500 leading-relaxed">
+                        Processes collections of emails, categorizes them into Clean, Flagged, or Quarantine, and outputs a formatted summary.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex items-center gap-3">
+                    <Link
+                      href="/projects/inbox-guardian"
+                      className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-slate-800 transition-colors"
+                    >
+                      <span>Open Inbox Guardian Project Workspace</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="lg:w-80 shrink-0 p-5 rounded-lg border border-slate-200/80 bg-slate-50/60 text-xs">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2">
+                    Python Concepts Applied
+                  </span>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+                      <span>String slicing &amp; normalization</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+                      <span>Nested conditional branching (if/elif/else)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+                      <span>Iteration over message collections (for loops)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+                      <span>Structured dictionaries for risk scoring</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+                      <span>Modular functions with typed contracts</span>
+                    </li>
+                  </ul>
+
+                  <div className="mt-4 pt-4 border-t border-slate-200 text-[11px] text-slate-500 leading-relaxed">
+                    <strong className="text-slate-700">Why Rule-Based Heuristics?</strong>
+                    <br />
+                    Rule-based engines form the mental foundation for machine learning. Understanding explicit decision boundaries teaches students what statistical models learn to automate.
+                  </div>
                 </div>
               </div>
+            </div>
+          </section>
 
-              {/* Learning Objectives Card */}
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                  Measurable Learning Outcomes
+          {/* F. Outcomes & Prerequisites Grid */}
+          <section className="py-12 border-t border-slate-200/80">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Learning Outcomes */}
+              <div className="rounded-lg border border-slate-200 bg-white p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <span>Measurable Competencies</span>
                 </h3>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  {workshop.learningOutcomes.map((lo, i) => (
-                    <li key={i} className="flex items-start gap-2 leading-relaxed">
-                      <span className="text-blue-500 font-bold">•</span>
+                <ul className="space-y-2.5 text-xs text-slate-600">
+                  {workshop.learningOutcomes.map((lo, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+                      <span className="text-blue-500 font-bold shrink-0">•</span>
                       <span>{lo}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Prerequisites Card */}
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                  Prerequisites
+              {/* Prerequisites */}
+              <div className="rounded-lg border border-slate-200 bg-white p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-blue-600" />
+                  <span>Prerequisites &amp; Environment</span>
                 </h3>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  {workshop.prerequisites.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2">
+                <ul className="space-y-2.5 text-xs text-slate-600">
+                  {workshop.prerequisites.map((p, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
                       <span>{p}</span>
                     </li>
@@ -202,7 +398,7 @@ export default async function WorkshopDetailPage({
                 </ul>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
 

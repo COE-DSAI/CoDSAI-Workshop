@@ -8,13 +8,10 @@ import {
   CheckCircle2,
   Terminal,
   Code2,
-  HelpCircle,
   Copy,
   Check,
-  Play,
-  RotateCcw,
-  Sparkles,
-  Award,
+  ArrowRight,
+  ChevronRight,
 } from "lucide-react";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 
@@ -178,79 +175,92 @@ if __name__ == "__main__":
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Top Banner */}
-      <div className="rounded-xl border border-slate-300 bg-white p-6 shadow-xs mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 border border-blue-200">
-                Workshop 1 Capstone Project
-              </span>
-              <span className="text-xs text-slate-500 font-mono">120-Minute Milestone Capstone</span>
-            </div>
-            <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Inbox Guardian — Personal Message Scanner
+      {/* Subtle Breadcrumb */}
+      <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-slate-800 transition-colors">
+          Home
+        </Link>
+        <span className="text-slate-300">/</span>
+        <Link href="/workshops/python-foundations" className="hover:text-slate-800 transition-colors">
+          Workshop 01
+        </Link>
+        <span className="text-slate-300">/</span>
+        <span className="text-slate-800 font-medium">Inbox Guardian Capstone</span>
+      </nav>
+
+      {/* Hero Section */}
+      <div className="mb-8 pb-8 border-b border-slate-200/80">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="max-w-2xl">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold block mb-2">
+              WORKSHOP 01 CAPSTONE · 120-MINUTE SYNTHESIS
+            </span>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 leading-tight">
+              Inbox Guardian: Rule-Based Security Engine
             </h1>
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
-              Synthesize Python fundamentals (variables, strings, conditionals, loops, collections, and functions) into a complete, menu-driven message security scanner.
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+              Synthesize Python fundamentals—variables, string normalization, boolean conditionals, repetition loops, structured collections, and modular functions—into an end-to-end command-line security analyzer.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
             <button
+              type="button"
               onClick={handleCopySolution}
-              className="flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
-              {copiedSolution ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
-              <span>{copiedSolution ? "Copied" : "Copy Solution Code"}</span>
+              {copiedSolution ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copiedSolution ? "Copied" : "Copy Solution"}</span>
             </button>
             <Link
-              href="/workshops/python/capstone-inbox-guardian"
-              className="rounded-md bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-blue-700"
+              href="/workshops/python-foundations/capstone-inbox-guardian"
+              className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-blue-700 transition-colors"
             >
-              Open Chapter 8 Lesson
+              <span>Open Chapter 8 Lesson</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
 
         {/* Educational Boundary Callout */}
-        <div className="mt-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950">
+        <div className="mt-6 rounded-md border-l-3 border-l-amber-500 bg-amber-50/60 p-4 text-xs text-amber-950">
           <div className="flex items-center gap-2 font-bold mb-1">
-            <ShieldAlert className="h-4 w-4 text-amber-700" />
+            <ShieldAlert className="h-4 w-4 text-amber-700 shrink-0" />
             <span>CRITICAL EDUCATIONAL BOUNDARY: Rule-Based Systems vs Machine Learning</span>
           </div>
-          <p className="leading-relaxed">
-            Inbox Guardian is a <strong>purely rule-based Python application</strong>. It does not use machine learning, neural networks, or probability models. You manually write the heuristic rules. In Workshop 5 and 7, you will contrast this rule-based approach with true statistical machine learning classifiers that learn patterns directly from data.
+          <p className="leading-relaxed text-amber-900">
+            Inbox Guardian is a <strong>purely rule-based Python application</strong>. It uses deterministic conditional logic and string matching, not machine learning or neural networks. Understanding explicit heuristic rules is the foundational prerequisite for machine learning—in future workshops, you will learn how machine learning models replace handwritten rules by learning boundaries automatically from data.
           </p>
         </div>
       </div>
 
       {/* Main Split: Milestones & Interactive Editor */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Col: Step-by-Step Milestones */}
-        <div className="space-y-6">
-          <div className="rounded-xl border border-slate-300 bg-white p-6 shadow-xs">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-              <Award className="h-5 w-5 text-blue-600" />
-              Project Milestones & Implementation Guide
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Step-by-Step Milestones */}
+        <div className="lg:col-span-5 space-y-6">
+          <div className="rounded-lg border border-slate-200/80 bg-white p-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
+              <Terminal className="h-4 w-4 text-blue-600" />
+              <span>Project Milestones</span>
             </h2>
 
             {/* Milestone Tabs */}
-            <div className="flex flex-wrap gap-1.5 border-b border-slate-200 pb-3 mb-4">
+            <div className="flex flex-wrap gap-1 border-b border-slate-200 pb-3 mb-4">
               {[
-                { m: 1, title: "1: Analyzer" },
-                { m: 2, title: "2: Thresholds" },
-                { m: 3, title: "3: Batch Scan" },
-                { m: 4, title: "4: History Log" },
-                { m: 5, title: "5: Statistics" },
-                { m: 6, title: "6: CLI Menu" },
+                { m: 1, title: "01: Analyzer" },
+                { m: 2, title: "02: Thresholds" },
+                { m: 3, title: "03: Batch Scan" },
+                { m: 4, title: "04: History" },
+                { m: 5, title: "05: Stats" },
+                { m: 6, title: "06: Menu" },
               ].map((item) => (
                 <button
                   key={item.m}
+                  type="button"
                   onClick={() => setActiveMilestone(item.m)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                  className={`rounded px-2.5 py-1 text-xs font-mono transition-colors ${
                     activeMilestone === item.m
-                      ? "bg-blue-600 text-white shadow-xs"
+                      ? "bg-slate-900 text-white font-semibold"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
@@ -259,16 +269,16 @@ if __name__ == "__main__":
               ))}
             </div>
 
-            {/* Milestone Description */}
+            {/* Milestone Content */}
             {activeMilestone === 1 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
                   Milestone 1: The Core Message Analyzer Function
                 </h3>
                 <p>
                   Define `analyse_message(text, keywords)`. Convert the input `text` to lowercase using `.lower()`. Use a loop to check if each keyword in `keywords` exists inside the cleaned text.
                 </p>
-                <div className="rounded bg-slate-900 p-3 font-mono text-emerald-400">
+                <div className="rounded bg-slate-900 p-3 font-mono text-[11px] text-emerald-400 border border-slate-800">
                   {`def analyse_message(text, keywords):
     cleaned = text.lower()
     matched = [kw for kw in keywords if kw in cleaned]
@@ -278,8 +288,8 @@ if __name__ == "__main__":
             )}
 
             {activeMilestone === 2 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
                   Milestone 2: Rule-Based Risk Thresholds
                 </h3>
                 <p>
@@ -294,8 +304,8 @@ if __name__ == "__main__":
             )}
 
             {activeMilestone === 3 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
                   Milestone 3: Batch Scanning an Entire Inbox
                 </h3>
                 <p>
@@ -305,9 +315,9 @@ if __name__ == "__main__":
             )}
 
             {activeMilestone === 4 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
-                  Milestone 4: Persistent In-Memory Scan History
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Milestone 4: In-Memory Scan History Log
                 </h3>
                 <p>
                   Define `display_history(history)`. Check if history is empty. If not, iterate through the list of dictionaries and format each scan record cleanly on the console.
@@ -316,9 +326,9 @@ if __name__ == "__main__":
             )}
 
             {activeMilestone === 5 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
-                  Milestone 5: Calculating Aggregate Security Statistics
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Milestone 5: Calculating Security Metrics
                 </h3>
                 <p>
                   Define `calculate_statistics(history)`. Compute total scans, count how many messages had status != &apos;SAFE&apos;, and calculate the threat percentage.
@@ -327,8 +337,8 @@ if __name__ == "__main__":
             )}
 
             {activeMilestone === 6 && (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                <h3 className="text-sm font-bold text-slate-900">
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                <h3 className="text-sm font-semibold text-slate-900">
                   Milestone 6: Interactive Terminal Menu Loop
                 </h3>
                 <p>
@@ -338,25 +348,25 @@ if __name__ == "__main__":
             )}
 
             {/* Checklist */}
-            <div className="mt-6 border-t border-slate-200 pt-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+            <div className="mt-6 border-t border-slate-100 pt-4">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2 font-semibold">
                 Completion Checklist
-              </h4>
-              <ul className="space-y-1.5 text-xs text-slate-700">
+              </span>
+              <ul className="space-y-1.5 text-xs text-slate-600">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   <span>Case-insensitive substring matching implemented</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   <span>History stored as a list of dictionaries</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   <span>Input validation handles empty strings gracefully</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   <span>Statistics calculate threat percentage correctly</span>
                 </li>
               </ul>
@@ -364,8 +374,8 @@ if __name__ == "__main__":
           </div>
         </div>
 
-        {/* Right Col: Live Interactive Code Workspace */}
-        <div className="h-[620px]">
+        {/* Right Column: Live Interactive Code Workspace */}
+        <div className="lg:col-span-7 h-[680px]">
           <CodeEditor
             initialCode={starterScaffoldCode}
             title="Inbox Guardian Python Workspace"

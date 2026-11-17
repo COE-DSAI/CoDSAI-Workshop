@@ -5,7 +5,9 @@ import {
   Maximize2,
   Minimize2,
   Code2,
-  Sparkles,
+  BookOpen,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { Workshop, Chapter } from "@/types/curriculum";
 import { SidebarNav } from "./SidebarNav";
@@ -31,11 +33,12 @@ export function ChapterExperienceView({
   nextChapter,
 }: ChapterExperienceViewProps) {
   const [focusMode, setFocusMode] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<"reading" | "editor">("reading");
   const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
   const [editorCode, setEditorCode] = useState<string>(
     chapter.exercises && chapter.exercises.length > 0
       ? chapter.exercises[0].starterCode
-      : '# Python Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '!")\n'
+      : '# Python 3 Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '!")\n'
   );
 
   const chapterKey = `${workshop.slug}/${chapter.slug}`;
@@ -58,94 +61,142 @@ export function ChapterExperienceView({
 
   const handleSelectCodeExample = (code: string) => {
     setEditorCode(code);
+    // On tablet and mobile, automatically switch to editor tab so student sees code loaded
+    setMobileTab("editor");
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-[#F7F8FA]">
-      {/* 1. Left Sidebar Navigation (hidden in focus mode) */}
+    <div className="flex h-[calc(100vh-72px)] overflow-hidden bg-[#F7F8FA]">
+      {/* 1. Left Sidebar Navigation (hidden in focus mode or on mobile/tablet) */}
       {!focusMode && (
         <SidebarNav
           workshop={workshop}
           currentChapterSlug={chapter.slug}
           completedChapters={completedChapters}
-          className="hidden md:flex shrink-0"
+          className="hidden lg:flex shrink-0"
         />
       )}
 
-      {/* 2. Center Reading Area */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 px-4 py-2 backdrop-blur-md">
+      {/* 2. Central Content & Sub-navigation Area */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Top Chapter Status Bar */}
+        <div className="flex h-11 items-center justify-between border-b border-slate-200/80 bg-white px-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
-            <span className="font-bold text-slate-800 truncate">
-              W{workshop.number}: {workshop.title.split(":")[0]}
+            <span className="font-semibold text-slate-900 truncate">
+              Chapter {String(chapter.number).padStart(2, "0")}: {chapter.title}
             </span>
-            <span>•</span>
-            <span className="truncate">Ch {chapter.number}: {chapter.title}</span>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Mobile / Tablet Tab Switcher (< xl breakpoint) */}
+            <div className="flex items-center rounded-md border border-slate-200 bg-slate-50 p-0.5 xl:hidden">
+              <button
+                type="button"
+                onClick={() => setMobileTab("reading")}
+                className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                  mobileTab === "reading"
+                    ? "bg-white text-slate-900 shadow-2xs font-semibold"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <BookOpen className="h-3 w-3" />
+                <span>Reading</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("editor")}
+                className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                  mobileTab === "editor"
+                    ? "bg-white text-slate-900 shadow-2xs font-semibold"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <Code2 className="h-3 w-3" />
+                <span>Python Editor</span>
+              </button>
+            </div>
+
+            {/* Focus Mode Toggle */}
             <button
+              type="button"
               onClick={() => setFocusMode(!focusMode)}
-              className="flex items-center gap-1 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-              title={focusMode ? "Exit reading mode" : "Enter focus reading mode"}
+              className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+              title={focusMode ? "Exit focus mode" : "Enter focus mode (full-width)"}
             >
               {focusMode ? (
                 <>
-                  <Minimize2 className="h-3 w-3" />
-                  <span>Exit Focus</span>
+                  <Minimize2 className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Exit Focus</span>
                 </>
               ) : (
                 <>
-                  <Maximize2 className="h-3 w-3" />
-                  <span>Focus Mode</span>
+                  <Maximize2 className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Focus Mode</span>
                 </>
               )}
             </button>
           </div>
         </div>
 
-        <ChapterArticle
-          workshop={workshop}
-          chapter={chapter}
-          isCompleted={isCompleted}
-          onToggleComplete={handleToggleComplete}
-          prevChapter={prevChapter}
-          nextChapter={nextChapter}
-          onSelectCodeExample={handleSelectCodeExample}
-        />
-      </main>
-
-      {/* 3. Right Workspace Panel (hidden in focus mode) */}
-      {!focusMode && (
-        <aside className="hidden xl:flex w-[480px] 2xl:w-[540px] flex-col border-l border-slate-300 bg-slate-900 p-3 shrink-0">
-          <div className="h-full flex-1">
-            <CodeEditor
-              initialCode={editorCode}
-              title={`Python 3 Workspace — Ch ${chapter.number}`}
-              hints={
-                chapter.exercises && chapter.exercises.length > 0
-                  ? chapter.exercises[0].hints
-                  : undefined
-              }
-              solution={
-                chapter.exercises && chapter.exercises.length > 0
-                  ? chapter.exercises[0].solution
-                  : undefined
-              }
-              solutionExplanation={
-                chapter.exercises && chapter.exercises.length > 0
-                  ? chapter.exercises[0].solutionExplanation
-                  : undefined
-              }
-              testCases={
-                chapter.exercises && chapter.exercises.length > 0
-                  ? chapter.exercises[0].testCases
-                  : undefined
-              }
+        {/* Split View Container */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Main Reading Area (Visible on desktop xl, or when mobileTab is reading on smaller screens) */}
+          <main
+            className={`flex-1 overflow-y-auto ${
+              mobileTab === "reading" ? "block" : "hidden xl:block"
+            }`}
+          >
+            <ChapterArticle
+              workshop={workshop}
+              chapter={chapter}
+              isCompleted={isCompleted}
+              onToggleComplete={handleToggleComplete}
+              prevChapter={prevChapter}
+              nextChapter={nextChapter}
+              onSelectCodeExample={handleSelectCodeExample}
             />
-          </div>
-        </aside>
-      )}
+          </main>
+
+          {/* Right Workspace Panel (Visible on desktop xl, or when mobileTab is editor on smaller screens) */}
+          {(!focusMode || mobileTab === "editor") && (
+            <aside
+              className={`flex-col border-l border-slate-200 bg-slate-900 shrink-0 ${
+                mobileTab === "editor"
+                  ? "flex flex-1 xl:w-[480px] 2xl:w-[560px] xl:flex-none"
+                  : "hidden xl:flex w-[480px] 2xl:w-[560px]"
+              }`}
+            >
+              <div className="h-full flex-1">
+                <CodeEditor
+                  initialCode={editorCode}
+                  title={`Python 3 Workspace — Ch ${chapter.number}`}
+                  hints={
+                    chapter.exercises && chapter.exercises.length > 0
+                      ? chapter.exercises[0].hints
+                      : undefined
+                  }
+                  solution={
+                    chapter.exercises && chapter.exercises.length > 0
+                      ? chapter.exercises[0].solution
+                      : undefined
+                  }
+                  solutionExplanation={
+                    chapter.exercises && chapter.exercises.length > 0
+                      ? chapter.exercises[0].solutionExplanation
+                      : undefined
+                  }
+                  testCases={
+                    chapter.exercises && chapter.exercises.length > 0
+                      ? chapter.exercises[0].testCases
+                      : undefined
+                  }
+                />
+              </div>
+            </aside>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
