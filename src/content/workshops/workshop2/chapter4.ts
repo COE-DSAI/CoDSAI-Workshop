@@ -203,8 +203,9 @@ git push -u origin main`,
 git remote -v
 git branch -vv`,
       hints: [
-        "git remote -v displays the fetch and push URLs.",
-        "git branch -vv displays your local branches alongside their remote tracking branch (e.g., [origin/main]).",
+        "Hint 1 (Concept): Git remotes are registered aliases pointing to remote cloud URLs on GitHub.",
+        "Hint 2 (Approach): Use 'git remote -v' to list all configured fetch and push URLs.",
+        "Hint 3 (Execution): Run 'git branch -vv' to verify that local main tracks [origin/main].",
       ],
       solution: `git remote -v
 git branch -vv`,

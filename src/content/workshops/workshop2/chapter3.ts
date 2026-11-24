@@ -155,8 +155,9 @@ git commit -m "test: add experimental notes"
 git switch main
 git log -1 --oneline`,
       hints: [
-        "git switch -c creates and switches in one command.",
-        "When you switch back to main with git switch main, notice experiment.md is not in main's directory.",
+        "Hint 1 (Concept): Git branches isolate changes by pointing to separate commit snapshots.",
+        "Hint 2 (Approach): Use 'git switch -c <name>' to create and switch, then commit your changes.",
+        "Hint 3 (Execution): Run 'git switch main' followed by 'git log -1 --oneline' to verify main is untouched.",
       ],
       solution: `git switch -c test-experiment
 echo "# Experiment" > experiment.md
