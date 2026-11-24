@@ -245,13 +245,6 @@ export default async function WorkshopDetailPage({
                     The live instructor-led timeline for the 120-minute session. Note: Chapter reading times above reflect independent study.
                   </p>
                 </div>
-                <Link
-                  href="/facilitator"
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                >
-                  <span>Open Facilitator Workbench</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
               </div>
 
               <div className="overflow-x-auto rounded-lg border border-slate-200/80 bg-white">

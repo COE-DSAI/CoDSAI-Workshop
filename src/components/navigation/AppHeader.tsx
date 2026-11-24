@@ -49,7 +49,6 @@ export function AppHeader() {
     { href: "/workshops/python-foundations", label: "Curriculum" },
     { href: "/projects/inbox-guardian", label: "Inbox Guardian" },
     { href: "/revision", label: "Revision" },
-    { href: "/facilitator", label: "Facilitator" },
   ];
 
   const isActive = (href: string) => {

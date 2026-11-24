@@ -103,11 +103,6 @@ export function AppFooter() {
                   Common Mistakes & Fixes
                 </Link>
               </li>
-              <li>
-                <Link href="/facilitator" className="hover:text-blue-600 transition-colors">
-                  Facilitator Console (120m)
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
@@ -116,9 +111,17 @@ export function AppFooter() {
           <p>
             Official curriculum of {BRANDING.organisationName} ({BRANDING.organisationShort}).
           </p>
-          <p className="mt-2 sm:mt-0">
-            Educational resource for students and workshop attendees.
-          </p>
+          <div className="mt-2 sm:mt-0 flex items-center gap-3">
+            <span>Educational resource for students and workshop attendees.</span>
+            <span className="text-slate-300">•</span>
+            <Link
+              href="/admin"
+              className="text-slate-400 hover:text-slate-600 transition-colors underline-offset-2 hover:underline"
+              title="Restricted Staff & Facilitator Access"
+            >
+              Staff Portal
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
