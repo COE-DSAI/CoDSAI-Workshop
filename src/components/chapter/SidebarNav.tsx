@@ -194,7 +194,7 @@ export function SidebarNav({
                   <div className="flex items-center gap-1.5 min-w-0 flex-1">
                     {getWorkshopIcon(w.number)}
                     <span className="truncate text-xs">
-                      W{formattedWorkshopNum}: {w.title.split(":")[0]}
+                      {isLocked ? `Workshop ${formattedWorkshopNum}` : `W${formattedWorkshopNum}: ${w.title.split(":")[0]}`}
                     </span>
                   </div>
                 </div>

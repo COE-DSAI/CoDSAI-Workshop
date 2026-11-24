@@ -48,12 +48,8 @@ export function SmokeMysteryOverlay({
 
           <div className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold tracking-wider uppercase text-slate-700">
             <Cloud className="h-3 w-3 text-sky-500 animate-pulse" />
-            <span>Topics Shrouded</span>
+            <span>Locked</span>
           </div>
-
-          <p className="mt-0.5 text-[10px] leading-tight text-slate-500 max-w-[170px]">
-            Syllabus under formulation in the clouds. Unlocks after Workshop 02.
-          </p>
         </div>
       </div>
     );
@@ -85,23 +81,14 @@ export function SmokeMysteryOverlay({
           <Lock className="h-6 w-6 text-slate-600" />
         </div>
 
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 text-xs font-semibold text-sky-800">
-          <Cloud className="h-3.5 w-3.5" />
-          <span>Curriculum Shrouded in Cloud Mist</span>
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+          <Lock className="h-3.5 w-3.5 text-slate-500" />
+          <span>Locked</span>
         </div>
 
         <h3 className="mt-3 text-base font-bold text-slate-900">
-          {workshopTitle || `Workshop ${String(workshopNumber || 3).padStart(2, "0")}`} Topics Under Formulation
+          Workshop {String(workshopNumber || 3).padStart(2, "0")}
         </h3>
-
-        <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-          The topics and chapters for this advanced track are currently being formulated by the curriculum committee. The shroud will be lifted upon mastering Workshop 01 (Python) and Workshop 02 (Git &amp; GitHub).
-        </p>
-
-        <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-medium text-slate-500">
-          <EyeOff className="h-3.5 w-3.5 text-slate-400" />
-          <span>Syllabus classified until prerequisites are completed</span>
-        </div>
       </div>
     </div>
   );

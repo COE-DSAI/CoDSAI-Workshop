@@ -184,48 +184,38 @@ export default function HomePage() {
                   return (
                     <div
                       key={w.id}
-                      className="relative overflow-hidden rounded-xl border border-slate-200/90 bg-gradient-to-b from-white via-slate-100/60 to-slate-200/40 p-6 shadow-xs flex flex-col justify-between"
+                      className="relative overflow-hidden rounded-xl border border-slate-200/90 bg-gradient-to-b from-slate-50/80 via-slate-100/50 to-slate-200/30 p-6 shadow-xs flex flex-col justify-between min-h-[170px]"
                     >
                       {/* Atmospheric Mist Drift in Locked Card */}
                       <div
-                        className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-bl from-white via-slate-300/40 to-transparent blur-md animate-smoke-1 pointer-events-none"
+                        className="absolute -top-10 -right-10 h-36 w-36 rounded-full bg-gradient-to-bl from-white via-slate-200/50 to-transparent blur-md animate-smoke-1 pointer-events-none"
                         aria-hidden="true"
                       />
                       <div
-                        className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-gradient-to-tr from-white via-sky-200/30 to-transparent blur-md animate-smoke-2 pointer-events-none"
+                        className="absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-gradient-to-tr from-white via-sky-100/40 to-transparent blur-md animate-smoke-2 pointer-events-none"
+                        aria-hidden="true"
+                      />
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
                         aria-hidden="true"
                       />
 
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="font-mono text-xs font-bold text-slate-400">
-                            WORKSHOP {formattedNum}
-                          </span>
-                          <span className="inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-300/70">
-                            <Lock className="h-2.5 w-2.5 text-slate-500" />
-                            <span>Locked</span>
-                          </span>
-                        </div>
-
-                        <h3 className="text-base font-bold text-slate-700">
-                          {w.title.split(":")[0]}
-                        </h3>
-
-                        {/* Mysterious Cloud Shrouded Topics Notice */}
-                        <div className="mt-4 rounded-lg border border-slate-200/80 bg-white/70 p-3 backdrop-blur-xs text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-sky-700 mb-1">
-                            <Cloud className="h-3.5 w-3.5 text-sky-500 animate-pulse" />
-                            <span>Curriculum Shrouded in Mist</span>
-                          </div>
-                          <p className="text-[11px] text-slate-500 leading-snug">
-                            Topics under active formulation. Shroud clears after completing Workshop 02: Git &amp; GitHub.
-                          </p>
-                        </div>
+                      {/* Top: WORKSHOP 0X and Locked */}
+                      <div className="relative z-10 flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold text-slate-500">
+                          WORKSHOP {formattedNum}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-200/80 px-2.5 py-1 text-[11px] font-semibold text-slate-600 border border-slate-300/70 shadow-2xs">
+                          <Lock className="h-3 w-3 text-slate-500" />
+                          <span>Locked</span>
+                        </span>
                       </div>
 
-                      <div className="relative z-10 mt-6 pt-4 border-t border-slate-200/70 flex items-center justify-between text-xs text-slate-400">
-                        <span>Duration: {w.durationMinutes}m</span>
-                        <span className="font-medium text-slate-400">Upcoming Track</span>
+                      {/* Pure Cloud / Smoke Visual Element */}
+                      <div className="relative z-10 my-auto flex items-center justify-center py-6">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-slate-400 shadow-xs border border-slate-200/60">
+                          <Cloud className="h-5 w-5 text-sky-400 animate-pulse" />
+                        </div>
                       </div>
                     </div>
                   );
