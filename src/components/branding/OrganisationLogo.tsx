@@ -47,7 +47,7 @@ export function OrganisationLogo({
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
         }}
-        title="CoDSAI: Center of Data Science & Artificial Intelligence"
+        title={`${BRANDING.organisationName} (${BRANDING.organisationShort})`}
       >
         {!imageError ? (
           <Image
@@ -66,11 +66,11 @@ export function OrganisationLogo({
                 ? "border border-slate-700 bg-slate-800 text-slate-300"
                 : "border border-[#EADCE8] bg-[#FBF5FA] text-[#541F4A] shadow-2xs"
             }`}
-            title="CoDSAI"
-            aria-label="Official CoDSAI Logo"
+            title={BRANDING.organisationShort}
+            aria-label={`Official ${BRANDING.organisationShort} Logo`}
           >
             <span className="text-sm font-bold tracking-tight text-[#541F4A]">
-              CoDSAI
+              {BRANDING.organisationShort}
             </span>
           </div>
         )}

@@ -1,8 +1,7 @@
-# CENTER OF EXCELLENCE
-## DATA SCIENCE & ARTIFICIAL INTELLIGENCE
+# CENTER OF EXCELLENCE | DATA SCIENCE & ARTIFICIAL INTELLIGENCE (CoE | DSAI)
 ### Interactive Learning Platform — Python, Data Science and Machine Learning
 
-Official interactive educational platform and digital reference handbook for the **Python, Data Science & Machine Learning Workshop Series** conducted exclusively by the **Center of Excellence: Data Science & Artificial Intelligence**.
+Official interactive educational platform and digital reference handbook for the **Python, Data Science & Machine Learning Workshop Series** conducted exclusively by the **Center of Excellence | Data Science & Artificial Intelligence (CoE | DSAI)**.
 
 ---
 
@@ -95,21 +94,21 @@ pnpm start
 ## 🏛️ Official Brand Guidelines & Logo Asset Slot
 
 The official identity of this platform is strictly:
-**CENTER OF EXCELLENCE: DATA SCIENCE & ARTIFICIAL INTELLIGENCE**
+**CENTER OF EXCELLENCE | DATA SCIENCE & ARTIFICIAL INTELLIGENCE (CoE | DSAI)**
 
 Expected logo asset locations:
-- Primary: `/public/branding/center-of-excellence-logo.png`
-- Fallback: `/public/branding/center-of-excellence-logo.jpg`
+- Primary: `/public/logo/codsai-logo.png`
+- Fallback: `/public/branding/codsai-logo.png`
 
 The application includes an `OrganisationLogo` component that:
 - Preserves the original image aspect ratio (`object-fit: contain`)
 - Supports transparent backgrounds across light and dark surfaces
-- Displays a restrained, neutral placeholder slot until the asset is placed in `/public/branding/`
+- Displays the official logo PNG across headers, navigation, and footers
 - Changing the logo is a single configuration or asset replacement operation without altering code structure.
 
 ---
 
 ## 📄 License & Organization
 
-Conducted and maintained by the **Center of Excellence: Data Science & Artificial Intelligence**.  
+Conducted and maintained by the **Center of Excellence | Data Science & Artificial Intelligence (CoE | DSAI)**.  
 All curriculum materials, interactive simulators, and worked examples are designed for educational training and long-term reference.

@@ -114,7 +114,7 @@ export function AppFooter() {
 
         <div className="mt-10 border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400">
           <p>
-            Official curriculum of the {BRANDING.organisationName}.
+            Official curriculum of {BRANDING.organisationName} ({BRANDING.organisationShort}).
           </p>
           <p className="mt-2 sm:mt-0">
             Educational resource for students and workshop attendees.

@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRANDING.organisationLine1} - ${BRANDING.organisationLine2}`,
-    template: `%s | ${BRANDING.organisationLine1}`,
+    default: `${BRANDING.organisationName} (${BRANDING.organisationShort})`,
+    template: `%s | ${BRANDING.organisationShort}`,
   },
-  description: `${BRANDING.programmeTitle} - Official Interactive Learning Platform`,
+  description: `${BRANDING.programmeTitle} - Official Interactive Learning Platform for ${BRANDING.organisationName} (${BRANDING.organisationShort})`,
 };
 
 export default function RootLayout({

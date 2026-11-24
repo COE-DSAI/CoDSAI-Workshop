@@ -89,7 +89,7 @@ export default async function WorkshopDetailPage({
                     ? "A complete first-principles guide to professional version control on your personal computer. Master repository architecture, git init, surgical staging, atomic commits, branching trees, merge conflicts, and GitHub collaboration."
                     : workshop.number === 1
                     ? "An intensive, first-principles curriculum. Master syntax, branching logic, loop constructs, structured collections, and modular functions, then architect and test a complete rule-based email security analyzer in Python."
-                    : "Curriculum currently under formulation in the clouds. Unlocks after prerequisite workshop completion.")}
+                    : "This workshop is currently locked. The curriculum will be announced soon.")}
                 </p>
 
                 <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -103,7 +103,7 @@ export default async function WorkshopDetailPage({
                     </Link>
                   ) : (
                     <span className="inline-flex items-center gap-2 rounded-md bg-slate-200 px-5 py-2.5 text-xs font-semibold text-slate-500 cursor-not-allowed">
-                      <span>Curriculum Shrouded (Locked)</span>
+                      <span>Locked</span>
                     </span>
                   )}
 

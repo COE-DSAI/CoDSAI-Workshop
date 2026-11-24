@@ -58,7 +58,7 @@ export default function HomePage() {
               <div className="lg:col-span-7">
                 <div className="flex flex-col mb-3">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 font-mono">
-                    {BRANDING.organisationLine1} · {BRANDING.organisationLine2}
+                    {BRANDING.organisationName} ({BRANDING.organisationShort})
                   </span>
                   <span className="text-xs font-semibold text-[#541F4A] mt-0.5">
                     {BRANDING.programmeTitle}
