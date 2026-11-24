@@ -50,7 +50,7 @@ export default async function WorkshopDetailPage({
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
+    <div className="flex min-h-screen flex-col bg-[#FBF8FA]">
       <AppHeader />
 
       <main className="flex-1">

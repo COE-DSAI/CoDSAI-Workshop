@@ -20,11 +20,11 @@ export function OrganisationLogo({
   const [imageError, setImageError] = useState(false);
   const [useFallbackJpg, setUseFallbackJpg] = useState(false);
 
-  // Proportions matching the reserved official asset slot
+  // Proportions matching the official horizontal brand asset (405x88)
   const dimensions = {
-    header: { width: 36, height: 36 },
-    footer: { width: 32, height: 32 },
-    hero: { width: 44, height: 44 },
+    header: { width: 175, height: 38 },
+    footer: { width: 156, height: 34 },
+    hero: { width: 220, height: 48 },
   }[variant];
 
   const currentSrc = useFallbackJpg
@@ -47,7 +47,7 @@ export function OrganisationLogo({
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
         }}
-        title="Center of Excellence: Data Science & Artificial Intelligence"
+        title="CoDSAI: Center of Data Science & Artificial Intelligence"
       >
         {!imageError ? (
           <Image
@@ -56,28 +56,22 @@ export function OrganisationLogo({
             width={dimensions.width}
             height={dimensions.height}
             priority={variant === "header"}
-            className="h-full w-full object-contain"
+            className="h-full w-auto object-contain"
             onError={handleImageError}
           />
         ) : (
-          /* Restrained, discreet architectural placeholder reserved for official asset */
           <div
-            className={`flex h-full w-full items-center justify-center rounded border transition-colors select-none ${
+            className={`flex h-full w-full items-center justify-center rounded px-2.5 select-none ${
               surface === "dark"
-                ? "border-slate-700 bg-slate-800 text-slate-300"
-                : "border-slate-300/80 bg-slate-100 text-slate-700 shadow-2xs"
+                ? "border border-slate-700 bg-slate-800 text-slate-300"
+                : "border border-[#EADCE8] bg-[#FBF5FA] text-[#541F4A] shadow-2xs"
             }`}
-            title="Reserved slot for /branding/center-of-excellence-logo.png"
-            aria-label="Official Center of Excellence Logo Slot"
+            title="CoDSAI"
+            aria-label="Official CoDSAI Logo"
           >
-            <div className="flex flex-col items-center justify-center leading-none">
-              <span className="text-[10px] font-bold tracking-tight font-mono text-slate-800">
-                CoE
-              </span>
-              <span className="text-[7px] font-mono tracking-tighter text-blue-600 font-semibold">
-                DSAI
-              </span>
-            </div>
+            <span className="text-sm font-bold tracking-tight text-[#541F4A]">
+              CoDSAI
+            </span>
           </div>
         )}
       </div>

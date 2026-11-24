@@ -35,7 +35,7 @@ export default async function ChapterPage({
   const { workshop, chapter, prevChapter, nextChapter } = lookup;
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#F7F8FA]">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#FBF8FA]">
       <AppHeader />
       <ChapterExperienceView
         workshop={workshop}

@@ -29,20 +29,20 @@ export interface BrandingConfig {
 }
 
 export const BRANDING: BrandingConfig = {
-  organisationName: "CENTER OF EXCELLENCE: DATA SCIENCE & ARTIFICIAL INTELLIGENCE",
-  organisationLine1: "CENTER OF EXCELLENCE",
-  organisationLine2: "DATA SCIENCE & ARTIFICIAL INTELLIGENCE",
+  organisationName: "CoDSAI: Center of Data Science & Artificial Intelligence",
+  organisationLine1: "CoDSAI",
+  organisationLine2: "Center of Data Science & Artificial Intelligence",
   programmeTitle: "Python, Data Science & Machine Learning Workshop Series",
   shortDescription: "An end-to-end interactive learning platform supporting students from foundational programming to real-world machine learning application development.",
   logo: {
-    primaryPath: "/branding/center-of-excellence-logo.png",
-    fallbackPath: "/branding/center-of-excellence-logo.jpg",
-    altText: "Center of Excellence - Data Science & Artificial Intelligence Logo",
-    width: 220,
-    height: 52,
+    primaryPath: "/logo/codsai-logo.png",
+    fallbackPath: "/branding/codsai-logo.png",
+    altText: "CoDSAI - Center of Data Science & Artificial Intelligence",
+    width: 175,
+    height: 38,
   },
   meta: {
-    siteTitle: "Center of Excellence | Data Science & Artificial Intelligence",
-    siteDescription: "Official Interactive Learning Platform for the Python, Data Science & Machine Learning Workshop Series conducted by the Center of Excellence: Data Science & Artificial Intelligence.",
+    siteTitle: "CoDSAI | Center of Data Science & Artificial Intelligence",
+    siteDescription: "Official Interactive Learning Platform for the Workshop Series conducted by CoDSAI: Center of Data Science & Artificial Intelligence.",
   },
 } as const;

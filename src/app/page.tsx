@@ -46,7 +46,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
+    <div className="flex min-h-screen flex-col bg-[#FBF8FA]">
       <AppHeader />
 
       <main className="flex-1">
@@ -60,13 +60,13 @@ export default function HomePage() {
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 font-mono">
                     {BRANDING.organisationLine1} · {BRANDING.organisationLine2}
                   </span>
-                  <span className="text-xs font-medium text-blue-600 mt-0.5">
+                  <span className="text-xs font-semibold text-[#541F4A] mt-0.5">
                     {BRANDING.programmeTitle}
                   </span>
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15]">
-                  Python Foundations: <span className="text-blue-600">Build Inbox Guardian</span>
+                  Python Foundations: <span className="bg-gradient-to-r from-[#541F4A] via-[#852C75] to-[#C81848] bg-clip-text text-transparent">Build Inbox Guardian</span>
                 </h1>
 
                 <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">

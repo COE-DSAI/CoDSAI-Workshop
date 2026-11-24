@@ -12,14 +12,6 @@ export function AppFooter() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-3">
               <OrganisationLogo variant="footer" />
-              <div className="flex flex-col leading-tight">
-                <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-900">
-                  {BRANDING.organisationLine1}
-                </span>
-                <span className="text-[10px] font-medium tracking-wide text-slate-500">
-                  {BRANDING.organisationLine2}
-                </span>
-              </div>
             </div>
 
             <p className="mt-3 text-xs text-slate-500 font-medium">

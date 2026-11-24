@@ -112,7 +112,7 @@ export function ChapterExperienceView({
   };
 
   return (
-    <div className="flex h-[calc(100vh-72px)] overflow-hidden bg-[#F7F8FA]">
+    <div className="flex h-[calc(100vh-72px)] overflow-hidden bg-[#FBF8FA]">
       {/* 1. Left Sidebar Navigation */}
       {!focusMode && (
         <SidebarNav
