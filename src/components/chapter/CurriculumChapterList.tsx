@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, ChevronRight, ShieldCheck, Sparkles } from "lucide-react";
 import { Chapter, Workshop } from "@/types/curriculum";
 import { getLearnerProgress } from "@/lib/storage/progress";
+import { SmokeMysteryOverlay } from "./SmokeMysteryOverlay";
 
 interface CurriculumChapterListProps {
   workshop: Workshop;
@@ -22,6 +23,16 @@ export function CurriculumChapterList({ workshop }: CurriculumChapterListProps) 
     window.addEventListener("coe_progress_updated", update);
     return () => window.removeEventListener("coe_progress_updated", update);
   }, []);
+
+  if (workshop.isLocked || workshop.chapters.length === 0) {
+    return (
+      <SmokeMysteryOverlay
+        workshopNumber={workshop.number}
+        workshopTitle={workshop.title}
+        variant="full"
+      />
+    );
+  }
 
   return (
     <div className="divide-y divide-slate-200/80 border-t border-b border-slate-200/80 bg-white">

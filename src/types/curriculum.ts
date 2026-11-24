@@ -148,6 +148,8 @@ export interface Workshop {
   readonly chapters: readonly Chapter[];
   readonly projectSlug?: string;
   readonly projectTitle?: string;
+  readonly isLocked?: boolean;
+  readonly status?: "active" | "available" | "locked" | "upcoming";
 }
 
 export interface LearnerProgress {

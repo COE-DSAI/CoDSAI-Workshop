@@ -55,3 +55,64 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* Atmospheric Smoke / Cloud Keyframes for mystery locked workshops */
+@keyframes smokeFloat1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.55;
+  }
+  33% {
+    transform: translate(8px, -5px) scale(1.08);
+    opacity: 0.75;
+  }
+  66% {
+    transform: translate(-6px, 4px) scale(0.96);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes smokeFloat2 {
+  0% {
+    transform: translate(0, 0) scale(1.05);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate(-10px, -6px) scale(1.15);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(0, 0) scale(1.05);
+    opacity: 0.65;
+  }
+}
+
+@keyframes cloudDrift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-smoke-1 {
+  animation: smokeFloat1 7s ease-in-out infinite;
+}
+
+.animate-smoke-2 {
+  animation: smokeFloat2 10s ease-in-out infinite alternate;
+}
+
+.animate-cloud-drift {
+  background-size: 200% 200%;
+  animation: cloudDrift 14s ease infinite;
+}
+

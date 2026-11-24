@@ -9,11 +9,17 @@ import {
   ShieldCheck,
   Calendar,
   Layers,
+  Lock,
+  Cloud,
+  GitBranch,
+  Database,
+  Sparkles,
 } from "lucide-react";
 import { AppHeader } from "@/components/navigation/AppHeader";
 import { AppFooter } from "@/components/navigation/AppFooter";
 import { BRANDING } from "@/lib/branding";
 import { workshop1Python } from "@/content/workshops/workshop1-python";
+import { allWorkshops } from "@/content/workshops";
 
 export default function HomePage() {
   const timetable = [
@@ -100,7 +106,11 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    <span>Zero Environment Setup Required</span>
+                    <span>Git &amp; GitHub Local PC Workshop</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    <span>Rule-Based Security Analyzer</span>
                   </div>
                 </div>
               </div>
@@ -149,6 +159,121 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Workshop Series Roadmap: Progressive Tracks */}
+        <section className="py-12 sm:py-16 bg-slate-50/70 border-b border-slate-200/80">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl mb-8">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+                <Layers className="h-3.5 w-3.5" />
+                <span>Multi-Track Curriculum Progression</span>
+              </span>
+              <h2 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                Workshop Series Roadmap
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Progress through consecutive technical competencies. Master programming foundations, set up version control on your personal computer, and prepare for advanced scientific and AI engineering tracks.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allWorkshops.map((w) => {
+                const isLocked = Boolean(w.isLocked || w.number > 2);
+                const formattedNum = String(w.number).padStart(2, "0");
+
+                if (isLocked) {
+                  return (
+                    <div
+                      key={w.id}
+                      className="relative overflow-hidden rounded-xl border border-slate-200/90 bg-gradient-to-b from-white via-slate-100/60 to-slate-200/40 p-6 shadow-xs flex flex-col justify-between"
+                    >
+                      {/* Atmospheric Mist Drift in Locked Card */}
+                      <div
+                        className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-bl from-white via-slate-300/40 to-transparent blur-md animate-smoke-1 pointer-events-none"
+                        aria-hidden="true"
+                      />
+                      <div
+                        className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-gradient-to-tr from-white via-sky-200/30 to-transparent blur-md animate-smoke-2 pointer-events-none"
+                        aria-hidden="true"
+                      />
+
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="font-mono text-xs font-bold text-slate-400">
+                            WORKSHOP {formattedNum}
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-300/70">
+                            <Lock className="h-2.5 w-2.5 text-slate-500" />
+                            <span>Locked</span>
+                          </span>
+                        </div>
+
+                        <h3 className="text-base font-bold text-slate-700">
+                          {w.title.split(":")[0]}
+                        </h3>
+
+                        {/* Mysterious Cloud Shrouded Topics Notice */}
+                        <div className="mt-4 rounded-lg border border-slate-200/80 bg-white/70 p-3 backdrop-blur-xs text-center">
+                          <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-sky-700 mb-1">
+                            <Cloud className="h-3.5 w-3.5 text-sky-500 animate-pulse" />
+                            <span>Curriculum Shrouded in Mist</span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 leading-snug">
+                            Topics under active formulation. Shroud clears after completing Workshop 02: Git &amp; GitHub.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="relative z-10 mt-6 pt-4 border-t border-slate-200/70 flex items-center justify-between text-xs text-slate-400">
+                        <span>Duration: {w.durationMinutes}m</span>
+                        <span className="font-medium text-slate-400">Upcoming Track</span>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Available Workshops (Workshop 1 & Workshop 2)
+                return (
+                  <Link
+                    key={w.id}
+                    href={`/workshops/${w.slug}`}
+                    className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-xs hover:border-blue-500 hover:shadow-md transition-all"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-mono text-xs font-bold text-blue-600">
+                          WORKSHOP {formattedNum}
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200/70">
+                          <CheckCircle2 className="h-2.5 w-2.5" />
+                          <span>Available</span>
+                        </span>
+                      </div>
+
+                      <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                        {w.title}
+                      </h3>
+
+                      <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-3">
+                        {w.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <span className="text-slate-500">
+                        <strong className="text-slate-900">{w.chapters.length}</strong> Chapters · {w.durationMinutes}m
+                      </span>
+                      <span className="font-semibold text-blue-600 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                        <span>Explore</span>
+                        <ArrowRight className="h-3 w-3" />
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Core Competencies: Editorial Grid */}
         <section className="py-12 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -157,7 +282,7 @@ export default function HomePage() {
                 Foundational Objectives
               </span>
               <h2 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                Eight Core Competencies
+                Eight Core Competencies (Workshop 01)
               </h2>
               <p className="mt-2 text-sm text-slate-600">
                 Each chapter targets a specific, measurable programming capability necessary for data science and AI applications.
@@ -193,8 +318,8 @@ export default function HomePage() {
                 <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-400">
                   Session Roadmap
                 </span>
-                <h2 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                  Two-Hour Workshop Timetable
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                  Workshop 01 Timetable
                 </h2>
                 <p className="mt-2 text-sm text-slate-600">
                   Live instructor delivery schedule for the 120-minute Workshop 1 session.

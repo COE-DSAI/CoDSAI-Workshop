@@ -1,0 +1,274 @@
+import { Chapter } from "@/types/curriculum";
+
+export const chapter3: Chapter = {
+  id: "w2-ch3",
+  slug: "branching-and-merge-conflicts",
+  number: 3,
+  title: "Branching Workflows & Resolving Merge Conflicts",
+  estimatedMinutes: 25,
+  introduction:
+    "In professional engineering teams, developers never commit directly to the primary production branch (`main`). Instead, each new feature, bug fix, or data experiment is isolated on an independent **feature branch**. In this chapter, you will master Git's lightweight branching mechanism, execute smooth merges, demystify what causes merge conflicts, and resolve conflicts step-by-step like a senior engineer.",
+  learningObjectives: [
+    "Understand Git branches as lightweight 41-byte movable pointers to specific commits rather than duplicate folder copies",
+    "Create and switch between branches using the modern git switch -c and legacy git checkout -b commands",
+    "Execute fast-forward merges when histories have not diverged and three-way merges when parallel work has occurred",
+    "Identify the exact anatomy of merge conflict markers (<<<<<<< HEAD, =======, >>>>>>> branch)",
+    "Resolve merge conflicts cleanly using both terminal commands and graphical editor diff tools in VS Code",
+    "Clean up stale feature branches safely using git branch -d and force delete with -D",
+  ],
+  sections: [
+    {
+      id: "w2-ch3-s1",
+      title: "3.1 What is a Branch? Lightweight Movable Pointers",
+      content:
+        "In older version control systems, creating a branch required copying the entire folder of files, which was slow and consumed disk space. In Git, **a branch is simply a tiny text file containing a 40-character SHA-1 commit hash** (just 41 bytes on disk).\n\nWhen you create a branch, Git creates a pointer pointing to the current commit. As you make new commits on that branch, the pointer automatically moves forward to each new commit snapshot.\n\nThe special pointer called `HEAD` indicates which branch and commit your working directory currently reflects.",
+      callout: {
+        type: "tip",
+        title: "Branch Early and Often",
+        content:
+          "Because Git branches are virtually instantaneous and take near-zero disk space, you should create a fresh branch for every self-contained task or experiment.",
+      },
+    },
+    {
+      id: "w2-ch3-s2",
+      title: "3.2 Creating, Listing & Switching Branches (`git switch`)",
+      content:
+        "Historically, developers used `git checkout` for switching branches, restoring files, and checking out individual commits. Because `checkout` was overloaded with too many responsibilities, Git 2.23 introduced two dedicated commands:\n• `git switch`: strictly for navigating and creating branches.\n• `git restore`: strictly for discarding uncommitted changes.\n\nTo create and immediately switch to a new branch in one command, run `git switch -c <branch-name>`.",
+      codeExamples: [
+        {
+          id: "w2-ch3-ex1",
+          title: "Terminal Command 1: Create, List, and Switch Branches",
+          description: "Create an isolated feature branch, verify active branch with git branch, and switch back to main.",
+          code: `# List all local branches (the asterisk * marks current branch)
+git branch
+
+# Create and switch to a new feature branch
+git switch -c feature-scanner
+
+# Make a change on the feature branch
+echo "def scan_email(text): return 'clean'" > scanner.py
+git add scanner.py
+git commit -m "feat: add basic email scanning function"
+
+# Switch back to the main branch
+git switch main`,
+          explanation:
+            "git switch -c feature-scanner creates the pointer and updates HEAD to point to feature-scanner. Any commits made while on this branch advance only feature-scanner, leaving main untouched.",
+          stepByStepWalkthrough: [
+            "git branch displays local branches with an asterisk next to 'main'.",
+            "git switch -c feature-scanner creates the branch and switches HEAD to it.",
+            "Creating and committing scanner.py records a new commit on feature-scanner.",
+            "git switch main moves HEAD back to main; notice scanner.py disappears from your working folder because main does not yet include that commit!",
+          ],
+          expectedOutput:
+            "Switched to a new branch 'feature-scanner'\n[feature-scanner c3d4e5f] feat: add basic email scanning function\n 1 file changed, 1 insertion(+)\n create mode 100644 scanner.py\nSwitched to branch 'main'",
+          whyItHappens:
+            "When you switch branches, Git swaps out the files in your working directory to match the commit snapshot pointed to by the target branch.",
+          edgeCases:
+            "• If you have uncommitted changes in your working directory that conflict with files on the target branch, Git prevents switching: 'error: Your local changes to the following files would be overwritten by checkout'. You must either commit or stash (`git stash`) your changes first.",
+        },
+      ],
+    },
+    {
+      id: "w2-ch3-s3",
+      title: "3.3 Merging Branches: Fast-Forward vs Three-Way Merge",
+      content:
+        "Once your feature branch work is tested and complete, you merge it back into `main`.\n\n### Fast-Forward Merge\nIf `main` has not had any new commits since you branched off, Git simply moves the `main` pointer forward to match your feature branch commit. No new merge commit is required.\n\n### Three-Way (Recursive) Merge\nIf other developers have added new commits to `main` while you were working on your feature branch, the histories have diverged. Git performs a 3-way merge using three snapshots: the common ancestor commit, the tip of `main`, and the tip of your feature branch, creating a new **merge commit** with two parent pointers.",
+      codeExamples: [
+        {
+          id: "w2-ch3-ex2",
+          title: "Terminal Command 2: Merge Feature Branch into Main",
+          description: "Perform a fast-forward merge of feature-scanner into main and inspect the unified history.",
+          code: `# Ensure you are on the target branch (main)
+git switch main
+
+# Merge the feature branch into main
+git merge feature-scanner
+
+# Inspect the updated commit log
+git log --oneline --graph`,
+          explanation:
+            "Running git merge feature-scanner while on branch main integrates the commits. If fast-forward is possible, main's pointer advances instantly.",
+          stepByStepWalkthrough: [
+            "Always verify you are on the destination branch before running git merge.",
+            "git merge feature-scanner merges the commits.",
+            "Inspect git log: both HEAD -> main and feature-scanner now point to the same latest commit.",
+          ],
+          expectedOutput:
+            "Updating b4c5d6e..c3d4e5f\nFast-forward\n scanner.py | 1 +\n 1 file changed, 1 insertion(+)\n create mode 100644 scanner.py",
+          whyItHappens:
+            "Because main had not moved since feature-scanner was created, Git used a fast-forward update.",
+        },
+      ],
+    },
+    {
+      id: "w2-ch3-s4",
+      title: "3.4 Demystifying Merge Conflicts: Anatomy & Resolution",
+      content:
+        "A **merge conflict** occurs when two branches modify the **exact same lines of the same file** in different ways, or one branch deletes a file that the other branch modified. Git cannot guess which version is correct, so it halts the merge and asks you (the developer) to choose.\n\nWhen a conflict occurs, Git writes **conflict markers** directly into the affected file:\n\n```text\n<<<<<<< HEAD\nthreshold = 0.75  # from your current branch (main)\n=======\nthreshold = 0.90  # from the incoming branch (feature)\n>>>>>>> feature-threshold\n```\n\n### Resolution Steps:\n1. Open the conflicted file in VS Code or any text editor.\n2. Decide which code to keep (Current, Incoming, or a combined synthesis).\n3. Delete all marker lines (`<<<<<<<`, `=======`, `>>>>>>>`).\n4. Save the file, stage it (`git add <file>`), and complete the merge with `git commit`.",
+      codeExamples: [
+        {
+          id: "w2-ch3-ex3",
+          title: "Terminal Command 3: Complete a Conflict Resolution",
+          description: "Stage the resolved conflict file and record the final merge commit.",
+          code: `# After manually editing the conflicted file in your editor:
+git status
+
+# Stage the resolved file
+git add scanner.py
+
+# Finalize the merge commit
+git commit -m "merge: resolve threshold conflict between main and feature-threshold"
+
+# Delete the merged feature branch safely
+git branch -d feature-threshold`,
+          explanation:
+            "Staging the conflicted file with git add signals to Git that the conflict has been resolved. Running git commit completes the merge sequence. git branch -d safely deletes the branch pointer now that its commits exist on main.",
+          stepByStepWalkthrough: [
+            "git status lists conflicted files under 'Unmerged paths'.",
+            "git add tells Git the conflict in that file is resolved.",
+            "git commit creates the merge commit.",
+            "git branch -d cleans up the branch pointer.",
+          ],
+          expectedOutput:
+            "[main d4e5f6a] merge: resolve threshold conflict between main and feature-threshold\nDeleted branch feature-threshold (was c3d4e5f).",
+          whyItHappens:
+            "git branch -d checks if the branch is fully merged into HEAD before deleting, protecting you from losing unmerged work.",
+          edgeCases:
+            "• If you want to abort an in-progress merge and return your repository to the state before running git merge, run: git merge --abort.",
+        },
+      ],
+    },
+  ],
+  exercises: [
+    {
+      id: "w2-ch3-ex-branch-test",
+      title: "Exercise 3: Create, Switch, and Delete a Branch",
+      difficulty: "intermediate",
+      prompt:
+        "In your local terminal, create a branch named 'test-experiment', switch to it, make a commit, switch back to 'main', and verify that your main branch remains on its previous commit.",
+      starterCode: `# Run these in your project terminal:
+git switch -c test-experiment
+echo "# Experiment" > experiment.md
+git add experiment.md
+git commit -m "test: add experimental notes"
+git switch main
+git log -1 --oneline`,
+      hints: [
+        "git switch -c creates and switches in one command.",
+        "When you switch back to main with git switch main, notice experiment.md is not in main's directory.",
+      ],
+      solution: `git switch -c test-experiment
+echo "# Experiment" > experiment.md
+git add experiment.md
+git commit -m "test: add experimental notes"
+git switch main
+git log -1 --oneline`,
+      solutionExplanation:
+        "This demonstrates Git's isolation: changes committed on test-experiment do not affect main until explicitly merged.",
+    },
+  ],
+  recap: {
+    keyConcepts: [
+      "A Git branch is a lightweight 41-byte pointer referencing a commit; HEAD points to the currently active branch",
+      "git switch -c <branch> creates and switches to a new branch cleanly",
+      "Fast-forward merges occur when no divergent commits exist on the destination branch",
+      "Merge conflicts occur when conflicting changes happen on the same lines of the same file",
+      "Git conflict markers (<<<<<<<, =======, >>>>>>>) clearly delimit opposing edits for manual resolution",
+      "git merge --abort safely cancels an active merge conflict and restores previous repository state",
+    ],
+    essentialSyntax: [
+      {
+        syntax: "git branch",
+        description: "Lists all local branches, marking the currently checked-out branch with an asterisk (*)",
+        example: "git branch",
+      },
+      {
+        syntax: "git switch -c <name>",
+        description: "Creates a new branch named <name> and immediately checks it out",
+        example: "git switch -c feature-login",
+      },
+      {
+        syntax: "git switch <name>",
+        description: "Switches the working directory to the existing branch <name>",
+        example: "git switch main",
+      },
+      {
+        syntax: "git merge <branch>",
+        description: "Merges commits from <branch> into the current active branch",
+        example: "git merge feature-login",
+      },
+      {
+        syntax: "git merge --abort",
+        description: "Aborts an in-progress merge conflict and resets files to pre-merge status",
+        example: "git merge --abort",
+      },
+      {
+        syntax: "git branch -d <name>",
+        description: "Safely deletes branch <name> if it has already been merged into HEAD",
+        example: "git branch -d feature-login",
+      },
+    ],
+    takeaways: [
+      "Keep feature branches short-lived to minimize large merge conflicts",
+      "Always pull latest changes from main before starting a new feature branch",
+      "Never fear merge conflicts — they are simply Git asking you to make an engineering decision",
+    ],
+    glossary: [
+      {
+        term: "Branch",
+        definition: "A lightweight, movable pointer to a specific commit in Git's directed acyclic graph (DAG).",
+      },
+      {
+        term: "Merge",
+        definition: "The Git operation of joining two or more commit histories into a single unified branch.",
+      },
+      {
+        term: "Fast-Forward",
+        definition: "A merge where Git simply advances the target branch pointer because no divergence exists.",
+      },
+      {
+        term: "Merge Conflict",
+        definition: "A collision during a merge where two branches made incompatible edits to identical file regions.",
+      },
+    ],
+    revisionQuestions: [
+      {
+        question: "Why is git switch preferred over the older git checkout command?",
+        answer: "git switch is dedicated solely to branch switching and creation, avoiding the confusion of git checkout which was also used for file restoration.",
+      },
+      {
+        question: "What do the conflict markers <<<<<<< HEAD and >>>>>>> represent?",
+        answer: "<<<<<<< HEAD marks the code present in your current active branch; >>>>>>> marks the incoming code from the branch being merged.",
+      },
+    ],
+  },
+  selfAssessment: [
+    {
+      id: "w2-ch3-q1",
+      type: "multiple-choice",
+      prompt: "What happens during a 'fast-forward' merge in Git?",
+      options: [
+        "Git moves the branch pointer forward without creating a new merge commit",
+        "Git deletes all commit history to save disk space",
+        "Git forces a remote synchronization with GitHub",
+        "Git compiles code into an executable binary",
+      ],
+      correctAnswer: 0,
+      explanation: "A fast-forward merge simply moves the destination branch pointer to point to the latest commit of the source branch because the two branches did not diverge.",
+    },
+    {
+      id: "w2-ch3-q2",
+      type: "multiple-choice",
+      prompt: "Which command cancels an in-progress merge conflict and returns your files to clean pre-merge status?",
+      options: [
+        "git merge --abort",
+        "git cancel",
+        "git checkout --all",
+        "git reset --hard origin/main",
+      ],
+      correctAnswer: 0,
+      explanation: "git merge --abort cancels the conflicting merge process and returns the working directory and index to the exact state before git merge was invoked.",
+    },
+  ],
+};

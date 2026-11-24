@@ -1,9 +1,19 @@
 import { Workshop, Chapter, GlossaryTerm, SyntaxReference } from "@/types/curriculum";
 import { workshop1Python } from "./workshop1-python";
+import { workshop2Git } from "./workshop2-git";
+import {
+  workshop3Scientific,
+  workshop4ML,
+  workshop5Autonomous,
+} from "./locked-workshops";
 
-// Modular Workshop Registry: currently focused exclusively on Workshop 1 as per scope override
+// Modular Workshop Registry: Python (W1), Git/GitHub (W2), and Locked Advanced Workshops (W3+)
 export const allWorkshops: readonly Workshop[] = [
   workshop1Python,
+  workshop2Git,
+  workshop3Scientific,
+  workshop4ML,
+  workshop5Autonomous,
 ];
 
 export function getAllWorkshops(): readonly Workshop[] {

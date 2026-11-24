@@ -54,6 +54,7 @@ export function AppHeader() {
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
+    if (href.startsWith("/workshops")) return pathname.startsWith("/workshops");
     return pathname.startsWith(href);
   };
 

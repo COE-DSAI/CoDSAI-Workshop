@@ -6,11 +6,13 @@ import {
   Minimize2,
   Code2,
   BookOpen,
+  Terminal,
 } from "lucide-react";
 import { Workshop, Chapter, ChapterAssignment, ExerciseTestCase } from "@/types/curriculum";
 import { SidebarNav } from "./SidebarNav";
 import { ChapterArticle } from "./ChapterArticle";
 import { CodeEditor } from "@/components/editor/CodeEditor";
+import { GitTerminalCompanion } from "./GitTerminalCompanion";
 import {
   getLearnerProgress,
   markChapterComplete,
@@ -156,8 +158,17 @@ export function ChapterExperienceView({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                <Code2 className="h-3 w-3" />
-                <span>Python Editor</span>
+                {workshop.executionMode === "local-project" ? (
+                  <>
+                    <Terminal className="h-3 w-3 text-blue-500" />
+                    <span>Terminal Guide</span>
+                  </>
+                ) : (
+                  <>
+                    <Code2 className="h-3 w-3" />
+                    <span>Python Editor</span>
+                  </>
+                )}
               </button>
             </div>
 
@@ -213,14 +224,21 @@ export function ChapterExperienceView({
               }`}
             >
               <div className="h-full flex-1">
-                <CodeEditor
-                  initialCode={editorCode}
-                  title={editorTitle}
-                  hints={editorHints}
-                  solution={editorSolution}
-                  solutionExplanation={editorSolutionExplanation}
-                  testCases={editorTestCases}
-                />
+                {workshop.executionMode === "local-project" ? (
+                  <GitTerminalCompanion
+                    workshop={workshop}
+                    chapter={chapter}
+                  />
+                ) : (
+                  <CodeEditor
+                    initialCode={editorCode}
+                    title={editorTitle}
+                    hints={editorHints}
+                    solution={editorSolution}
+                    solutionExplanation={editorSolutionExplanation}
+                    testCases={editorTestCases}
+                  />
+                )}
               </div>
             </aside>
           )}

@@ -23,6 +23,7 @@ import {
   ShieldAlert,
   FileCode,
   Flame,
+  Terminal,
 } from "lucide-react";
 import { Chapter, Workshop, ChapterAssignment } from "@/types/curriculum";
 
@@ -84,7 +85,7 @@ export function ChapterArticle({
       {/* Subtle Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
         <Link href={`/workshops/${workshop.slug}`} className="hover:text-slate-800 transition-colors">
-          Workshop 01
+          Workshop {String(workshop.number).padStart(2, "0")}
         </Link>
         <span className="text-slate-300">/</span>
         <span className="text-slate-800 font-medium">Chapter {formattedNumber}</span>
@@ -96,7 +97,7 @@ export function ChapterArticle({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                CHAPTER {formattedNumber} OF 08
+                CHAPTER {formattedNumber} OF {String(workshop.chapters.length).padStart(2, "0")}
               </span>
               <span className="text-slate-300">•</span>
               <span className="flex items-center gap-1 text-xs text-slate-500">
@@ -207,12 +208,26 @@ export function ChapterArticle({
                     {/* Snippet Header */}
                     <div className="flex items-center justify-between border-b border-slate-800 bg-[#070D18] px-4 py-2 text-xs">
                       <div className="flex items-center gap-2">
-                        <Code2 className="h-3.5 w-3.5 text-blue-400" />
-                        <span className="font-mono text-slate-300 font-medium">{ex.title}</span>
+                        {workshop.executionMode === "local-project" ? (
+                          <>
+                            <div className="flex items-center gap-1 mr-1" aria-hidden="true">
+                              <span className="h-2 w-2 rounded-full bg-[#FF5F56]" />
+                              <span className="h-2 w-2 rounded-full bg-[#FFBD2E]" />
+                              <span className="h-2 w-2 rounded-full bg-[#27C93F]" />
+                            </div>
+                            <Terminal className="h-3.5 w-3.5 text-emerald-400" />
+                            <span className="font-mono text-slate-300 font-medium">{ex.title}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Code2 className="h-3.5 w-3.5 text-blue-400" />
+                            <span className="font-mono text-slate-300 font-medium">{ex.title}</span>
+                          </>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-2">
-                        {onSelectCodeExample && (
+                        {workshop.executionMode !== "local-project" && onSelectCodeExample && (
                           <button
                             type="button"
                             onClick={() => onSelectCodeExample(ex.code)}
