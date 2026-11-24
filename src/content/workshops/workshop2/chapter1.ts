@@ -117,6 +117,55 @@ git config --list --show-origin`,
           "Make sure your user.email configuration matches the verified email address on your GitHub profile. This ensures GitHub correctly attributes your commits and contributions to your profile graph.",
       },
     },
+    {
+      id: "w2-ch1-s4",
+      title: "1.4 Authenticating to GitHub: GitHub CLI (`gh auth login`) & Personal Access Tokens (PAT)",
+      content:
+        "In August 2021, GitHub permanently deprecated plain account passwords for Git operations over HTTPS to protect against credential stuffing attacks. Today, authenticating your local terminal to GitHub requires one of two modern mechanisms:\n\n1. **The Official GitHub CLI (`gh`)**: The recommended, streamlined approach that configures your operating system's native credential helper automatically.\n2. **Personal Access Tokens (PAT)**: Cryptographic API tokens generated in your GitHub account settings with explicit granular permissions.\n\n### Installing GitHub CLI (`gh`)\n• **macOS**: `brew install gh`\n• **Windows**: `winget install --id GitHub.cli` (or download the installer from cli.github.com)\n• **Linux (Ubuntu/Debian)**: `sudo apt install gh`\n\nOnce installed, running `gh auth login` initiates an interactive guided setup that links your terminal to your GitHub account and saves an authentication token directly into your OS Keychain or Credential Manager.",
+      codeExamples: [
+        {
+          id: "w2-ch1-ex4",
+          title: "Terminal Command 4: Interactive GitHub Authentication (`gh auth login`)",
+          description: "Authenticate your terminal to GitHub and configure Git to use GitHub CLI as a credential helper.",
+          code: `# Step 1: Launch interactive GitHub authentication
+gh auth login
+
+# Interactive prompts:
+# ? What account do you want to log into? -> GitHub.com
+# ? What is your preferred protocol for Git operations? -> HTTPS
+# ? Authenticate Git with your GitHub credentials? -> Yes
+# ? How would you like to authenticate GitHub CLI? -> Login with a web browser
+
+# Step 2: Verify active authentication state
+gh auth status
+
+# Step 3: Configure Git credential helper to prevent future password prompts
+gh auth setup-git`,
+          explanation:
+            "gh auth login establishes an authenticated session between your machine and GitHub. When asked 'Authenticate Git with your GitHub credentials?', selecting 'Yes' automatically configures Git's credential helper so you can push and pull without typing passwords or tokens every time.",
+          stepByStepWalkthrough: [
+            "Run 'gh auth login' in your terminal.",
+            "Select 'GitHub.com' using arrow keys and press Enter.",
+            "Select 'HTTPS' as your preferred protocol.",
+            "Choose 'Yes' when prompted to authenticate Git with your credentials.",
+            "Choose 'Login with a web browser', press Enter to open your browser, enter the one-time code shown in terminal, and authorize the application.",
+            "Run 'gh auth status' to verify your authenticated username and active token scopes.",
+          ],
+          expectedOutput:
+            "github.com\n  ✓ Logged in to github.com account your-username (keyring)\n  - Active account: true\n  - Git operations protocol: https\n  - Token: gho_************************************",
+          whyItHappens:
+            "The credentials are stored in your operating system's secure credential storage (macOS Keychain, Windows Credential Manager, or Linux libsecret), meaning your raw tokens are never written to plain text configuration files.",
+          edgeCases:
+            "• If you have a Classic Personal Access Token (PAT): When prompted 'How would you like to authenticate?', select 'Paste an authentication token' and paste your token (starts with 'ghp_'). Ensure the token has 'repo', 'read:org', and 'workflow' scopes enabled.",
+        },
+      ],
+      callout: {
+        type: "note",
+        title: "Never Share Personal Access Tokens",
+        content:
+          "Personal Access Tokens (PATs) carry the same permissions as your GitHub password. Never commit a token to a repository or paste it in public forums. If accidentally exposed, revoke it immediately in GitHub Settings > Developer Settings > Personal access tokens.",
+      },
+    },
   ],
   exercises: [
     {
@@ -175,6 +224,21 @@ git config --get init.defaultBranch`,
         syntax: "git config --list --show-origin",
         description: "Lists all active configuration keys and the exact filesystem path of their source file",
         example: "git config --list --show-origin",
+      },
+      {
+        syntax: "gh auth login",
+        description: "Initiates interactive GitHub authentication via browser OAuth or Personal Access Token (PAT)",
+        example: "gh auth login",
+      },
+      {
+        syntax: "gh auth status",
+        description: "Verifies current authenticated GitHub account and active token scopes",
+        example: "gh auth status",
+      },
+      {
+        syntax: "gh auth setup-git",
+        description: "Configures Git to use GitHub CLI as a credential helper to prevent password prompts",
+        example: "gh auth setup-git",
       },
     ],
     takeaways: [

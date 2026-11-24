@@ -31,39 +31,46 @@ export const chapter3: Chapter = {
     },
     {
       id: "w2-ch3-s2",
-      title: "3.2 Creating, Listing & Switching Branches (`git switch`)",
+      title: "3.2 Branch Operations: `git branch`, `git checkout` vs Modern `git switch`",
       content:
-        "Historically, developers used `git checkout` for switching branches, restoring files, and checking out individual commits. Because `checkout` was overloaded with too many responsibilities, Git 2.23 introduced two dedicated commands:\n• `git switch`: strictly for navigating and creating branches.\n• `git restore`: strictly for discarding uncommitted changes.\n\nTo create and immediately switch to a new branch in one command, run `git switch -c <branch-name>`.",
+        "Branching is Git's superpower. Managing branches involves three core commands:\n\n### 1. Inspecting & Managing Branches (`git branch`)\n• `git branch`: Lists all local branches on your computer. An asterisk `*` indicates your currently active branch.\n• `git branch -a`: Lists all local branches AND remote tracking branches (e.g. `remotes/origin/main`).\n• `git branch <new-name>`: Creates a new branch pointer without immediately switching to it.\n• `git branch -m <old-name> <new-name>`: Renames a branch (or `git branch -m <new-name>` to rename the current branch).\n• `git branch -d <name>`: Safely deletes a branch after verifying its commits have been merged.\n• `git branch -D <name>`: Force-deletes a branch even if it contains unmerged experimental commits.\n\n### 2. Navigating Branches: Classic `checkout` vs Modern `switch`\nHistorically, `git checkout` handled both switching branches and discarding file modifications. To remove ambiguity, modern Git (v2.23+) split these into `git switch` (for branches) and `git restore` (for working tree files):\n\n• **Classic Syntax**: `git checkout -b feature-a` (create & switch) or `git checkout feature-a` (switch).\n• **Modern Syntax**: `git switch -c feature-a` (create & switch) or `git switch feature-a` (switch).\n• **Quick Toggle**: `git switch -` immediately returns you to the branch you were previously on!\n\n### 3. The 'Detached HEAD' State\nIf you run `git checkout <commit-hash>`, you are checking out a specific historical commit rather than a branch name. Git enters a **Detached HEAD** state: any new commits you make are orphaned and will be lost when you switch away! To safely return to your primary branch, simply run `git switch main`.",
       codeExamples: [
         {
           id: "w2-ch3-ex1",
-          title: "Terminal Command 1: Create, List, and Switch Branches",
-          description: "Create an isolated feature branch, verify active branch with git branch, and switch back to main.",
-          code: `# List all local branches (the asterisk * marks current branch)
-git branch
+          title: "Terminal Command 1: Branch Management, Navigation & Checkouts",
+          description: "List branches, create with switch -c and checkout -b, inspect with branch -v, and delete merged branches.",
+          code: `# List all local branches with their latest commit SHA and message
+git branch -v
 
-# Create and switch to a new feature branch
-git switch -c feature-scanner
+# Method A (Modern): Create and switch to a new branch with git switch
+git switch -c feature/email-heuristics
 
-# Make a change on the feature branch
-echo "def scan_email(text): return 'clean'" > scanner.py
-git add scanner.py
-git commit -m "feat: add basic email scanning function"
+# Method B (Classic): Create and switch using git checkout
+# git checkout -b feature/email-heuristics
+
+# Make changes and commit on the branch
+echo "RISK_WEIGHT_URGENT = 25" > heuristics.py
+git add heuristics.py
+git commit -m "feat: define initial urgency scoring heuristic"
 
 # Switch back to the main branch
-git switch main`,
+git switch main
+
+# Inspect all local branches (feature branch is visible)
+git branch -a`,
           explanation:
-            "git switch -c feature-scanner creates the pointer and updates HEAD to point to feature-scanner. Any commits made while on this branch advance only feature-scanner, leaving main untouched.",
+            "git switch -c feature/email-heuristics creates the pointer and updates HEAD. When you switch back to main, heuristics.py temporarily disappears from your working directory because main's snapshot does not contain that commit yet.",
           stepByStepWalkthrough: [
-            "git branch displays local branches with an asterisk next to 'main'.",
-            "git switch -c feature-scanner creates the branch and switches HEAD to it.",
-            "Creating and committing scanner.py records a new commit on feature-scanner.",
-            "git switch main moves HEAD back to main; notice scanner.py disappears from your working folder because main does not yet include that commit!",
+            "git branch -v lists branches and shows the latest commit message for each.",
+            "git switch -c creates and immediately checks out the new branch.",
+            "Commit files on the feature branch.",
+            "git switch main brings your working directory back to the clean main branch snapshot.",
+            "git branch -a confirms both branches exist safely in your repository.",
           ],
           expectedOutput:
-            "Switched to a new branch 'feature-scanner'\n[feature-scanner c3d4e5f] feat: add basic email scanning function\n 1 file changed, 1 insertion(+)\n create mode 100644 scanner.py\nSwitched to branch 'main'",
+            "Switched to a new branch 'feature/email-heuristics'\n[feature/email-heuristics a1b2c3d] feat: define initial urgency scoring heuristic\n 1 file changed, 1 insertion(+)\n create mode 100644 heuristics.py\nSwitched to branch 'main'",
           whyItHappens:
-            "When you switch branches, Git swaps out the files in your working directory to match the commit snapshot pointed to by the target branch.",
+            "Git swaps files in your filesystem instantaneously because it only has to update references and stream cached objects from the local .git database.",
           edgeCases:
             "• If you have uncommitted changes in your working directory that conflict with files on the target branch, Git prevents switching: 'error: Your local changes to the following files would be overwritten by checkout'. You must either commit or stash (`git stash`) your changes first.",
         },
@@ -188,6 +195,16 @@ git log -1 --oneline`,
         syntax: "git switch -c <name>",
         description: "Creates a new branch named <name> and immediately checks it out",
         example: "git switch -c feature-login",
+      },
+      {
+        syntax: "git checkout -b <name>",
+        description: "Classic Git command to create and switch to a new branch in one step",
+        example: "git checkout -b feature-login",
+      },
+      {
+        syntax: "git branch -a",
+        description: "Lists all local and remote tracking branches in the repository",
+        example: "git branch -a",
       },
       {
         syntax: "git switch <name>",

@@ -87,6 +87,24 @@ export function GitTerminalCompanion({
             flags: "--show-origin: lists configuration files (~/.gitconfig, etc.)",
             output: "file:/Users/you/.gitconfig  user.name=Your Name...",
           },
+          {
+            cmd: "gh auth login",
+            desc: "Launch interactive GitHub CLI login via browser OAuth or PAT",
+            flags: "Configures OS keychain/credential helper automatically",
+            output: "✓ Logged in to github.com account your-username (keyring)",
+          },
+          {
+            cmd: "gh auth status",
+            desc: "Verify active GitHub authentication status and token scopes",
+            flags: "Checks network connection to github.com API",
+            output: "✓ Logged in to github.com as your-username",
+          },
+          {
+            cmd: "gh auth setup-git",
+            desc: "Configure Git to use GitHub CLI as a credential helper",
+            flags: "Eliminates repeated username/password prompts for HTTPS",
+            output: "(silent on success)",
+          },
         ];
       case 2:
         return [
@@ -137,8 +155,14 @@ export function GitTerminalCompanion({
           },
           {
             cmd: "git switch -c feature/scanner-logic",
-            desc: "Create and switch to a new isolated feature branch",
+            desc: "Create and switch to a new isolated feature branch (Modern)",
             flags: "-c: create new branch pointer and point HEAD to it",
+            output: "Switched to a new branch 'feature/scanner-logic'",
+          },
+          {
+            cmd: "git checkout -b feature/scanner-logic",
+            desc: "Classic syntax: create and switch to a new branch",
+            flags: "-b: branch creation flag",
             output: "Switched to a new branch 'feature/scanner-logic'",
           },
           {
@@ -167,6 +191,51 @@ export function GitTerminalCompanion({
           },
         ];
       case 4:
+        return [
+          {
+            cmd: "git reset --soft HEAD~1",
+            desc: "Undo last commit; keep all changes staged in the Index",
+            flags: "--soft: moves HEAD back 1 commit; preserves staging area",
+            output: "(silent on success; check with git status)",
+          },
+          {
+            cmd: "git reset --mixed HEAD~1",
+            desc: "Undo last commit and un-stage changes into working directory",
+            flags: "--mixed: default mode; moves HEAD and clears index",
+            output: "Unstaged changes after reset:\nM\tscanner.py",
+          },
+          {
+            cmd: "git reset --hard HEAD~1",
+            desc: "Undo last commit and permanently wipe working tree edits",
+            flags: "--hard: destructive; discards uncommitted work",
+            output: "HEAD is now at 7a8b9c0 feat: initial commit",
+          },
+          {
+            cmd: "git reflog",
+            desc: "Display chronological history of all HEAD movements",
+            flags: "Emergency tool to find and recover lost commit hashes",
+            output: "a1b2c3d HEAD@{0}: reset: moving to HEAD~1\n4e5f6a7 HEAD@{1}: commit: ...",
+          },
+          {
+            cmd: "git revert <commit-hash> --no-edit",
+            desc: "Safely undo a pushed commit by creating an inverse forward commit",
+            flags: "--no-edit: accepts default auto-generated revert message",
+            output: "[main e5f6a7b] Revert \"feat: experimental heuristic\"",
+          },
+          {
+            cmd: "git cherry-pick <commit-hash>",
+            desc: "Surgically apply an individual commit from another branch onto HEAD",
+            flags: "Transplants commit changes without merging the source branch",
+            output: "[main c8d9e0f] fix(security): sanitize email header",
+          },
+          {
+            cmd: "git cherry-pick --continue",
+            desc: "Finalize cherry-pick after manually resolving merge conflict",
+            flags: "--continue: records new cherry-pick commit",
+            output: "[main 9a8b7c6] fix(security): sanitize email header",
+          },
+        ];
+      case 5:
       default:
         return [
           {
@@ -200,6 +269,12 @@ export function GitTerminalCompanion({
             output: "Already up to date.",
           },
           {
+            cmd: "git pull --rebase origin main",
+            desc: "Replay local commits on top of incoming remote commits",
+            flags: "--rebase: prevents unnecessary merge bubble commits",
+            output: "Successfully rebased and updated refs/heads/main.",
+          },
+          {
             cmd: "git branch -vv",
             desc: "Inspect local branch tracking status against GitHub",
             flags: "-vv: displays [origin/main] and commit delta",
@@ -218,6 +293,7 @@ export function GitTerminalCompanion({
           { id: "c1-name", label: "Set global user.name" },
           { id: "c1-email", label: "Set global user.email matching GitHub" },
           { id: "c1-branch", label: "Configured init.defaultBranch to main" },
+          { id: "c1-gh-login", label: "Authenticated via 'gh auth login' or PAT" },
         ];
       case 2:
         return [
@@ -237,13 +313,22 @@ export function GitTerminalCompanion({
           { id: "c3-delete", label: "Cleaned up branch with 'git branch -d'" },
         ];
       case 4:
+        return [
+          { id: "c4-soft", label: "Undid a test commit softly with 'git reset --soft'" },
+          { id: "c4-status", label: "Verified staged index retained files" },
+          { id: "c4-reflog", label: "Inspected HEAD history with 'git reflog'" },
+          { id: "c4-revert", label: "Created an inverse commit with 'git revert'" },
+          { id: "c4-cherry", label: "Cherry-picked a single commit with 'git cherry-pick'" },
+        ];
+      case 5:
       default:
         return [
-          { id: "c4-account", label: "Logged into account on GitHub.com" },
-          { id: "c4-newrepo", label: "Created empty repo (no default README)" },
-          { id: "c4-remote", label: "Attached remote origin with 'git remote add'" },
-          { id: "c4-push", label: "Pushed to GitHub with 'git push -u origin main'" },
-          { id: "c4-verify", label: "Viewed live repository on GitHub in browser" },
+          { id: "c5-account", label: "Logged into account on GitHub.com" },
+          { id: "c5-newrepo", label: "Created empty repo (no default README)" },
+          { id: "c5-remote", label: "Attached remote origin with 'git remote add'" },
+          { id: "c5-push", label: "Pushed to GitHub with 'git push -u origin main'" },
+          { id: "c5-pull", label: "Tested remote sync with 'git fetch' & 'git pull'" },
+          { id: "c5-verify", label: "Viewed live repository on GitHub in browser" },
         ];
     }
   };

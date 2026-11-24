@@ -2,289 +2,278 @@ import { Chapter } from "@/types/curriculum";
 
 export const chapter4: Chapter = {
   id: "w2-ch4",
-  slug: "remotes-and-github-collaboration",
+  slug: "time-travel-reset-and-cherry-pick",
   number: 4,
-  title: "Remote Repositories, GitHub Integration & Pull Requests",
-  estimatedMinutes: 30,
+  title: "Time Travel & History Surgery: `git reset` (Soft, Mixed, Hard) & `git cherry-pick`",
+  estimatedMinutes: 25,
   introduction:
-    "Git is a powerful local tool, but its true superpower emerges when connected to remote hosts like **GitHub**. GitHub acts as a centralized cloud hub for your repositories, team collaboration, code reviews, and automated CI/CD pipelines. In this capstone chapter, you will connect your local machine's Git repository to GitHub, configure secure authentication, push changes, synchronize upstream updates, and master the industry-standard Pull Request (PR) workflow.",
+    "Every engineer makes mistakes: committing half-finished code, including accidental API keys, writing typo-ridden commit messages, or wanting a single bug-fix commit from an experimental branch without merging weeks of unfinished work. Git provides surgical time-travel primitives to handle these exact scenarios. In this chapter, you will master `git reset` across its three distinct modes (`--soft`, `--mixed`, `--hard`), understand why you should never reset public history (and use `git revert` instead), and perform surgical commit transplants using `git cherry-pick`.",
   learningObjectives: [
-    "Differentiate between Git (the local CLI version control tool) and GitHub (the cloud hosting & collaboration platform)",
-    "Authenticate securely to GitHub using SSH public keys or HTTPS Personal Access Tokens (PAT)",
-    "Add, inspect, and modify remote connections using git remote add origin and git remote -v",
-    "Push local commits and establish upstream branch tracking using git push -u origin main",
-    "Synchronize team changes safely using git fetch to inspect and git pull to integrate remote updates",
-    "Execute the professional GitHub collaboration workflow: Forking, Feature Branching, Pull Requests, Code Reviews, and Merging",
+    "Deconstruct how Git's Three Trees (HEAD, Index/Staging, and Working Directory) behave during undo operations",
+    "Master the three operational modes of git reset: --soft (preserves staging), --mixed (un-stages changes), and --hard (wipes changes)",
+    "Safely recover from accidental data loss using Git's internal flight recorder: git reflog",
+    "Internalize the Golden Rule of Git: why git reset is strictly for local private history, and git revert is used for pushed public history",
+    "Surgically transplant individual commits from one branch to another using git cherry-pick",
+    "Resolve and finalize cherry-pick merge conflicts using git cherry-pick --continue and git cherry-pick --abort",
   ],
   sections: [
     {
       id: "w2-ch4-s1",
-      title: "4.1 Git vs GitHub: Local Engine vs Collaborative Cloud Platform",
+      title: "4.1 The Anatomy of Undoing: Git's Three Trees Revisited",
       content:
-        "Beginners often confuse Git and GitHub:\n\n• **Git**: A command-line software program running locally on your computer that tracks versions, commits snapshots, and manages branches. Git works 100% offline without any internet connection.\n• **GitHub**: A cloud-based web platform owned by Microsoft that hosts Git repositories online. GitHub adds collaboration layers on top of Git: Pull Requests, Issue Trackers, Code Reviews, GitHub Actions (CI/CD), and Project Boards.\n\nYour local computer communicates with GitHub over secure network protocols: **HTTPS** (using Personal Access Tokens) or **SSH** (using cryptographic public/private key pairs).",
+        "To understand how Git undoes changes, remember where your code lives at any moment:\n\n1. **HEAD (Commit History)**: The last recorded snapshot on your current branch in `.git`.\n2. **Index (Staging Area)**: The prepared snapshot for your next commit.\n3. **Working Directory**: The actual readable files on your computer's filesystem.\n\nWhen you run `git reset <commit>`, you are telling Git to move the current branch pointer (and `HEAD`) backward to a previous commit. What happens to your Index and Working Directory depends entirely on which flag you pass: `--soft`, `--mixed`, or `--hard`.",
       callout: {
         type: "tip",
-        title: "Recommended Auth: SSH Keys",
+        title: "Understanding HEAD~1",
         content:
-          "Setting up an SSH key (`ssh-keygen -t ed25519`) allows passwordless, cryptographic authentication to GitHub from your personal computer terminal without constantly re-entering access tokens.",
+          "`HEAD` represents your current latest commit. `HEAD~1` (or `HEAD^`) refers to the immediate parent commit (1 commit before HEAD). `HEAD~2` refers to 2 commits back.",
       },
     },
     {
       id: "w2-ch4-s2",
-      title: "4.2 Connecting Your Local Repository to GitHub (`git remote`)",
+      title: "4.2 `git reset` Demystified: The Three Modes (--soft, --mixed, --hard)",
       content:
-        "A **remote** is a version of your repository hosted on a network or the internet. You can have multiple remotes, but the primary remote is customarily named `origin`.\n\nTo link your local project to a newly created empty repository on GitHub:\n1. On [GitHub.com](https://github.com), click **New Repository**.\n2. Name your repo (e.g., `git-portfolio-workshop`). Do NOT check 'Initialize with README' if you already have local files.\n3. Copy the repository URL (HTTPS or SSH).\n4. In your local terminal, attach the remote using `git remote add origin <url>`.",
+        "Here is the definitive architectural comparison of the three reset modes:\n\n| Mode | Moves HEAD? | Modifies Staging Index? | Modifies Working Directory? | Typical Real-World Use Case |\n|---|---|---|---|---|\n| **`--soft`** | **YES** | **NO** (remains staged) | **NO** (untouched) | Fix commit message, combine multiple commits before pushing |\n| **`--mixed`** (default) | **YES** | **YES** (un-stages changes) | **NO** (untouched) | Un-stage accidentally staged files to re-stage them cleanly |\n| **`--hard`** | **YES** | **YES** (un-stages changes) | **YES** (overwrites files) | Discard completely broken experiments and return to known good state |\n\n### 1. `git reset --soft HEAD~1` (The Surgical Undo)\nMoves the branch pointer back 1 commit. The changes from the undone commit remain staged in your Index. This is perfect if you committed too early, made a typo in the commit message, or forgot to add a file.\n\n### 2. `git reset --mixed HEAD~1` (The Default Reset)\nMoves the branch pointer back 1 commit and clears the staging area. All the file changes remain safely in your working directory as unstaged modifications. This lets you re-examine files with `git diff` and stage them with surgical precision.\n\n### 3. `git reset --hard HEAD~1` (The Nuclear Option)\nMoves the branch pointer back, clears the staging index, AND overwrites all files in your working directory to match the target commit snapshot. Any uncommitted work is permanently erased!",
       codeExamples: [
         {
           id: "w2-ch4-ex1",
-          title: "Terminal Command 1: Add Remote and Verify Configuration",
-          description: "Link your local repository to GitHub and inspect fetch/push URLs.",
-          code: `# Add the remote origin URL (replace with your GitHub repository URL)
-git remote add origin https://github.com/your-username/my-ai-project.git
+          title: "Terminal Command 1: Soft vs Hard Reset in Practice",
+          description: "Undo a commit softly to amend code, and use git reflog to recover from a hard reset.",
+          code: `# Scenario A: Soft reset to reword or add files to the last commit
+git commit -m "wip: bad commit message with typos"
 
-# Verify remote configuration
-git remote -v`,
+# Undo the commit, keeping all changes staged in the Index
+git reset --soft HEAD~1
+
+# Check status: notice changes are still staged (green)!
+git status -s
+
+# Re-commit with a clean, professional commit message
+git commit -m "feat(heuristics): implement baseline risk score threshold"
+
+# Scenario B: Hard reset to discard an experimental failure
+# DANGER: permanently overwrites modified files in working directory!
+git reset --hard HEAD~1
+
+# Scenario C: Recovering an 'erased' commit using Git's flight recorder (reflog)
+git reflog
+# Output shows: 7a8b9c0 HEAD@{1}: commit: ...
+# Restore the lost commit:
+git reset --hard HEAD@{1}`,
           explanation:
-            "git remote add origin registers a named remote alias ('origin') pointing to the cloud repository URL. git remote -v displays the fetch and push URLs associated with that alias.",
+            "git reset --soft moves HEAD back but leaves your index intact. git reflog records every time HEAD changes location, allowing you to recover commits even after a hard reset.",
           stepByStepWalkthrough: [
-            "Run git remote add origin with your repository URL.",
-            "Run git remote -v to confirm.",
-            "Git outputs both the (fetch) and (push) URLs.",
+            "Run git reset --soft HEAD~1: the commit disappears from git log, but your files remain staged.",
+            "Run git status to verify files are staged and ready for a revised commit message.",
+            "If git reset --hard is ever run accidentally, immediately run git reflog to locate the lost commit hash.",
+            "Run git reset --hard <hash> to restore your repository to that exact point in time.",
           ],
           expectedOutput:
-            "origin\thttps://github.com/your-username/my-ai-project.git (fetch)\norigin\thttps://github.com/your-username/my-ai-project.git (push)",
+            "[main a1b2c3d] feat(heuristics): implement baseline risk score threshold\n 1 file changed, 3 insertions(+)",
           whyItHappens:
-            "Git separates fetch and push URLs in case an organization reads from one mirror and pushes to another, though they are usually identical.",
+            "Git never deletes commit objects immediately. Even after a hard reset, the commit objects remain in .git/objects for weeks until garbage collection runs, letting reflog rescue you.",
           edgeCases:
-            "• If you misspell the URL: run git remote set-url origin <correct-url> to update it without deleting and re-adding.",
+            "• Uncommitted files (untracked or unstaged modifications) overwritten by git reset --hard CANNOT be recovered by reflog, because Git never took a snapshot of them! Always commit or stash before running a hard reset.",
         },
       ],
+      callout: {
+        type: "warning",
+        title: "The Golden Rule: Never Reset Pushed History",
+        content:
+          "Never use `git reset` on commits that have already been pushed to a shared remote (like `origin/main`). Doing so rewrites history, forcing a rejected push (`fetch first`) and corrupting teammates' repositories.",
+      },
     },
     {
       id: "w2-ch4-s3",
-      title: "4.3 Pushing & Tracking Upstream (`git push -u origin main`)",
+      title: "4.3 Reversing Public Commits Safely: `git revert`",
       content:
-        "The first time you upload commits from your local `main` branch to GitHub, you use the `-u` (or `--set-upstream`) flag:\n\n`git push -u origin main`\n\nThis flag establishes an ongoing tracking relationship between your local `main` and the remote `origin/main`. After doing this once, you can simply type `git push` or `git pull` without specifying the remote or branch name.",
+        "When a buggy commit has already been pushed to GitHub and pulled by your team, you cannot rewrite history with `git reset`. Instead, you use `git revert <commit-hash>`.\n\n### How `git revert` Works\nUnlike `reset` (which removes commits from history), `revert` creates a **brand-new forward commit** that applies the exact inverse mathematical diff of the target commit:\n• If the buggy commit added lines 10-15, the revert commit deletes lines 10-15.\n• If the buggy commit deleted a file, the revert commit restores that file.\n\nBecause `git revert` only moves history forward, it can be pushed cleanly to GitHub without requiring force-pushing (`--force`).",
       codeExamples: [
         {
           id: "w2-ch4-ex2",
-          title: "Terminal Command 2: Push Local Commits to GitHub",
-          description: "Upload local branch commits and establish upstream tracking on GitHub.",
-          code: `# Push local 'main' branch to remote 'origin' and set upstream tracking
-git push -u origin main
+          title: "Terminal Command 2: Reverting a Public Commit",
+          description: "Create an inverse commit to safely undo a change on a shared branch.",
+          code: `# View recent commit hashes
+git log --oneline -n 3
 
-# Future pushes require only:
-# git push`,
+# Revert a specific buggy commit (creates a new inverse commit)
+git revert a1b2c3d --no-edit
+
+# Inspect history: notice a new 'Revert ...' commit exists
+git log --oneline -n 2`,
           explanation:
-            "Git packages your local commits and pushes them to GitHub over HTTPS/SSH, setting up a tracking reference so 'git status' will now report whether your branch is ahead or behind origin/main.",
+            "git revert analyzes the diff introduced by commit a1b2c3d and applies the exact opposite patch to your active working directory, creating a new commit with the message 'Revert \"...\"'.",
           stepByStepWalkthrough: [
-            "Execute git push -u origin main.",
-            "Git transfers objects, creates the remote branch, and sets up tracking.",
-            "Visit your repository page on GitHub to see all your files and commits live!",
+            "Find the hash of the commit you need to undo with git log --oneline.",
+            "Run git revert <hash>.",
+            "Git applies the inverse diff and creates a new commit snapshot.",
+            "Push the new revert commit to GitHub with standard git push.",
           ],
           expectedOutput:
-            "Enumerating objects: 6, done.\nCounting objects: 100% (6/6), done.\nWriting objects: 100% (6/6), 580 bytes | 580.00 KiB/s, done.\nTotal 6 (delta 0), reused 0 (delta 0)\nTo https://github.com/your-username/my-ai-project.git\n * [new branch]      main -> main\nBranch 'main' set up to track remote branch 'main' from 'origin'.",
+            "[main e5f6a7b] Revert \"feat: experimental payment endpoint\"\n 1 file changed, 10 deletions(-)",
           whyItHappens:
-            "The output confirms all objects were transferred and the upstream tracking link was successfully created.",
-          edgeCases:
-            "• If GitHub rejects the push with '[rejected - non-fast-forward]', remote changes exist that you do not have locally. Run git pull --rebase origin main before pushing.",
+            "Linear history is preserved, and your teammates will cleanly pull the reversal without any merge conflicts.",
         },
       ],
     },
     {
       id: "w2-ch4-s4",
-      title: "4.4 Fetching, Pulling & The Pull Request (PR) Workflow",
+      title: "4.4 Surgical Commit Transplant: `git cherry-pick`",
       content:
-        "When collaborating on a team, colleagues will push commits to GitHub while you are working. To stay in sync:\n\n• `git fetch`: Downloads all new commits, branches, and tags from GitHub into your local `.git` repository, but **does NOT modify your working directory files**.\n• `git pull`: A combination of `git fetch` followed immediately by `git merge`, automatically integrating remote commits into your active local branch.\n\n### The Standard Team Pull Request Workflow\n1. Pull latest `main`: `git pull origin main`\n2. Create feature branch: `git switch -c feat/email-validator`\n3. Code, test, and commit: `git commit -m \"feat: validate sender domain\"`\n4. Push feature branch to GitHub: `git push -u origin feat/email-validator`\n5. Open a **Pull Request (PR)** on GitHub.com.\n6. Teammates review code, leave comments, and approve.\n7. Merge the PR into `main` using GitHub's **Merge Pull Request** button.",
+        "Imagine you are working on a long-running experimental branch (`experiment-llm`) with 12 un-reviewed commits. In commit #3 (`c8d9e0f`), you discovered and fixed a critical security vulnerability that affects production `main`.\n\nYou cannot merge `experiment-llm` into `main` because the other 11 commits are unfinished and unstable. How do you extract and apply **only commit #3** to `main`?\n\nThe answer is **`git cherry-pick <commit-hash>`**.\n\n### The Cherry-Pick Process:\n1. Find the commit hash on the source branch: `git log --oneline experiment-llm`\n2. Switch to your destination branch: `git switch main`\n3. Execute the cherry-pick: `git cherry-pick c8d9e0f`\n\nGit extracts the exact patch introduced by `c8d9e0f` and replays it on top of `main`, creating a new commit snapshot with identical changes and commit message, but a fresh timestamp and hash.",
       codeExamples: [
         {
           id: "w2-ch4-ex3",
-          title: "Terminal Command 3: Fetch vs Pull Synchronizations",
-          description: "Inspect remote updates safely with fetch, then fast-forward pull into your local branch.",
-          code: `# Download remote objects without touching working files
-git fetch origin
+          title: "Terminal Command 3: Cherry-Picking a Commit Across Branches",
+          description: "Extract a specific commit from a feature branch and transplant it onto main.",
+          code: `# Step 1: Inspect the feature branch to find the desired commit hash
+git log --oneline feature/experimental-heuristics -n 3
 
-# Check how many commits your local branch is behind origin/main
-git status
+# Step 2: Switch to the destination branch (main)
+git switch main
 
-# Safely pull and integrate remote changes into current branch
-git pull origin main`,
+# Step 3: Cherry-pick the specific bug-fix commit (e.g. c8d9e0f)
+git cherry-pick c8d9e0f
+
+# If a conflict occurs during cherry-pick:
+# 1. Edit the conflicted file to resolve markers
+# 2. Stage the resolved file: git add <file>
+# 3. Complete cherry-pick: git cherry-pick --continue
+# (Or abort safely: git cherry-pick --abort)`,
           explanation:
-            "git fetch updates your local origin/main pointer, letting you run git log origin/main to see what teammates committed before you merge. git pull merges those commits into your working files.",
+            "git cherry-pick applies the diff of commit c8d9e0f directly to your active branch. If there are no conflicting line changes, Git records the new commit automatically.",
           stepByStepWalkthrough: [
-            "git fetch updates remote tracking branches.",
-            "git status tells you if you are 'behind origin/main by X commits'.",
-            "git pull brings those commits into your active branch.",
+            "Use git log to identify the SHA-1 hash of the specific commit you want.",
+            "Always switch to the destination branch before cherry-picking.",
+            "Run git cherry-pick <hash>.",
+            "Verify with git log --oneline: the commit now appears at the top of your destination branch.",
           ],
           expectedOutput:
-            "From https://github.com/your-username/my-ai-project\n * branch            main       -> FETCH_HEAD\nUpdating b4c5d6e..f7a8b9c\nFast-forward\n utils.py | 12 ++++++++++++\n 1 file changed, 12 insertions(+)",
+            "[main 4a5b6c7] fix(security): sanitize email header control characters\n 1 file changed, 5 insertions(+)\n create mode 100644 security.py",
           whyItHappens:
-            "If your local branch had no new unpushed commits, git pull executes a clean fast-forward merge.",
+            "Cherry-pick applies a diff rather than merging branch pointers, making it ideal for hotfixes and extracting isolated utilities.",
+          edgeCases:
+            "• Cherry-pick conflicts: If the code in the cherry-picked commit depends on prior changes on the source branch that do not exist on main, Git halts with a conflict. Resolve the file, git add it, and run git cherry-pick --continue.",
         },
       ],
+      callout: {
+        type: "note",
+        title: "Cherry-Pick Creates a New Hash",
+        content:
+          "Because the cherry-picked commit now has a different parent commit on main, Git calculates a new SHA hash. While the code changes are identical, it is technically a distinct commit object.",
+      },
     },
   ],
-  assignment: {
-    id: "w2-ch4-assignment",
-    title: "Capstone: Personal Git Portfolio Setup on Your PC",
-    scenario:
-      "You are setting up your professional open-source data science portfolio on your personal computer. You will initialize a repository, craft a professional README with Markdown badges, configure .gitignore, create a feature branch, merge it, and push the completed multi-branch repository to your personal GitHub account.",
-    requirements: [
-      "Initialize a local repository named 'datascience-portfolio' on your computer",
-      "Configure global user.name and user.email (or verify they exist)",
-      "Create a production-grade .gitignore for Python and environment files",
-      "Create a structured README.md with project title, architecture overview, and setup steps",
-      "Create a feature branch named 'feature/initial-pipeline', commit a Python script, and merge it into main",
-      "Create a public repository on GitHub, attach it as remote origin, and push main with upstream tracking",
-    ],
-    edgeCasesToHandle: [
-      "Ensure .env and __pycache__ are excluded by .gitignore and never tracked",
-      "Ensure proper branch naming conventions (e.g. main, feature/name)",
-      "Verify that git remote -v outputs the correct repository URL",
-    ],
-    starterCode: `# Run these terminal commands on your personal computer:
-mkdir datascience-portfolio
-cd datascience-portfolio
-git init
-
-# Step 1: Add .gitignore
-cat << 'EOF' > .gitignore
-__pycache__/
-*.pyc
-.env
-.venv/
-.DS_Store
-EOF
-git add .gitignore
-git commit -m "chore: setup .gitignore"
-
-# Step 2: Create README.md
-echo "# Data Science & AI Portfolio" > README.md
-git add README.md
-git commit -m "docs: initialize portfolio documentation"
-
-# Step 3: Feature Branch Workflow
-git switch -c feature/initial-pipeline
-echo "def run_pipeline(): print('Pipeline active')" > pipeline.py
-git add pipeline.py
-git commit -m "feat: add initial data processing pipeline"
-git switch main
-git merge feature/initial-pipeline
-git branch -d feature/initial-pipeline
-
-# Step 4: Connect to GitHub (replace URL with your own)
-# git remote add origin https://github.com/YOUR_USERNAME/datascience-portfolio.git
-# git push -u origin main`,
-    testCases: [],
-    hints: [
-      "Hint 1 (Concept): Complete the entire local lifecycle (init -> branch -> merge) before creating the remote repo on GitHub.",
-      "Hint 2 (Approach): When creating the repo on GitHub.com, leave 'Add a README file' UNCHECKED so GitHub creates a completely empty repo ready to receive your push.",
-      "Hint 3 (Execution): Run 'git remote add origin <url>' followed by 'git push -u origin main'.",
-    ],
-    referenceSolution: `# Complete local and remote workflow sequence:
-mkdir datascience-portfolio && cd datascience-portfolio
-git init
-echo "# Data Science Portfolio" > README.md
-git add README.md
-git commit -m "docs: initial portfolio commit"
-git remote add origin https://github.com/username/datascience-portfolio.git
-git push -u origin main`,
-    solutionExplanation:
-      "This complete workflow mirrors production software engineering: initializing local repositories with atomic commits, isolating features with branches, and publishing to GitHub with upstream tracking.",
-  },
   exercises: [
     {
-      id: "w2-ch4-ex-remote-check",
-      title: "Exercise 4: Verify Remote Tracking Configuration",
+      id: "w2-ch4-ex-reset-cherry",
+      title: "Exercise 4: Practice Soft Reset & Cherry-Pick Workflow",
       difficulty: "intermediate",
       prompt:
-        "Execute 'git remote -v' and 'git branch -vv' in your terminal to verify that your local repository has a remote named 'origin' and that your local main branch tracks origin/main.",
-      starterCode: `# Run these in your project terminal:
-git remote -v
-git branch -vv`,
+        "Open your terminal in a test Git repository and execute: (1) create a test commit, (2) undo it softly with git reset --soft HEAD~1, (3) verify changes remain staged with git status, and (4) cherry-pick a commit using its hash.",
+      starterCode: `# 1. Undo the latest local commit softly without losing staged files:
+git reset --soft HEAD~1
+
+# 2. Inspect status to verify files are still in the staging index:
+git status -s
+
+# 3. Surgically apply a specific commit from another branch:
+git cherry-pick <commit-hash>`,
       hints: [
-        "Hint 1 (Concept): Git remotes are registered aliases pointing to remote cloud URLs on GitHub.",
-        "Hint 2 (Approach): Use 'git remote -v' to list all configured fetch and push URLs.",
-        "Hint 3 (Execution): Run 'git branch -vv' to verify that local main tracks [origin/main].",
+        "git reset --soft HEAD~1 only moves the HEAD pointer; files in the index remain staged.",
+        "git status -s will display staged files with a green 'M' or 'A' in the first column.",
+        "To cherry-pick, always ensure you are currently on the destination branch before running the command.",
       ],
-      solution: `git remote -v
-git branch -vv`,
+      solution: `git reset --soft HEAD~1
+git status -s
+git cherry-pick <commit-hash>`,
       solutionExplanation:
-        "The -vv flag on git branch reveals upstream tracking relationships, showing whether your local branch is in sync, ahead, or behind GitHub.",
+        "git reset --soft is the safest way to undo a local commit because it leaves all your work staged and ready for re-committing, while git cherry-pick lets you extract isolated fixes between branches.",
     },
   ],
   recap: {
     keyConcepts: [
-      "Git is a local version control program; GitHub is a cloud-hosted collaboration and code review platform",
-      "Authentication to GitHub is handled via SSH cryptographic keys or HTTPS Personal Access Tokens",
-      "git remote add origin <url> links your local repository to a remote cloud repository",
-      "git push -u origin main uploads commits and establishes upstream branch tracking",
-      "git fetch safely downloads changes without merging; git pull fetches and merges into your active branch",
-      "The Pull Request (PR) workflow is the universal mechanism for code review in modern software development",
+      "git reset moves the branch pointer and HEAD backward across your commit history",
+      "--soft moves HEAD but preserves Staging Index and Working Tree (ideal for fixing commit messages)",
+      "--mixed (default) moves HEAD and un-stages files, preserving Working Tree modifications",
+      "--hard moves HEAD, un-stages files, and overwrites working files (destructive!)",
+      "git reflog records every movement of HEAD, enabling recovery of commits lost during hard resets",
+      "Never reset pushed public history; use git revert to create a safe inverse forward commit",
+      "git cherry-pick surgically transplants an individual commit from one branch to another",
     ],
     essentialSyntax: [
       {
-        syntax: "git remote add origin <url>",
-        description: "Registers a remote repository URL under the alias 'origin'",
-        example: "git remote add origin https://github.com/user/repo.git",
+        syntax: "git reset --soft HEAD~1",
+        description: "Undoes the latest commit, keeping all changes staged in the Index",
+        example: "git reset --soft HEAD~1",
       },
       {
-        syntax: "git remote -v",
-        description: "Lists all registered remote connections with their fetch and push URLs",
-        example: "git remote -v",
+        syntax: "git reset --mixed HEAD~1",
+        description: "Undoes latest commit and un-stages changes into the working directory (default)",
+        example: "git reset HEAD~1",
       },
       {
-        syntax: "git push -u origin <branch>",
-        description: "Pushes <branch> to remote 'origin' and configures upstream tracking",
-        example: "git push -u origin main",
+        syntax: "git reset --hard HEAD~1",
+        description: "Undoes latest commit and discards all uncommitted working directory changes",
+        example: "git reset --hard HEAD~1",
       },
       {
-        syntax: "git fetch origin",
-        description: "Downloads all remote commits and branches without altering local working files",
-        example: "git fetch origin",
+        syntax: "git reflog",
+        description: "Displays the chronological log of all HEAD pointer movements for disaster recovery",
+        example: "git reflog",
       },
       {
-        syntax: "git pull origin <branch>",
-        description: "Fetches and integrates remote changes into the current active branch",
-        example: "git pull origin main",
+        syntax: "git revert <commit-hash>",
+        description: "Creates a new commit that applies the exact inverse changes of a targeted commit",
+        example: "git revert a1b2c3d --no-edit",
       },
       {
-        syntax: "git branch -vv",
-        description: "Shows local branches and their remote upstream tracking relationship",
-        example: "git branch -vv",
+        syntax: "git cherry-pick <commit-hash>",
+        description: "Applies the changes from a specific commit on another branch onto the current branch",
+        example: "git cherry-pick c8d9e0f",
+      },
+      {
+        syntax: "git cherry-pick --continue",
+        description: "Resumes an interrupted cherry-pick operation after resolving merge conflicts",
+        example: "git cherry-pick --continue",
+      },
+      {
+        syntax: "git cherry-pick --abort",
+        description: "Cancels an in-progress cherry-pick conflict and restores original branch state",
+        example: "git cherry-pick --abort",
       },
     ],
     takeaways: [
-      "Always set up SSH keys for frictionless authentication across your projects",
-      "Run git pull before starting new feature branches to avoid unnecessary merge conflicts",
-      "Pull Requests allow team code reviews, ensuring bugs are caught before reaching production",
+      "Use git reset --soft to refine local commits before pushing to code review",
+      "Memorize git reflog: it is your emergency parachute whenever a reset or branch operation goes wrong",
+      "Use git cherry-pick when you need a single bugfix or feature without taking on an entire branch",
     ],
     glossary: [
       {
-        term: "Remote",
-        definition: "A version of your repository hosted on the internet or a network server, such as GitHub or GitLab.",
+        term: "git reset",
+        definition: "A Git command that resets current HEAD to a specified state, altering HEAD, index, and working tree based on flags.",
       },
       {
-        term: "Origin",
-        definition: "The default conventional name assigned to the primary remote repository when cloning or adding a remote.",
+        term: "git reflog",
+        definition: "Reference logs that record when the tips of branches and references were updated in the local repository.",
       },
       {
-        term: "Upstream Tracking",
-        definition: "A configured relationship between a local branch and a remote branch (e.g. main -> origin/main) that simplifies git push and git pull.",
+        term: "git revert",
+        definition: "A safe command that records a new commit containing the inverse changes of an existing commit without rewriting history.",
       },
       {
-        term: "Pull Request (PR)",
-        definition: "A GitHub mechanism allowing developers to notify teammates about completed features and request code review before merging.",
+        term: "git cherry-pick",
+        definition: "A command that applies the changes introduced by some existing commits onto the current active branch.",
       },
     ],
     revisionQuestions: [
       {
-        question: "What is the primary difference between git fetch and git pull?",
-        answer: "git fetch downloads remote objects into your local .git database without modifying your working files; git pull performs a git fetch and immediately attempts to merge those changes into your active branch.",
+        question: "What is the difference between 'git reset --soft HEAD~1' and 'git reset --hard HEAD~1'?",
+        answer: "--soft only moves the HEAD pointer back, leaving your changes staged in the index; --hard moves the pointer, clears the index, and overwrites working directory files, permanently discarding uncommitted changes.",
       },
       {
-        question: "Why is the -u flag used in git push -u origin main?",
-        answer: "The -u (set-upstream) flag links your local main branch to origin/main on GitHub so subsequent pushes and pulls can simply use 'git push' or 'git pull'.",
+        question: "Why should you use 'git revert' instead of 'git reset' for commits that have already been pushed to GitHub?",
+        answer: "git reset rewrites history, which causes push rejections and breaks teammates' repositories; git revert creates a new forward commit that cleanly inverts the changes without rewriting past history.",
       },
     ],
   },
@@ -292,28 +281,28 @@ git branch -vv`,
     {
       id: "w2-ch4-q1",
       type: "multiple-choice",
-      prompt: "Which command establishes an upstream tracking link between local main and GitHub origin/main?",
+      prompt: "Which command undoes your latest commit while keeping all modified files safely staged in the Index?",
       options: [
-        "git push -u origin main",
-        "git remote link main",
-        "git sync --all",
-        "git checkout --track github",
+        "git reset --soft HEAD~1",
+        "git reset --hard HEAD~1",
+        "git clean -fd",
+        "git checkout --all",
       ],
       correctAnswer: 0,
-      explanation: "Running 'git push -u origin main' (or --set-upstream) uploads the branch and configures Git's config to track origin/main for future operations.",
+      explanation: "git reset --soft HEAD~1 moves HEAD back by 1 commit while leaving the staging area (index) and working directory untouched.",
     },
     {
       id: "w2-ch4-q2",
-      type: "multiple-choice",
-      prompt: "What does 'git remote -v' display?",
+      type: "concept",
+      prompt: "When should you use 'git cherry-pick <commit>'?",
       options: [
-        "The fetch and push URLs for all configured remotes",
-        "The latest commit on GitHub",
-        "The Git binary version number",
-        "A list of open Pull Requests",
+        "When you want to clone an entire remote repository from GitHub",
+        "When you want to apply a specific commit from one branch onto your current branch without merging the whole branch",
+        "When you want to delete all remote branches on GitHub",
+        "When you want to convert CRLF line endings to LF",
       ],
-      correctAnswer: 0,
-      explanation: "'git remote -v' prints the name and exact URLs (for both fetch and push operations) of every remote configured in the repository.",
+      correctAnswer: 1,
+      explanation: "git cherry-pick extracts the diff of a specific commit snapshot and replays it onto your active branch, creating a new commit without merging the rest of the source branch.",
     },
   ],
 };

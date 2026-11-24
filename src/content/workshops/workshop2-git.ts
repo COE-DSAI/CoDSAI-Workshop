@@ -3,13 +3,14 @@ import { chapter1 } from "./workshop2/chapter1";
 import { chapter2 } from "./workshop2/chapter2";
 import { chapter3 } from "./workshop2/chapter3";
 import { chapter4 } from "./workshop2/chapter4";
+import { chapter5 } from "./workshop2/chapter5";
 
 export const workshop2Git: Workshop = {
   id: "w2-git-github",
   slug: "git-github",
   number: 2,
-  title: "Git & GitHub: Version Control & Collaboration",
-  subtitle: "Local Repositories, Branching Trees, Remotes & Personal PC Setup",
+  title: "Git & GitHub: Version Control, History Surgery & Collaboration",
+  subtitle: "Local Repositories, Branching Trees, Resets, Cherry-Picks & GitHub Setup",
   durationMinutes: 120,
   difficulty: "Beginner",
   executionMode: "local-project",
@@ -21,11 +22,12 @@ export const workshop2Git: Workshop = {
     "A free account on GitHub.com",
   ],
   learningOutcomes: [
-    "Install and configure Git globally with user name, email, and default branch settings on your PC",
-    "Understand the three states of Git: working directory, staging area, and repository history",
-    "Initialize repositories, track changes, stage files, and write atomic, conventional commit messages",
-    "Create, switch, and merge isolated feature branches and resolve merge conflicts cleanly",
-    "Connect local repositories to GitHub using HTTPS or SSH, push changes, and open Pull Requests",
+    "Install Git and GitHub CLI (gh), configure global identity, and authenticate via gh auth login",
+    "Master the Three Trees architecture: initialize repos (git init), inspect status, stage files (git add), and write atomic commits",
+    "Navigate, create, and manage branches with git branch, git checkout, and git switch, and resolve merge conflicts",
+    "Master time travel: undo commits with git reset (--soft, --mixed, --hard), recover lost work with git reflog, and safely revert public commits",
+    "Perform surgical commit transplants across branches with git cherry-pick",
+    "Connect local repositories to GitHub (git remote add origin), push with upstream tracking, pull updates, and manage Pull Requests",
   ],
   projectSlug: "git-portfolio",
   projectTitle: "Git Portfolio: Multi-Branch Collaboration",
@@ -35,5 +37,6 @@ export const workshop2Git: Workshop = {
     chapter2,
     chapter3,
     chapter4,
+    chapter5,
   ],
 };
