@@ -403,6 +403,12 @@ export default async function WorkshopDetailPage({
                         <span>Modular functions with typed contracts</span>
                       </li>
                     </ul>
+
+                    <div className="mt-4 pt-4 border-t border-slate-200 text-[11px] text-slate-500 leading-relaxed">
+                      <strong className="text-slate-700">Why Rule-Based Heuristics?</strong>
+                      <br />
+                      Rule-based engines form the mental foundation for machine learning. Understanding explicit decision boundaries teaches students what statistical models learn to automate.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -507,16 +513,6 @@ export default async function WorkshopDetailPage({
               </div>
             </section>
           )}
-
-                  <div className="mt-4 pt-4 border-t border-slate-200 text-[11px] text-slate-500 leading-relaxed">
-                    <strong className="text-slate-700">Why Rule-Based Heuristics?</strong>
-                    <br />
-                    Rule-based engines form the mental foundation for machine learning. Understanding explicit decision boundaries teaches students what statistical models learn to automate.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* F. Outcomes & Prerequisites Grid */}
           <section className="py-12 border-t border-slate-200/80">
