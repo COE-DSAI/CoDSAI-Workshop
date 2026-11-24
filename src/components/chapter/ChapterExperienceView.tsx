@@ -7,6 +7,8 @@ import {
   Code2,
   BookOpen,
   Terminal,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { Workshop, Chapter, ChapterAssignment, ExerciseTestCase } from "@/types/curriculum";
 import { SidebarNav } from "./SidebarNav";
@@ -33,8 +35,44 @@ export function ChapterExperienceView({
   nextChapter,
 }: ChapterExperienceViewProps) {
   const [focusMode, setFocusMode] = useState<boolean>(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [mobileTab, setMobileTab] = useState<"reading" | "editor">("reading");
   const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("coe_sidebar_collapsed");
+      if (saved !== null) {
+        setSidebarCollapsed(saved === "true");
+      }
+    } catch {
+      // Ignore in restricted environments
+    }
+  }, []);
+
+  const handleToggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("coe_sidebar_collapsed", String(next));
+      } catch {
+        // Ignore in restricted environments
+      }
+      return next;
+    });
+  };
+
+  // Keyboard shortcut: Cmd+B or Ctrl+B to toggle sidebar independently
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        handleToggleSidebar();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
   
   const defaultCode = chapter.assignment
     ? chapter.assignment.starterCode
@@ -120,17 +158,50 @@ export function ChapterExperienceView({
           currentChapterSlug={chapter.slug}
           completedChapters={completedChapters}
           className="hidden lg:flex shrink-0"
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={handleToggleSidebar}
         />
       )}
 
       {/* 2. Central Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Status Bar */}
-        <div className="flex h-11 items-center justify-between border-b border-slate-200/80 bg-white px-4 shrink-0">
-          <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
-            <span className="font-semibold text-slate-900 truncate">
-              Chapter {String(chapter.number).padStart(2, "0")}: {chapter.title}
-            </span>
+        <div className="flex h-11 items-center justify-between border-b border-slate-200/80 bg-white px-3 sm:px-4 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            {/* Independent Sidebar Toggle Button */}
+            {!focusMode && (
+              <button
+                type="button"
+                onClick={handleToggleSidebar}
+                className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                  sidebarCollapsed
+                    ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+                title={sidebarCollapsed ? "Expand sidebar (⌘B)" : "Collapse sidebar (⌘B)"}
+                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                {sidebarCollapsed ? (
+                  <>
+                    <PanelLeftOpen className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="hidden md:inline font-semibold">Sidebar</span>
+                  </>
+                ) : (
+                  <>
+                    <PanelLeftClose className="h-3.5 w-3.5 text-slate-500" />
+                    <span className="hidden md:inline">Sidebar</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            {!focusMode && <span className="h-4 w-px bg-slate-200 hidden sm:inline-block" />}
+
+            <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
+              <span className="font-semibold text-slate-900 truncate">
+                Chapter {String(chapter.number).padStart(2, "0")}: {chapter.title}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">

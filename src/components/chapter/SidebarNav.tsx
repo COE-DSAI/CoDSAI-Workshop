@@ -28,6 +28,8 @@ interface SidebarNavProps {
   completedChapters: Record<string, boolean>;
   className?: string;
   allWorkshopsList?: readonly Workshop[];
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export function SidebarNav({
@@ -36,8 +38,13 @@ export function SidebarNav({
   completedChapters,
   className = "",
   allWorkshopsList,
+  isCollapsed,
+  onToggleCollapse,
 }: SidebarNavProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const collapsed = isCollapsed !== undefined ? isCollapsed : internalCollapsed;
+  const toggleCollapse = onToggleCollapse || (() => setInternalCollapsed(!internalCollapsed));
+
   const workshops = allWorkshopsList || getAllWorkshops();
 
   // Control which workshops are expanded in the tree (default: active workshop is open)
@@ -99,32 +106,56 @@ export function SidebarNav({
       aria-label="Curriculum tree navigation"
     >
       {/* Top Header */}
-      <div className="border-b border-slate-200/80 px-3.5 py-3">
-        <Link
-          href={`/workshops/${workshop.slug}`}
-          className="group flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          <ChevronLeft className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-700" />
-          {!collapsed && (
-            <span className="truncate">Workshop {String(workshop.number).padStart(2, "0")} Overview</span>
-          )}
-        </Link>
+      <div className="border-b border-slate-200/80 px-3.5 py-3 flex items-center justify-between">
+        {!collapsed ? (
+          <div className="flex-1 min-w-0 pr-2">
+            <Link
+              href={`/workshops/${workshop.slug}`}
+              className="group flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              <ChevronLeft className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-700 shrink-0" />
+              <span className="truncate">Workshop {String(workshop.number).padStart(2, "0")} Overview</span>
+            </Link>
+
+            <div className="mt-2 flex items-center justify-between">
+              <div>
+                <h2 className="text-xs font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+                  <Layers className="h-3.5 w-3.5 text-blue-600" />
+                  <span>Curriculum Tree</span>
+                </h2>
+                <p className="text-[11px] text-slate-500">
+                  Workshops &rarr; Chapters &rarr; Topics
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200/80">
+                {workshops.length} Tracks
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="mx-auto">
+            <button
+              type="button"
+              onClick={toggleCollapse}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              title="Expand sidebar (⌘B)"
+              aria-label="Expand sidebar"
+            >
+              <PanelLeftOpen className="h-4 w-4 text-blue-600" />
+            </button>
+          </div>
+        )}
 
         {!collapsed && (
-          <div className="mt-2 flex items-center justify-between">
-            <div>
-              <h2 className="text-xs font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-blue-600" />
-                <span>Curriculum Tree</span>
-              </h2>
-              <p className="text-[11px] text-slate-500">
-                Workshops &rarr; Chapters &rarr; Topics
-              </p>
-            </div>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200/80">
-              {workshops.length} Tracks
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={toggleCollapse}
+            className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors shrink-0 self-start mt-0.5"
+            title="Collapse sidebar (⌘B)"
+            aria-label="Collapse sidebar"
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </button>
         )}
       </div>
 
@@ -337,9 +368,9 @@ export function SidebarNav({
         )}
         <button
           type="button"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapse}
           className="rounded p-1 text-slate-400 hover:bg-slate-200/60 hover:text-slate-700 ml-auto transition-colors"
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar (⌘B)" : "Collapse sidebar (⌘B)"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
