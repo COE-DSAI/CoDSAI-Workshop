@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CheckCircle2, Cpu } from "lucide-react";
+import { ArrowRight, CheckCircle2, Cpu, ExternalLink } from "lucide-react";
 import { AppHeader } from "@/components/navigation/AppHeader";
 import { AppFooter } from "@/components/navigation/AppFooter";
 import { getWorkshopBySlug, getAllWorkshops } from "@/content/workshops";
@@ -442,6 +442,45 @@ export default async function WorkshopDetailPage({
               </div>
             </div>
           </section>
+
+          {/* Further Reading (Workshop 1 & Workshop 2) */}
+          {(workshop.number === 1 || workshop.number === 2) && (
+            <section className="py-12 border-t border-[var(--border-hairline)]">
+              <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <p className="font-mono text-xs text-[var(--accent)]">
+                    Further reading
+                  </p>
+                  <h3 className="mt-1 text-base font-medium text-[var(--text-primary)]">
+                    {workshop.number === 1
+                      ? "Programiz Python programming guide"
+                      : "GeeksforGeeks introduction to GitHub"}
+                  </h3>
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                    {workshop.number === 1
+                      ? "Visit Programiz for additional Python syntax examples and language reference"
+                      : "Visit GeeksforGeeks for additional GitHub repository and workflow reference"}
+                  </p>
+                </div>
+
+                <a
+                  href={
+                    workshop.number === 1
+                      ? "https://www.programiz.com/python-programming"
+                      : "https://www.geeksforgeeks.org/git/introduction-to-github/"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-raised)] transition-colors duration-150 shrink-0 self-start sm:self-auto"
+                >
+                  <span>
+                    {workshop.number === 1 ? "Open Programiz" : "Open GeeksforGeeks"}
+                  </span>
+                  <ExternalLink className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={1.5} />
+                </a>
+              </div>
+            </section>
+          )}
         </div>
       </main>
 

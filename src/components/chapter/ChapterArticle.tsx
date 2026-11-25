@@ -22,6 +22,7 @@ import {
   ArrowRight,
   ShieldAlert,
   Terminal,
+  ExternalLink,
 } from "lucide-react";
 import { Chapter, Workshop, ChapterAssignment } from "@/types/curriculum";
 
@@ -643,6 +644,43 @@ export function ChapterArticle({
         </section>
       )}
 
+      {/* Further Reading at End of Workshop */}
+      {!nextChapter && (workshop.number === 1 || workshop.number === 2) && (
+        <section className="mt-12 border-t border-[var(--border-hairline)] pt-8">
+          <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="font-mono text-xs text-[var(--accent)] block">
+                Further reading
+              </span>
+              <h3 className="mt-1 text-sm font-medium text-[var(--text-primary)]">
+                {workshop.number === 1
+                  ? "Programiz Python programming guide"
+                  : "GeeksforGeeks introduction to GitHub"}
+              </h3>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                {workshop.number === 1
+                  ? "Visit Programiz for additional Python syntax examples and language reference"
+                  : "Visit GeeksforGeeks for additional GitHub repository and workflow reference"}
+              </p>
+            </div>
+
+            <a
+              href={
+                workshop.number === 1
+                  ? "https://www.programiz.com/python-programming"
+                  : "https://www.geeksforgeeks.org/git/introduction-to-github/"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-raised)] transition-colors duration-150 shrink-0 self-start sm:self-auto"
+            >
+              <span>{workshop.number === 1 ? "Open Programiz" : "Open GeeksforGeeks"}</span>
+              <ExternalLink className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={1.5} />
+            </a>
+          </div>
+        </section>
+      )}
+
       {/* Prev / Next Navigation */}
       <nav
         className="mt-12 pt-6 border-t border-[var(--border-hairline)] flex items-center justify-between gap-4"
@@ -680,15 +718,15 @@ export function ChapterArticle({
           </Link>
         ) : (
           <Link
-            href="/projects/inbox-guardian"
+            href={workshop.number === 1 ? "/projects/inbox-guardian" : `/workshops/${workshop.slug}`}
             className="group flex flex-col text-right ml-auto"
           >
             <span className="text-xs text-[var(--accent)] font-medium inline-flex items-center gap-1 justify-end">
-              <span>Capstone project</span>
+              <span>{workshop.number === 1 ? "Capstone project" : "Workshop summary"}</span>
               <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
             </span>
             <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-150 mt-1">
-              Build Inbox Guardian
+              {workshop.number === 1 ? "Build Inbox Guardian" : "Back to Workshop 02"}
             </span>
           </Link>
         )}

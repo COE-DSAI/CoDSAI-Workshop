@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { BRANDING } from "@/lib/branding";
 import { OrganisationLogo } from "@/components/branding/OrganisationLogo";
 
@@ -112,6 +113,28 @@ export function AppFooter() {
                 <Link href="/learn" className="hover:text-[var(--accent)] transition-colors duration-150">
                   Progress dashboard
                 </Link>
+              </li>
+              <li className="pt-2 border-t border-[var(--border-hairline)]">
+                <a
+                  href="https://www.programiz.com/python-programming"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-[var(--accent)] transition-colors duration-150"
+                >
+                  <span>Programiz Python guide</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-[var(--text-muted)]" strokeWidth={1.5} />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.geeksforgeeks.org/git/introduction-to-github/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-[var(--accent)] transition-colors duration-150"
+                >
+                  <span>GeeksforGeeks GitHub guide</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-[var(--text-muted)]" strokeWidth={1.5} />
+                </a>
               </li>
             </ul>
           </div>
