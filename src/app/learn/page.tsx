@@ -2,19 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  CheckCircle2,
-  Circle,
-  Clock,
-  ArrowRight,
-  BookOpen,
-  RotateCcw,
-  Sparkles,
-  Award,
-  Bookmark,
-  FolderGit2,
-} from "lucide-react";
+import { ArrowRight, RotateCcw, Lock } from "lucide-react";
 import { AppHeader } from "@/components/navigation/AppHeader";
 import { AppFooter } from "@/components/navigation/AppFooter";
 import { getAllWorkshops } from "@/content/workshops";
@@ -42,10 +30,15 @@ export default function LearnerDashboardPage() {
 
   const totalChapters = workshops.reduce((acc, w) => acc + w.chapters.length, 0);
   const completedCount = Object.values(progress.completedChapters).filter(Boolean).length;
-  const overallPercentage = Math.round((completedCount / totalChapters) * 100);
+  const overallPercentage =
+    totalChapters > 0 ? Math.round((completedCount / totalChapters) * 100) : 0;
 
-  // Find next uncompleted chapter
-  let nextChapter: { workshopSlug: string; chapterSlug: string; title: string; number: number } | null = null;
+  let nextChapter: {
+    workshopSlug: string;
+    chapterSlug: string;
+    title: string;
+    number: number;
+  } | null = null;
   for (const w of workshops) {
     for (const ch of w.chapters) {
       if (!progress.completedChapters[`${w.slug}/${ch.slug}`]) {
@@ -62,164 +55,197 @@ export default function LearnerDashboardPage() {
   }
 
   const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all your learning progress and drafts?")) {
+    if (window.confirm("Reset all local learning progress and code drafts?")) {
       resetLearnerProgress();
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
+    <div className="flex min-h-screen flex-col bg-[var(--bg-page)]">
       <AppHeader />
 
-      <main className="flex-1 py-10">
+      <main className="flex-1 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[var(--border-hairline)] pb-6 mb-8">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                Personal Learning Portal
-              </span>
-              <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Learner Dashboard
+              <p className="text-xs font-mono text-[var(--accent)]">
+                Learning progress
+              </p>
+              <h1 className="mt-1 text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[var(--text-primary)]">
+                Learner dashboard
               </h1>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500">
-                Actual local progress tracking across all 10 workshops and hands-on exercises.
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                Local browser progress across available workshops and exercises
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleReset}
-                className="flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-rose-600 transition-colors"
-                title="Clear progress state from local storage"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset Progress
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--negative)] transition-colors duration-150 self-start sm:self-auto"
+              title="Clear local progress"
+            >
+              <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
+              <span>Reset progress</span>
+            </button>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                Overall Completion
+          {/* Metrics Row (compact, numbers only) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5">
+              <span className="text-xs text-[var(--text-muted)] block">
+                Overall completion
               </span>
               <div className="mt-2 flex items-baseline justify-between">
-                <span className="text-3xl font-extrabold text-slate-900">{overallPercentage}%</span>
-                <span className="text-xs text-slate-400 font-mono">
-                  {completedCount}/{totalChapters} Ch
+                <span className="text-3xl font-medium tabular-nums text-[var(--text-primary)]">
+                  {overallPercentage}%
+                </span>
+                <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
+                  {completedCount}/{totalChapters} chapters
                 </span>
               </div>
-              <div className="mt-3 w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div className="mt-3 w-full bg-[var(--bg-raised)] rounded-full h-1.5 overflow-hidden">
                 <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-[var(--accent)] h-1.5 rounded-full transition-[width] duration-300 ease-[var(--ease-out)]"
                   style={{ width: `${overallPercentage}%` }}
                 />
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                Exercises Completed
+            <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5">
+              <span className="text-xs text-[var(--text-muted)] block">
+                Exercises passed
               </span>
-              <div className="mt-2 flex items-baseline justify-between">
-                <span className="text-3xl font-extrabold text-emerald-600">
+              <div className="mt-2">
+                <span className="text-3xl font-medium tabular-nums text-[var(--positive)]">
                   {Object.values(progress.completedExercises).filter(Boolean).length}
                 </span>
-                <Award className="h-5 w-5 text-emerald-500" />
               </div>
-              <p className="mt-2 text-[11px] text-slate-400">Validated via automated test suites</p>
+              <p className="mt-2 text-xs text-[var(--text-muted)]">
+                Validated in Python runner
+              </p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                Last Visited Chapter
+            <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5">
+              <span className="text-xs text-[var(--text-muted)] block">
+                Last visited
               </span>
               <div className="mt-2 truncate">
                 {progress.lastVisitedChapter ? (
                   <Link
                     href={`/workshops/${progress.lastVisitedChapter.workshopSlug}/${progress.lastVisitedChapter.chapterSlug}`}
-                    className="text-sm font-bold text-blue-600 hover:underline truncate block"
+                    className="text-sm font-medium text-[var(--accent)] hover:underline truncate block"
                   >
                     {progress.lastVisitedChapter.title}
                   </Link>
                 ) : (
-                  <span className="text-xs text-slate-400 italic">None yet. Start Workshop 1!</span>
+                  <span className="text-sm text-[var(--text-muted)]">
+                    No chapters visited yet
+                  </span>
                 )}
               </div>
-              <p className="mt-2 text-[11px] text-slate-400">Auto-persisted in local storage</p>
+              <p className="mt-2 text-xs text-[var(--text-muted)]">
+                Saved in browser storage
+              </p>
             </div>
 
-            {/* Recommended Next Chapter Card */}
-            <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-5 shadow-xs flex flex-col justify-between">
+            <div className="rounded-xl border border-[var(--accent-border)] bg-[var(--accent-tint)] p-5 flex flex-col justify-between">
               <div>
-                <span className="text-xs font-bold text-blue-800 uppercase tracking-wider block">
-                  Recommended Next
+                <span className="text-xs font-mono text-[var(--accent)] block">
+                  Up next
                 </span>
-                <p className="mt-1 text-sm font-extrabold text-blue-950 truncate">
-                  {nextChapter ? nextChapter.title : "All Workshops Completed!"}
+                <p className="mt-2 text-sm font-medium text-[var(--text-primary)] truncate">
+                  {nextChapter ? nextChapter.title : "All available chapters complete"}
                 </p>
               </div>
 
               {nextChapter && (
                 <Link
                   href={`/workshops/${nextChapter.workshopSlug}/${nextChapter.chapterSlug}`}
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-900"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:underline"
                 >
-                  <span>Continue Learning</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <span>Continue</span>
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                 </Link>
               )}
             </div>
           </div>
 
-          {/* Workshop Breakdown Grid */}
+          {/* Workshop Breakdown */}
           <div className="mb-12">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Curriculum Progress by Workshop
+            <h2 className="text-lg font-medium text-[var(--text-primary)] mb-4">
+              Progress by workshop
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {workshops.map((w) => {
+                const isLocked = Boolean(w.isLocked || w.chapters.length === 0);
                 const wChaptersCompleted = w.chapters.filter(
                   (ch) => progress.completedChapters[`${w.slug}/${ch.slug}`]
                 ).length;
-                const pct = Math.round((wChaptersCompleted / w.chapters.length) * 100);
+                const pct =
+                  w.chapters.length > 0
+                    ? Math.round((wChaptersCompleted / w.chapters.length) * 100)
+                    : 0;
+
+                if (isLocked) {
+                  return (
+                    <div
+                      key={w.id}
+                      className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-raised)] p-5 flex items-center justify-between"
+                    >
+                      <div>
+                        <span className="text-xs font-mono tabular-nums text-[var(--text-muted)]">
+                          Workshop {String(w.number).padStart(2, "0")}
+                        </span>
+                        <h3 className="text-sm font-medium text-[var(--text-secondary)]">
+                          Upcoming module
+                        </h3>
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                        <Lock className="h-4 w-4" strokeWidth={1.5} />
+                        <span>Locked</span>
+                      </span>
+                    </div>
+                  );
+                }
 
                 return (
                   <div
                     key={w.id}
-                    className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs hover:border-slate-300 transition-colors"
+                    className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-blue-600">
-                          Workshop {w.number}
+                        <span className="text-xs font-mono tabular-nums text-[var(--accent)]">
+                          Workshop {String(w.number).padStart(2, "0")}
                         </span>
-                        <h3 className="text-sm font-bold text-slate-900">{w.title}</h3>
+                        <h3 className="text-sm font-medium text-[var(--text-primary)] mt-1">
+                          {w.title}
+                        </h3>
                       </div>
-                      <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono font-bold text-slate-700">
+                      <span className="rounded border border-[var(--border-hairline)] bg-[var(--bg-raised)] px-2 py-0.5 text-xs font-mono tabular-nums text-[var(--text-primary)]">
                         {pct}%
                       </span>
                     </div>
 
-                    <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="mt-3 w-full bg-[var(--bg-raised)] rounded-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                        className="bg-[var(--accent)] h-1.5 rounded-full transition-[width] duration-300 ease-[var(--ease-out)]"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-                      <span>
-                        {wChaptersCompleted} of {w.chapters.length} chapters complete
+                    <div className="mt-4 flex items-center justify-between text-xs text-[var(--text-muted)]">
+                      <span className="font-mono tabular-nums">
+                        {wChaptersCompleted} of {w.chapters.length} chapters
                       </span>
                       <Link
                         href={`/workshops/${w.slug}`}
-                        className="font-semibold text-blue-600 hover:text-blue-800"
+                        className="font-medium text-[var(--accent)] hover:underline"
                       >
-                        Open Workshop →
+                        Open workshop
                       </Link>
                     </div>
                   </div>
@@ -228,71 +254,52 @@ export default function LearnerDashboardPage() {
             </div>
           </div>
 
-          {/* Featured Capstone Projects */}
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-              <FolderGit2 className="h-5 w-5 text-blue-600" />
-              Featured Capstone Projects
+          {/* Capstone Projects */}
+          <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6">
+            <h2 className="text-lg font-medium text-[var(--text-primary)] mb-4">
+              Capstone projects
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-lg border border-slate-200 p-4 bg-slate-50/50 hover:bg-white transition-colors flex flex-col justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-xl border border-[var(--border-hairline)] p-5 bg-[var(--bg-page)] flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-                    Workshop 1 Capstone
+                  <span className="font-mono text-xs text-[var(--accent)]">
+                    Workshop 01 capstone
                   </span>
-                  <h3 className="mt-2 text-sm font-bold text-slate-900">
-                    Inbox Guardian — Personal Message Scanner
+                  <h3 className="mt-1 text-sm font-medium text-[var(--text-primary)]">
+                    Inbox Guardian — rule-based message scanner
                   </h3>
-                  <p className="mt-1 text-xs text-slate-600 line-clamp-2">
-                    Rule-based CLI threat scanner using pure Python strings, lists of dictionaries, and menus.
+                  <p className="mt-2 text-xs text-[var(--text-secondary)] leading-relaxed">
+                    Command-line scanner using string normalization, dictionaries, and heuristic scoring.
                   </p>
                 </div>
                 <Link
                   href="/projects/inbox-guardian"
-                  className="mt-4 text-xs font-semibold text-blue-600 hover:underline"
+                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:underline"
                 >
-                  View Capstone →
+                  <span>Open workspace</span>
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                 </Link>
               </div>
 
-              <div className="rounded-lg border border-slate-200 p-4 bg-slate-50/50 hover:bg-white transition-colors flex flex-col justify-between">
+              <div className="rounded-xl border border-[var(--border-hairline)] p-5 bg-[var(--bg-page)] flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
-                    Workshop 7 Capstone
+                  <span className="font-mono text-xs text-[var(--accent)]">
+                    Workshop 02 project
                   </span>
-                  <h3 className="mt-2 text-sm font-bold text-slate-900">
-                    Machine Learning Threat Classifier
+                  <h3 className="mt-1 text-sm font-medium text-[var(--text-primary)]">
+                    Git &amp; GitHub multi-branch repository
                   </h3>
-                  <p className="mt-1 text-xs text-slate-600 line-clamp-2">
-                    Statistical logistic regression model with threshold tuning and confusion matrix diagnostics.
+                  <p className="mt-2 text-xs text-[var(--text-secondary)] leading-relaxed">
+                    Local repository setup, branching, merge conflict resolution, and GitHub upstream sync.
                   </p>
                 </div>
                 <Link
-                  href="/workshops/classification/classification-practical-project"
-                  className="mt-4 text-xs font-semibold text-blue-600 hover:underline"
+                  href="/workshops/git-github"
+                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:underline"
                 >
-                  View Lesson →
-                </Link>
-              </div>
-
-              <div className="rounded-lg border border-slate-200 p-4 bg-slate-50/50 hover:bg-white transition-colors flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold uppercase text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
-                    Workshop 9 Capstone
-                  </span>
-                  <h3 className="mt-2 text-sm font-bold text-slate-900">
-                    Streamlit Web App Demo
-                  </h3>
-                  <p className="mt-1 text-xs text-slate-600 line-clamp-2">
-                    Full reactive web interface hosting a pre-trained scikit-learn model with real-time risk gauges.
-                  </p>
-                </div>
-                <Link
-                  href="/workshops/streamlit/practical-streamlit-project"
-                  className="mt-4 text-xs font-semibold text-blue-600 hover:underline"
-                >
-                  View Lesson →
+                  <span>Open workshop</span>
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                 </Link>
               </div>
             </div>

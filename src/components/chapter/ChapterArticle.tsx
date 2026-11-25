@@ -21,8 +21,6 @@ import {
   Play,
   ArrowRight,
   ShieldAlert,
-  FileCode,
-  Flame,
   Terminal,
 } from "lucide-react";
 import { Chapter, Workshop, ChapterAssignment } from "@/types/curriculum";
@@ -82,75 +80,78 @@ export function ChapterArticle({
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Subtle Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
-        <Link href={`/workshops/${workshop.slug}`} className="hover:text-slate-800 transition-colors">
+      {/* Breadcrumb */}
+      <nav className="mb-6 flex items-center gap-2 text-xs text-[var(--text-muted)]" aria-label="Breadcrumb">
+        <Link
+          href={`/workshops/${workshop.slug}`}
+          className="hover:text-[var(--text-primary)] transition-colors duration-150 font-mono tabular-nums"
+        >
           Workshop {String(workshop.number).padStart(2, "0")}
         </Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-800 font-medium">Chapter {formattedNumber}</span>
+        <span>/</span>
+        <span className="text-[var(--text-primary)] font-medium font-mono tabular-nums">
+          Chapter {formattedNumber}
+        </span>
       </nav>
 
       {/* Chapter Header */}
-      <header className="mb-10 pb-6 border-b border-slate-200/80">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <header className="mb-10 pb-6 border-b border-[var(--border-hairline)]">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                CHAPTER {formattedNumber} OF {String(workshop.chapters.length).padStart(2, "0")}
+            <div className="flex items-center gap-3 mb-2 text-xs font-mono tabular-nums">
+              <span className="text-[var(--accent)] font-medium">
+                Chapter {formattedNumber} of {String(workshop.chapters.length).padStart(2, "0")}
               </span>
-              <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1 text-xs text-slate-500">
-                <Clock className="h-3 w-3 text-slate-400" />
-                {chapter.estimatedMinutes} mins reading
+              <span className="text-[var(--border-strong)]">·</span>
+              <span className="inline-flex items-center gap-1.5 text-[var(--text-muted)]">
+                <Clock className="h-4 w-4" strokeWidth={1.5} />
+                <span>{chapter.estimatedMinutes} min</span>
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[var(--text-primary)] leading-tight">
               {chapter.title}
             </h1>
           </div>
 
-          <div>
-            <button
-              type="button"
-              onClick={onToggleComplete}
-              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
-                isCompleted
-                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
-                  : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              {isCompleted ? (
-                <>
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Completed</span>
-                </>
-              ) : (
-                <>
-                  <Circle className="h-3.5 w-3.5 text-slate-400" />
-                  <span>Mark Complete</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onToggleComplete}
+            className={`inline-flex h-9 items-center gap-2 rounded-lg px-3.5 text-xs font-medium transition-colors duration-150 ${
+              isCompleted
+                ? "border border-[var(--positive-border)] bg-[var(--positive-tint)] text-[var(--positive)]"
+                : "border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-raised)]"
+            }`}
+          >
+            {isCompleted ? (
+              <>
+                <CheckCircle2 className="h-4 w-4" strokeWidth={1.5} />
+                <span>Completed</span>
+              </>
+            ) : (
+              <>
+                <Circle className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={1.5} />
+                <span>Mark complete</span>
+              </>
+            )}
+          </button>
         </div>
 
-        {/* Chapter Introduction */}
-        <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
+        <p className="mt-4 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
           {chapter.introduction}
         </p>
 
-        {/* Learning Objectives List */}
         {chapter.learningObjectives && chapter.learningObjectives.length > 0 && (
-          <div className="mt-6 rounded-md border-l-2 border-blue-500 bg-blue-50/40 p-4">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-blue-900 font-semibold block mb-2">
-              Key Learning Objectives
+          <div className="mt-6 rounded-xl border border-[var(--border-hairline)] border-l-2 border-l-[var(--accent)] bg-[var(--bg-surface)] p-4">
+            <span className="text-xs font-medium text-[var(--text-primary)] block mb-2">
+              Learning objectives
             </span>
-            <ul className="space-y-1.5 text-xs text-slate-700">
+            <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
               {chapter.learningObjectives.map((obj, i) => (
-                <li key={i} className="flex items-start gap-2 leading-relaxed">
-                  <span className="text-blue-500 font-semibold">•</span>
+                <li key={i} className="flex items-start gap-2.5 leading-relaxed">
+                  <span className="font-mono tabular-nums text-[var(--accent)] shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   <span>{obj}</span>
                 </li>
               ))}
@@ -160,121 +161,106 @@ export function ChapterArticle({
       </header>
 
       {/* Main Chapter Sections */}
-      <div className="space-y-14">
+      <div className="space-y-12">
         {chapter.sections.map((section) => (
           <section key={section.id} id={section.id} className="scroll-mt-20">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-3 border-b border-slate-200/80 pb-2">
+            <h2 className="text-lg sm:text-xl font-medium tracking-[-0.015em] text-[var(--text-primary)] mb-3 border-b border-[var(--border-hairline)] pb-2">
               {section.title}
             </h2>
 
-            {/* Markdown Prose */}
-            <div className="text-sm leading-relaxed text-slate-700 whitespace-pre-line space-y-3">
+            <div className="text-sm leading-relaxed text-[var(--text-secondary)] whitespace-pre-line space-y-3">
               {section.content}
             </div>
 
-            {/* Callout Box */}
             {section.callout && (
               <div
-                className={`my-5 rounded-md border-l-3 p-4 text-xs leading-relaxed ${
+                className={`my-6 rounded-xl border border-[var(--border-hairline)] border-l-2 p-4 text-xs leading-relaxed ${
                   section.callout.type === "mistake" || section.callout.type === "warning"
-                    ? "border-l-amber-500 bg-amber-50/60 text-amber-950"
+                    ? "border-l-[var(--warning)] bg-[var(--warning-tint)] text-[var(--text-primary)]"
                     : section.callout.type === "tip"
-                    ? "border-l-emerald-500 bg-emerald-50/60 text-emerald-950"
-                    : "border-l-blue-500 bg-blue-50/60 text-blue-950"
+                    ? "border-l-[var(--positive)] bg-[var(--positive-tint)] text-[var(--text-primary)]"
+                    : "border-l-[var(--accent)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
                 }`}
               >
-                <div className="flex items-center gap-2 font-bold mb-1">
+                <div className="flex items-center gap-2 font-medium mb-1">
                   {section.callout.type === "mistake" || section.callout.type === "warning" ? (
-                    <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                    <AlertTriangle className="h-4 w-4 text-[var(--warning)] shrink-0" strokeWidth={1.5} />
                   ) : section.callout.type === "tip" ? (
-                    <Lightbulb className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <Lightbulb className="h-4 w-4 text-[var(--positive)] shrink-0" strokeWidth={1.5} />
                   ) : (
-                    <HelpCircle className="h-4 w-4 text-blue-600 shrink-0" />
+                    <HelpCircle className="h-4 w-4 text-[var(--accent)] shrink-0" strokeWidth={1.5} />
                   )}
                   <span>{section.callout.title}</span>
                 </div>
-                <div className="text-slate-700">{section.callout.content}</div>
+                <div className="text-[var(--text-secondary)]">{section.callout.content}</div>
               </div>
             )}
 
-            {/* Code Examples with Walkthrough & Edge Cases */}
             {section.codeExamples && section.codeExamples.length > 0 && (
               <div className="mt-6 space-y-6">
                 {section.codeExamples.map((ex) => (
                   <div
                     key={ex.id}
-                    className="rounded-lg border border-slate-800 bg-[#0B1220] overflow-hidden shadow-sm"
+                    className="rounded-xl border border-[var(--code-border)] bg-[var(--code-surface)] overflow-hidden"
                   >
-                    {/* Snippet Header */}
-                    <div className="flex items-center justify-between border-b border-slate-800 bg-[#070D18] px-4 py-2 text-xs">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between border-b border-[var(--code-border)] bg-[var(--code-chrome)] px-4 py-2.5 text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
                         {workshop.executionMode === "local-project" ? (
-                          <>
-                            <div className="flex items-center gap-1 mr-1" aria-hidden="true">
-                              <span className="h-2 w-2 rounded-full bg-[#FF5F56]" />
-                              <span className="h-2 w-2 rounded-full bg-[#FFBD2E]" />
-                              <span className="h-2 w-2 rounded-full bg-[#27C93F]" />
-                            </div>
-                            <Terminal className="h-3.5 w-3.5 text-emerald-400" />
-                            <span className="font-mono text-slate-300 font-medium">{ex.title}</span>
-                          </>
+                          <Terminal className="h-4 w-4 text-[var(--code-secondary)] shrink-0" strokeWidth={1.5} />
                         ) : (
-                          <>
-                            <Code2 className="h-3.5 w-3.5 text-blue-400" />
-                            <span className="font-mono text-slate-300 font-medium">{ex.title}</span>
-                          </>
+                          <Code2 className="h-4 w-4 text-[var(--code-secondary)] shrink-0" strokeWidth={1.5} />
                         )}
+                        <span className="font-mono text-[var(--code-text)] truncate">{ex.title}</span>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         {workshop.executionMode !== "local-project" && onSelectCodeExample && (
                           <button
                             type="button"
                             onClick={() => onSelectCodeExample(ex.code)}
-                            className="inline-flex items-center gap-1 rounded bg-blue-600/20 px-2 py-0.5 text-[11px] font-medium text-blue-300 hover:bg-blue-600/30 transition-colors"
+                            className="inline-flex h-7 items-center gap-1.5 rounded-md border border-[var(--code-border)] bg-[var(--code-raised)] px-2.5 text-xs font-medium text-[var(--code-text)] hover:bg-[var(--accent)] hover:border-[var(--accent)] transition-colors duration-150"
                             title="Load this code into the right-hand Python workspace"
                           >
-                            <Play className="h-3 w-3" />
-                            <span>Load to Editor</span>
+                            <Play className="h-3.5 w-3.5" strokeWidth={1.5} />
+                            <span>Load to editor</span>
                           </button>
                         )}
                         <button
                           type="button"
                           onClick={() => handleCopy(ex.id, ex.code)}
-                          className="rounded p-1 text-slate-400 hover:text-slate-200 transition-colors"
+                          className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--code-secondary)] hover:bg-[var(--code-raised)] hover:text-[var(--code-text)] transition-colors duration-150"
                           title="Copy snippet"
+                          aria-label="Copy snippet"
                         >
                           {copiedCodeId === ex.id ? (
-                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                            <Check className="h-4 w-4 text-[#4CC38A]" strokeWidth={1.5} />
                           ) : (
-                            <Copy className="h-3.5 w-3.5" />
+                            <Copy className="h-4 w-4" strokeWidth={1.5} />
                           )}
                         </button>
                       </div>
                     </div>
 
-                    {/* Code Body */}
-                    <div className="p-4">
+                    <div className="p-4 space-y-3">
                       {ex.description && (
-                        <p className="text-xs text-slate-400 mb-3">
-                          {ex.description}
-                        </p>
+                        <p className="text-xs text-[var(--code-secondary)]">{ex.description}</p>
                       )}
 
-                      <pre className="overflow-x-auto font-mono text-xs text-slate-100 leading-relaxed bg-[#0F172A] p-3 rounded border border-slate-800/80">
+                      <pre className="overflow-x-auto font-mono text-xs text-[var(--code-text)] leading-relaxed bg-[var(--code-chrome)] p-3 rounded-lg border border-[var(--code-border)]">
                         <code>{ex.code}</code>
                       </pre>
 
-                      {/* Line-by-line Walkthrough */}
                       {ex.stepByStepWalkthrough && ex.stepByStepWalkthrough.length > 0 && (
-                        <div className="mt-3 rounded bg-slate-900/80 p-3 border border-slate-800 text-xs">
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-1.5 font-semibold">
-                            Execution Walkthrough
+                        <div className="rounded-lg bg-[var(--code-raised)] p-3 border border-[var(--code-border)] text-xs">
+                          <span className="font-mono text-xs text-[var(--code-secondary)] block mb-2">
+                            Execution walkthrough
                           </span>
-                          <ol className="space-y-1 text-slate-300">
+                          <ol className="space-y-1 text-[var(--code-text)]">
                             {ex.stepByStepWalkthrough.map((step, idx) => (
                               <li key={idx} className="leading-relaxed">
-                                <span className="text-slate-500 font-mono mr-1.5">{idx + 1}.</span>
+                                <span className="text-[var(--code-muted)] font-mono tabular-nums mr-2">
+                                  {idx + 1}.
+                                </span>
                                 {step}
                               </li>
                             ))}
@@ -282,31 +268,29 @@ export function ChapterArticle({
                         </div>
                       )}
 
-                      {/* Expected Console Output */}
                       {ex.expectedOutput && (
-                        <div className="mt-3 rounded bg-black/60 p-2.5 font-mono text-xs border border-slate-800">
-                          <span className="text-[10px] uppercase font-bold text-slate-500 block">
-                            Expected Terminal Output:
+                        <div className="rounded-lg bg-[var(--code-chrome)] p-3 font-mono text-xs border border-[var(--code-border)]">
+                          <span className="text-[11px] text-[var(--code-muted)] block">
+                            Expected output
                           </span>
-                          <pre className="mt-1 text-emerald-400 whitespace-pre-wrap">{ex.expectedOutput}</pre>
+                          <pre className="mt-1 text-[#4CC38A] whitespace-pre-wrap">{ex.expectedOutput}</pre>
                         </div>
                       )}
 
-                      {/* Edge Cases & Special Cases */}
                       {ex.edgeCases && (
-                        <div className="mt-3 rounded bg-amber-950/30 p-2.5 font-mono text-xs border border-amber-800/40 text-amber-300">
-                          <span className="text-[10px] uppercase font-bold text-amber-400 flex items-center gap-1.5 mb-1">
-                            <AlertTriangle className="h-3 w-3" />
-                            Edge Cases &amp; Special Considerations:
+                        <div className="rounded-lg bg-[#251E17] p-3 text-xs border border-[#FBBF24]/25 text-[#FDE68A]">
+                          <span className="font-medium flex items-center gap-1.5 mb-1">
+                            <AlertTriangle className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                            <span>Edge cases</span>
                           </span>
-                          <p className="text-[11px] font-sans text-amber-200/90 leading-relaxed whitespace-pre-line">
+                          <p className="text-xs text-[#FCD34D]/90 leading-relaxed whitespace-pre-line">
                             {ex.edgeCases}
                           </p>
                         </div>
                       )}
 
                       {ex.whyItHappens && (
-                        <p className="mt-2 text-[11px] text-slate-400 italic">
+                        <p className="text-xs text-[var(--code-secondary)]">
                           Why it happens: {ex.whyItHappens}
                         </p>
                       )}
@@ -319,35 +303,35 @@ export function ChapterArticle({
         ))}
       </div>
 
-      {/* Chapter Practice Exercises */}
+      {/* Practice Exercises */}
       {chapter.exercises && chapter.exercises.length > 0 && (
-        <section id="exercises" className="mt-14 border-t border-slate-200/80 pt-8 scroll-mt-20">
+        <section id="exercises" className="mt-12 border-t border-[var(--border-hairline)] pt-8 scroll-mt-20">
           <div className="flex items-center gap-2 mb-2">
-            <Award className="h-5 w-5 text-blue-600" />
-            <h2 className="text-xl font-bold text-slate-900">
-              Practice Exercise
+            <Award className="h-4 w-4 text-[var(--accent)]" strokeWidth={1.5} />
+            <h2 className="text-xl font-medium text-[var(--text-primary)]">
+              Practice exercise
             </h2>
           </div>
-          <p className="text-xs text-slate-500 mb-6">
-            Work through these exercises to build muscle memory before attempting the formal chapter assignment.
+          <p className="text-xs text-[var(--text-secondary)] mb-6">
+            Work through the exercise before starting the chapter assignment
           </p>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {chapter.exercises.map((exercise) => (
               <div
                 key={exercise.id}
-                className="rounded-lg border border-slate-200 bg-white p-5"
+                className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5"
               >
                 <div className="flex items-center justify-between gap-4 mb-2">
-                  <h3 className="text-sm font-semibold text-slate-900">
+                  <h3 className="text-sm font-medium text-[var(--text-primary)]">
                     {exercise.title}
                   </h3>
-                  <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-mono font-medium uppercase text-slate-600">
+                  <span className="rounded border border-[var(--border-hairline)] bg-[var(--bg-raised)] px-2 py-0.5 text-xs font-mono text-[var(--text-secondary)]">
                     {exercise.difficulty}
                   </span>
                 </div>
 
-                <p className="text-xs leading-relaxed text-slate-600 mb-4">
+                <p className="text-xs leading-relaxed text-[var(--text-secondary)] mb-4">
                   {exercise.prompt}
                 </p>
 
@@ -355,10 +339,10 @@ export function ChapterArticle({
                   <button
                     type="button"
                     onClick={() => onSelectCodeExample(exercise.starterCode)}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-blue-700 transition-colors"
+                    className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--accent)] px-4 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors duration-150"
                   >
-                    <Play className="h-3 w-3" />
-                    <span>Load Exercise into Python Editor</span>
+                    <Play className="h-3.5 w-3.5" strokeWidth={1.5} />
+                    <span>Load into Python editor</span>
                   </button>
                 )}
               </div>
@@ -367,153 +351,163 @@ export function ChapterArticle({
         </section>
       )}
 
-      {/* Chapter Assignment Section (NEW) */}
+      {/* Chapter Assignment */}
       {chapter.assignment && (
-        <section id="assignment" className="mt-14 border-t-2 border-purple-200 pt-8 scroll-mt-20">
-          <div className="rounded-xl border border-purple-200 bg-gradient-to-b from-purple-50/40 to-white p-6 sm:p-7 shadow-xs">
+        <section id="assignment" className="mt-12 border-t border-[var(--border-hairline)] pt-8 scroll-mt-20">
+          <div className="rounded-xl border border-[var(--accent-border)] bg-[var(--bg-surface)] p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-mono font-bold uppercase text-purple-800 border border-purple-200">
-                  Chapter {formattedNumber} Assignment
+              <div className="flex items-center gap-2 text-xs font-mono tabular-nums">
+                <span className="rounded border border-[var(--accent-border)] bg-[var(--accent-tint)] px-2 py-0.5 font-medium text-[var(--accent)]">
+                  Chapter {formattedNumber} assignment
                 </span>
-                <span className="text-xs font-semibold text-purple-700">
-                  Mandatory Milestone
-                </span>
+                <span className="text-[var(--text-muted)]">Milestone</span>
               </div>
 
               {onSelectAssignment && (
                 <button
                   type="button"
                   onClick={() => onSelectAssignment(chapter.assignment!)}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-purple-700 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-purple-800 transition-colors"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--accent)] px-4 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors duration-150"
                 >
-                  <Play className="h-3.5 w-3.5 fill-white" />
-                  <span>Load Assignment into Python Editor</span>
+                  <Play className="h-3.5 w-3.5" strokeWidth={1.5} />
+                  <span>Load assignment</span>
                 </button>
               )}
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            <h2 className="text-xl font-medium tracking-[-0.015em] text-[var(--text-primary)]">
               {chapter.assignment.title}
             </h2>
 
-            {/* Scenario */}
-            <div className="mt-4 text-xs sm:text-sm text-slate-700 leading-relaxed bg-white/80 p-4 rounded-lg border border-purple-100">
-              <span className="font-semibold text-purple-900 block mb-1">
-                Practical Scenario:
+            <div className="mt-4 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-page)] p-4 rounded-lg border border-[var(--border-hairline)]">
+              <span className="font-medium text-[var(--text-primary)] block mb-1">
+                Scenario
               </span>
               <p>{chapter.assignment.scenario}</p>
             </div>
 
-            {/* Specific Requirements Checklist */}
-            <div className="mt-5">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block mb-2.5">
-                Implementation Requirements:
+            <div className="mt-6">
+              <span className="text-xs font-medium text-[var(--text-primary)] block mb-3">
+                Implementation requirements
               </span>
-              <ul className="space-y-2 text-xs text-slate-700">
+              <ul className="space-y-2 text-xs text-[var(--text-secondary)]">
                 {chapter.assignment.requirements.map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 leading-relaxed bg-white p-2.5 rounded border border-slate-200/70">
-                    <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                  <li
+                    key={idx}
+                    className="flex items-start gap-2.5 leading-relaxed bg-[var(--bg-page)] p-3 rounded-lg border border-[var(--border-hairline)]"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-[var(--accent)] shrink-0 mt-0.5" strokeWidth={1.5} />
                     <span>{req}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Edge Cases & Special Conditions to Handle */}
-            <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50/70 p-4 text-xs">
-              <div className="flex items-center gap-2 font-bold text-amber-900 mb-2">
-                <ShieldAlert className="h-4 w-4 text-amber-700 shrink-0" />
-                <span>Edge Cases &amp; Special Conditions to Address:</span>
+            <div className="mt-6 rounded-lg border border-[var(--warning-border)] bg-[var(--warning-tint)] p-4 text-xs">
+              <div className="flex items-center gap-2 font-medium text-[var(--text-primary)] mb-2">
+                <ShieldAlert className="h-4 w-4 text-[var(--warning)] shrink-0" strokeWidth={1.5} />
+                <span>Edge cases to handle</span>
               </div>
-              <ul className="space-y-1.5 text-amber-950">
+              <ul className="space-y-1.5 text-[var(--text-secondary)]">
                 {chapter.assignment.edgeCasesToHandle.map((ec, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-amber-600 font-bold">•</span>
+                    <span className="font-mono tabular-nums text-[var(--warning)] shrink-0">
+                      {idx + 1}.
+                    </span>
                     <span>{ec}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Starter Code Scaffold Preview */}
-            <div className="mt-5">
+            <div className="mt-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-slate-700">
-                  Starter Template Code:
+                <span className="text-xs font-medium text-[var(--text-primary)]">
+                  Starter template
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCopyAssignment(chapter.assignment!.starterCode)}
-                  className="inline-flex items-center gap-1 text-xs text-purple-700 hover:text-purple-900 font-medium"
+                  className="inline-flex items-center gap-1.5 text-xs text-[var(--accent)] hover:underline font-medium"
                 >
-                  {copiedAssignmentCode ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-                  <span>{copiedAssignmentCode ? "Copied" : "Copy Template"}</span>
+                  {copiedAssignmentCode ? (
+                    <Check className="h-4 w-4 text-[var(--positive)]" strokeWidth={1.5} />
+                  ) : (
+                    <Copy className="h-4 w-4" strokeWidth={1.5} />
+                  )}
+                  <span>{copiedAssignmentCode ? "Copied" : "Copy template"}</span>
                 </button>
               </div>
 
-              <pre className="rounded-lg bg-[#0B1220] p-3 font-mono text-xs text-slate-200 border border-slate-800 overflow-x-auto max-h-56 leading-relaxed">
+              <pre className="rounded-lg bg-[var(--code-surface)] p-4 font-mono text-xs text-[var(--code-text)] border border-[var(--code-border)] overflow-x-auto max-h-56 leading-relaxed">
                 <code>{chapter.assignment.starterCode}</code>
               </pre>
             </div>
 
-            {/* Progressive 3-Tier Hints */}
-            <div className="mt-5 pt-4 border-t border-purple-100">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-2">
-                Progressive Hints:
+            <div className="mt-6 pt-4 border-t border-[var(--border-hairline)]">
+              <span className="text-xs font-medium text-[var(--text-primary)] block mb-3">
+                Progressive hints
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {(["Concept Hint", "Approach Hint", "Implementation Detail"] as const).map((label, hIdx) => {
+                {(["Concept", "Approach", "Implementation"] as const).map((label, hIdx) => {
                   const isOpen = activeAssignmentHint === hIdx;
                   return (
                     <button
                       key={hIdx}
                       type="button"
                       onClick={() => setActiveAssignmentHint(isOpen ? -1 : hIdx)}
-                      className={`text-left rounded-md p-2.5 text-xs transition-colors border ${
+                      className={`text-left rounded-lg p-3 text-xs transition-colors duration-150 border ${
                         isOpen
-                          ? "bg-purple-100 border-purple-300 text-purple-950 font-semibold"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                          ? "bg-[var(--accent-tint)] border-[var(--accent-border)] text-[var(--accent)] font-medium"
+                          : "bg-[var(--bg-surface)] border-[var(--border-hairline)] text-[var(--text-secondary)] hover:bg-[var(--bg-raised)]"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-mono text-[10px] uppercase text-purple-700">Hint {hIdx + 1}</span>
-                        {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        <span className="font-mono text-[11px] tabular-nums">Hint {hIdx + 1}</span>
+                        {isOpen ? (
+                          <ChevronUp className="h-3.5 w-3.5" strokeWidth={1.5} />
+                        ) : (
+                          <ChevronDown className="h-3.5 w-3.5" strokeWidth={1.5} />
+                        )}
                       </div>
-                      <span className="block text-[11px] font-medium">{label}</span>
+                      <span className="block text-xs">{label}</span>
                     </button>
                   );
                 })}
               </div>
 
               {activeAssignmentHint >= 0 && (
-                <div className="mt-3 p-3.5 rounded-lg bg-purple-50/80 border border-purple-200 text-xs text-purple-950 leading-relaxed">
-                  <strong className="block mb-1 text-purple-900">
-                    Hint {activeAssignmentHint + 1}:
-                  </strong>
+                <div className="mt-3 p-4 rounded-lg bg-[var(--accent-tint)] border border-[var(--accent-border)] text-xs text-[var(--text-primary)] leading-relaxed">
+                  <span className="font-medium block mb-1">
+                    Hint {activeAssignmentHint + 1}
+                  </span>
                   {chapter.assignment.hints[activeAssignmentHint]}
                 </div>
               )}
             </div>
 
-            {/* Reference Solution Toggle */}
-            <div className="mt-5 pt-4 border-t border-purple-100">
+            <div className="mt-6 pt-4 border-t border-[var(--border-hairline)]">
               <button
                 type="button"
                 onClick={() => setShowAssignmentSolution(!showAssignmentSolution)}
-                className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5"
+                className="text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] inline-flex items-center gap-1.5"
               >
-                <span>{showAssignmentSolution ? "Hide Reference Solution" : "Reveal Reference Solution"}</span>
-                {showAssignmentSolution ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                <span>{showAssignmentSolution ? "Hide reference solution" : "Reveal reference solution"}</span>
+                {showAssignmentSolution ? (
+                  <ChevronUp className="h-4 w-4" strokeWidth={1.5} />
+                ) : (
+                  <ChevronDown className="h-4 w-4" strokeWidth={1.5} />
+                )}
               </button>
 
               {showAssignmentSolution && (
                 <div className="mt-3 space-y-3">
-                  <pre className="rounded-lg bg-[#0B1220] p-4 font-mono text-xs text-emerald-300 border border-slate-800 overflow-x-auto leading-relaxed">
+                  <pre className="rounded-lg bg-[var(--code-surface)] p-4 font-mono text-xs text-[#4CC38A] border border-[var(--code-border)] overflow-x-auto leading-relaxed">
                     <code>{chapter.assignment.referenceSolution}</code>
                   </pre>
-                  <p className="text-xs text-slate-600 leading-relaxed bg-white p-3 rounded border border-slate-200">
-                    <strong>Solution Architecture:</strong> {chapter.assignment.solutionExplanation}
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-page)] p-3 rounded-lg border border-[var(--border-hairline)]">
+                    <strong className="font-medium text-[var(--text-primary)]">Solution notes: </strong>
+                    {chapter.assignment.solutionExplanation}
                   </p>
                 </div>
               )}
@@ -522,47 +516,50 @@ export function ChapterArticle({
         </section>
       )}
 
-      {/* Chapter Recap & Revision */}
+      {/* Chapter Recap */}
       {chapter.recap && (
-        <section className="mt-14 border-t border-slate-200/80 pt-8">
+        <section className="mt-12 border-t border-[var(--border-hairline)] pt-8">
           <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="h-5 w-5 text-blue-600" />
-            <h2 className="text-xl font-bold text-slate-900">
-              Chapter Summary &amp; Revision
+            <BookOpen className="h-4 w-4 text-[var(--accent)]" strokeWidth={1.5} />
+            <h2 className="text-xl font-medium text-[var(--text-primary)]">
+              Chapter summary
             </h2>
           </div>
-          <p className="text-xs text-slate-500 mb-6">
-            Key concepts and syntax cards for revision.
+          <p className="text-xs text-[var(--text-secondary)] mb-6">
+            Key concepts and syntax cards for review
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Key Concepts */}
-            <div className="rounded-lg border border-slate-200 bg-white p-4">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold block mb-3">
-                Key Concepts
+            <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5">
+              <span className="text-xs font-medium text-[var(--text-muted)] block mb-3">
+                Key concepts
               </span>
-              <ul className="space-y-2 text-xs text-slate-700">
+              <ul className="space-y-2 text-xs text-[var(--text-secondary)]">
                 {chapter.recap.keyConcepts.map((kc, idx) => (
-                  <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <span className="text-blue-500 font-semibold">•</span>
+                  <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+                    <span className="font-mono tabular-nums text-[var(--accent)] shrink-0">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
                     <span>{kc}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Essential Syntax */}
-            <div className="rounded-lg border border-slate-200 bg-white p-4">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold block mb-3">
-                Syntax Reference
+            <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5">
+              <span className="text-xs font-medium text-[var(--text-muted)] block mb-3">
+                Syntax reference
               </span>
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {chapter.recap.essentialSyntax.map((syn, idx) => (
-                  <div key={idx} className="rounded bg-slate-50 p-2 border border-slate-100">
-                    <code className="text-xs font-mono font-semibold text-blue-700 block">
+                  <div
+                    key={idx}
+                    className="rounded-lg bg-[var(--bg-page)] p-3 border border-[var(--border-hairline)]"
+                  >
+                    <code className="text-xs font-mono font-medium text-[var(--accent)] block">
                       {syn.syntax}
                     </code>
-                    <span className="text-[11px] text-slate-600 mt-0.5 block">
+                    <span className="text-xs text-[var(--text-secondary)] mt-1 block">
                       {syn.description}
                     </span>
                   </div>
@@ -573,28 +570,31 @@ export function ChapterArticle({
         </section>
       )}
 
-      {/* Concept Self-Assessment */}
+      {/* Knowledge Check */}
       {chapter.selfAssessment && chapter.selfAssessment.length > 0 && (
-        <section className="mt-14 border-t border-slate-200/80 pt-8">
+        <section className="mt-12 border-t border-[var(--border-hairline)] pt-8">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            <h2 className="text-xl font-bold text-slate-900">
-              Knowledge Check
+            <CheckCircle2 className="h-4 w-4 text-[var(--positive)]" strokeWidth={1.5} />
+            <h2 className="text-xl font-medium text-[var(--text-primary)]">
+              Knowledge check
             </h2>
           </div>
-          <p className="text-xs text-slate-500 mb-6">
-            Confirm your understanding of the chapter concepts.
+          <p className="text-xs text-[var(--text-secondary)] mb-6">
+            Verify your grasp of the chapter concepts
           </p>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {chapter.selfAssessment.map((q) => {
               const selected = selectedQuizAnswers[q.id];
               const isAnswered = selected !== undefined;
               const isCorrect = isAnswered && selected === q.correctAnswer;
 
               return (
-                <div key={q.id} className="rounded-lg border border-slate-200 bg-white p-5">
-                  <p className="text-xs font-semibold text-slate-900 mb-3">
+                <div
+                  key={q.id}
+                  className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5"
+                >
+                  <p className="text-xs font-medium text-[var(--text-primary)] mb-3">
                     {q.prompt}
                   </p>
 
@@ -607,18 +607,18 @@ export function ChapterArticle({
                             key={optIdx}
                             type="button"
                             onClick={() => handleQuizSelect(q.id, optIdx)}
-                            className={`w-full text-left rounded-md px-3 py-2 text-xs transition-colors flex items-center justify-between ${
+                            className={`w-full text-left rounded-lg px-3 py-2 text-xs transition-colors duration-150 flex items-center justify-between border ${
                               isOptionSelected
                                 ? isCorrect
-                                  ? "bg-emerald-50 text-emerald-900 border border-emerald-300 font-medium"
-                                  : "bg-rose-50 text-rose-900 border border-rose-300 font-medium"
-                                : "border border-slate-200 bg-slate-50/50 text-slate-700 hover:bg-slate-100"
+                                  ? "bg-[var(--positive-tint)] text-[var(--positive)] border-[var(--positive-border)] font-medium"
+                                  : "bg-[var(--negative-tint)] text-[var(--negative)] border-[var(--negative-border)] font-medium"
+                                : "border-[var(--border-hairline)] bg-[var(--bg-page)] text-[var(--text-secondary)] hover:bg-[var(--bg-raised)]"
                             }`}
                           >
                             <span>{opt}</span>
                             {isOptionSelected && (
-                              <span className="text-[10px] font-mono font-bold">
-                                {isCorrect ? "✓ Correct" : "✗ Review concept"}
+                              <span className="text-[11px] font-mono shrink-0 ml-2">
+                                {isCorrect ? "Correct" : "Review"}
                               </span>
                             )}
                           </button>
@@ -628,9 +628,11 @@ export function ChapterArticle({
                   )}
 
                   {isAnswered && (
-                    <p className={`mt-3 text-xs leading-relaxed ${
-                      isCorrect ? "text-emerald-700" : "text-rose-700"
-                    }`}>
+                    <p
+                      className={`mt-3 text-xs leading-relaxed ${
+                        isCorrect ? "text-[var(--positive)]" : "text-[var(--negative)]"
+                      }`}
+                    >
                       {q.explanation}
                     </p>
                   )}
@@ -641,18 +643,22 @@ export function ChapterArticle({
         </section>
       )}
 
-      {/* Prev / Next Chapter Navigation */}
-      <nav className="mt-14 pt-6 border-t border-slate-200/80 flex items-center justify-between gap-4" aria-label="Chapter progression">
+      {/* Prev / Next Navigation */}
+      <nav
+        className="mt-12 pt-6 border-t border-[var(--border-hairline)] flex items-center justify-between gap-4"
+        aria-label="Chapter progression"
+      >
         {prevChapter ? (
           <Link
             href={`/workshops/${workshop.slug}/${prevChapter.slug}`}
             className="group flex flex-col text-left"
           >
-            <span className="text-[11px] text-slate-400 group-hover:text-blue-600 flex items-center gap-1">
-              <ChevronLeft className="h-3 w-3" /> Previous Chapter
+            <span className="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)] inline-flex items-center gap-1">
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
+              <span>Previous chapter</span>
             </span>
-            <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-              Ch {prevChapter.number}: {prevChapter.title}
+            <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-150 mt-1">
+              Ch {String(prevChapter.number).padStart(2, "0")}: {prevChapter.title}
             </span>
           </Link>
         ) : (
@@ -664,11 +670,12 @@ export function ChapterArticle({
             href={`/workshops/${workshop.slug}/${nextChapter.slug}`}
             className="group flex flex-col text-right ml-auto"
           >
-            <span className="text-[11px] text-slate-400 group-hover:text-blue-600 flex items-center gap-1 justify-end">
-              Next Chapter <ChevronRight className="h-3 w-3" />
+            <span className="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)] inline-flex items-center gap-1 justify-end">
+              <span>Next chapter</span>
+              <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
             </span>
-            <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-              Ch {nextChapter.number}: {nextChapter.title}
+            <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-150 mt-1">
+              Ch {String(nextChapter.number).padStart(2, "0")}: {nextChapter.title}
             </span>
           </Link>
         ) : (
@@ -676,10 +683,11 @@ export function ChapterArticle({
             href="/projects/inbox-guardian"
             className="group flex flex-col text-right ml-auto"
           >
-            <span className="text-[11px] text-blue-600 font-semibold flex items-center gap-1 justify-end">
-              Capstone Project <ArrowRight className="h-3 w-3" />
+            <span className="text-xs text-[var(--accent)] font-medium inline-flex items-center gap-1 justify-end">
+              <span>Capstone project</span>
+              <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
             </span>
-            <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+            <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-150 mt-1">
               Build Inbox Guardian
             </span>
           </Link>

@@ -9,12 +9,9 @@ import {
   CheckSquare,
   Square,
   AlertCircle,
-  HelpCircle,
   ChevronDown,
   ChevronRight,
-  Sparkles,
   GitBranch,
-  ShieldCheck,
 } from "lucide-react";
 import { Chapter, Workshop } from "@/types/curriculum";
 
@@ -24,7 +21,6 @@ interface GitTerminalCompanionProps {
 }
 
 export function GitTerminalCompanion({
-  workshop,
   chapter,
 }: GitTerminalCompanionProps) {
   const [platform, setPlatform] = useState<"mac" | "win" | "linux">("mac");
@@ -46,7 +42,6 @@ export function GitTerminalCompanion({
     setChecklist((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Chapter-specific command palettes
   const getChapterCommands = () => {
     switch (chapter.number) {
       case 1:
@@ -60,24 +55,30 @@ export function GitTerminalCompanion({
           {
             cmd: 'git config --global user.name "Your Name"',
             desc: "Set your global developer name attached to all commits",
-            flags: '--global: writes to ~/.gitconfig; quotes required for spaces',
+            flags: "--global: writes to ~/.gitconfig; quotes required for spaces",
             output: "(silent on success)",
           },
           {
             cmd: 'git config --global user.email "your.email@example.com"',
             desc: "Set your global developer email (matches GitHub profile)",
-            flags: '--global: writes to ~/.gitconfig',
+            flags: "--global: writes to ~/.gitconfig",
             output: "(silent on success)",
           },
           {
             cmd: "git config --global init.defaultBranch main",
-            desc: "Configure modern default initial branch name to main",
-            flags: "init.defaultBranch: sets default for all future 'git init'",
+            desc: "Configure default initial branch name to main",
+            flags: "init.defaultBranch: sets default for all future git init",
             output: "(silent on success)",
           },
           {
-            cmd: platform === "win" ? "git config --global core.autocrlf true" : "git config --global core.autocrlf input",
-            desc: platform === "win" ? "Normalize CRLF to LF on Windows" : "Normalize line endings on macOS/Linux",
+            cmd:
+              platform === "win"
+                ? "git config --global core.autocrlf true"
+                : "git config --global core.autocrlf input",
+            desc:
+              platform === "win"
+                ? "Normalize CRLF to LF on Windows"
+                : "Normalize line endings on macOS and Linux",
             flags: "core.autocrlf: prevents cross-platform whitespace diff issues",
             output: "(silent on success)",
           },
@@ -90,19 +91,19 @@ export function GitTerminalCompanion({
           {
             cmd: "gh auth login",
             desc: "Launch interactive GitHub CLI login via browser OAuth or PAT",
-            flags: "Configures OS keychain/credential helper automatically",
-            output: "✓ Logged in to github.com account your-username (keyring)",
+            flags: "Configures OS keychain/credential helper",
+            output: "Logged in to github.com account your-username (keyring)",
           },
           {
             cmd: "gh auth status",
             desc: "Verify active GitHub authentication status and token scopes",
             flags: "Checks network connection to github.com API",
-            output: "✓ Logged in to github.com as your-username",
+            output: "Logged in to github.com as your-username",
           },
           {
             cmd: "gh auth setup-git",
             desc: "Configure Git to use GitHub CLI as a credential helper",
-            flags: "Eliminates repeated username/password prompts for HTTPS",
+            flags: "Eliminates repeated password prompts for HTTPS",
             output: "(silent on success)",
           },
         ];
@@ -110,7 +111,7 @@ export function GitTerminalCompanion({
         return [
           {
             cmd: "mkdir my-ai-project && cd my-ai-project",
-            desc: "Create and navigate into a clean project directory",
+            desc: "Create and navigate into a project directory",
             flags: "mkdir: create folder; cd: change directory",
             output: "",
           },
@@ -128,19 +129,19 @@ export function GitTerminalCompanion({
           },
           {
             cmd: "git add .",
-            desc: "Stage all new, modified, and deleted files into the Index",
+            desc: "Stage all new, modified, and deleted files into the index",
             flags: ".: current directory recursively",
             output: "(silent on success)",
           },
           {
             cmd: 'git commit -m "feat: initial commit for ai scanner"',
             desc: "Record staged changes into an immutable commit snapshot",
-            flags: '-m: inline commit message (Conventional Commits recommended)',
+            flags: "-m: inline commit message",
             output: "[main (root-commit) 7a8b9c0] feat: initial commit...",
           },
           {
             cmd: "git log --oneline --graph --decorate",
-            desc: "View clear single-line graphical commit history",
+            desc: "View single-line graphical commit history",
             flags: "--oneline: 1 line per commit; --graph: branch ASCII tree",
             output: "* 7a8b9c0 (HEAD -> main) feat: initial commit",
           },
@@ -149,13 +150,13 @@ export function GitTerminalCompanion({
         return [
           {
             cmd: "git branch",
-            desc: "List all local branches (* denotes currently active branch)",
+            desc: "List all local branches (* marks active branch)",
             flags: "-a: include remote branches",
             output: "* main",
           },
           {
             cmd: "git switch -c feature/scanner-logic",
-            desc: "Create and switch to a new isolated feature branch (Modern)",
+            desc: "Create and switch to a new isolated feature branch",
             flags: "-c: create new branch pointer and point HEAD to it",
             output: "Switched to a new branch 'feature/scanner-logic'",
           },
@@ -168,7 +169,7 @@ export function GitTerminalCompanion({
           {
             cmd: "git switch main",
             desc: "Switch back to the primary main branch",
-            flags: "Updates working directory files to match main's snapshot",
+            flags: "Updates working directory files to match main",
             output: "Switched to branch 'main'",
           },
           {
@@ -179,14 +180,14 @@ export function GitTerminalCompanion({
           },
           {
             cmd: "git merge --abort",
-            desc: "Cancel an in-progress merge conflict and restore clean state",
-            flags: "--abort: undoes failed merge attempt safely",
+            desc: "Cancel an in-progress merge conflict and restore state",
+            flags: "--abort: undoes failed merge attempt",
             output: "(resets files to pre-merge state)",
           },
           {
             cmd: "git branch -d feature/scanner-logic",
             desc: "Safely delete merged feature branch pointer",
-            flags: "-d: safe delete (verifies branch is merged into HEAD)",
+            flags: "-d: verifies branch is merged into HEAD",
             output: "Deleted branch feature/scanner-logic.",
           },
         ];
@@ -194,7 +195,7 @@ export function GitTerminalCompanion({
         return [
           {
             cmd: "git reset --soft HEAD~1",
-            desc: "Undo last commit; keep all changes staged in the Index",
+            desc: "Undo last commit; keep all changes staged in the index",
             flags: "--soft: moves HEAD back 1 commit; preserves staging area",
             output: "(silent on success; check with git status)",
           },
@@ -206,31 +207,31 @@ export function GitTerminalCompanion({
           },
           {
             cmd: "git reset --hard HEAD~1",
-            desc: "Undo last commit and permanently wipe working tree edits",
+            desc: "Undo last commit and permanently discard working tree edits",
             flags: "--hard: destructive; discards uncommitted work",
             output: "HEAD is now at 7a8b9c0 feat: initial commit",
           },
           {
             cmd: "git reflog",
             desc: "Display chronological history of all HEAD movements",
-            flags: "Emergency tool to find and recover lost commit hashes",
+            flags: "Recovery tool to locate lost commit hashes",
             output: "a1b2c3d HEAD@{0}: reset: moving to HEAD~1\n4e5f6a7 HEAD@{1}: commit: ...",
           },
           {
             cmd: "git revert <commit-hash> --no-edit",
-            desc: "Safely undo a pushed commit by creating an inverse forward commit",
+            desc: "Undo a pushed commit by creating an inverse forward commit",
             flags: "--no-edit: accepts default auto-generated revert message",
-            output: "[main e5f6a7b] Revert \"feat: experimental heuristic\"",
+            output: '[main e5f6a7b] Revert "feat: experimental heuristic"',
           },
           {
             cmd: "git cherry-pick <commit-hash>",
-            desc: "Surgically apply an individual commit from another branch onto HEAD",
+            desc: "Apply an individual commit from another branch onto HEAD",
             flags: "Transplants commit changes without merging the source branch",
             output: "[main c8d9e0f] fix(security): sanitize email header",
           },
           {
             cmd: "git cherry-pick --continue",
-            desc: "Finalize cherry-pick after manually resolving merge conflict",
+            desc: "Finalize cherry-pick after resolving merge conflict",
             flags: "--continue: records new cherry-pick commit",
             output: "[main 9a8b7c6] fix(security): sanitize email header",
           },
@@ -248,7 +249,8 @@ export function GitTerminalCompanion({
             cmd: "git remote -v",
             desc: "Verify remote fetch and push URLs",
             flags: "-v: verbose (shows both fetch and push URLs)",
-            output: "origin  https://github.com/USERNAME/REPO.git (fetch)\norigin  https://github.com/USERNAME/REPO.git (push)",
+            output:
+              "origin  https://github.com/USERNAME/REPO.git (fetch)\norigin  https://github.com/USERNAME/REPO.git (push)",
           },
           {
             cmd: "git push -u origin main",
@@ -271,7 +273,7 @@ export function GitTerminalCompanion({
           {
             cmd: "git pull --rebase origin main",
             desc: "Replay local commits on top of incoming remote commits",
-            flags: "--rebase: prevents unnecessary merge bubble commits",
+            flags: "--rebase: prevents unnecessary merge commits",
             output: "Successfully rebased and updated refs/heads/main.",
           },
           {
@@ -337,86 +339,72 @@ export function GitTerminalCompanion({
   const checklistItems = getChecklistItems();
 
   return (
-    <div className="flex h-full flex-col bg-[#0B132B] text-slate-100 font-sans">
-      {/* Top Title Bar with macOS Terminal Dots */}
-      <div className="flex items-center justify-between border-b border-slate-800 bg-[#070D1F] px-4 py-2.5 text-xs">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5" aria-hidden="true">
-            <span className="h-3 w-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
-            <span className="h-3 w-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
-            <span className="h-3 w-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
-          </div>
-          <span className="font-mono text-slate-300 font-medium ml-2 flex items-center gap-1.5">
-            <Terminal className="h-3.5 w-3.5 text-blue-400" />
-            <span>Local PC Terminal Companion</span>
+    <div className="flex h-full flex-col bg-[var(--code-surface)] text-[var(--code-text)] font-sans">
+      {/* Top Bar */}
+      <div className="flex h-12 items-center justify-between border-b border-[var(--code-border)] bg-[var(--code-chrome)] px-4 text-xs shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <Terminal className="h-4 w-4 text-[var(--code-secondary)] shrink-0" strokeWidth={1.5} />
+          <span className="font-mono text-[var(--code-text)] font-medium truncate">
+            Local terminal guide
           </span>
         </div>
 
-        {/* OS Platform Switcher */}
-        <div className="flex items-center rounded border border-slate-800 bg-[#0B132B] p-0.5 text-[11px]">
-          <button
-            type="button"
-            onClick={() => setPlatform("mac")}
-            className={`rounded px-2 py-0.5 font-medium transition-colors ${
-              platform === "mac" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            macOS
-          </button>
-          <button
-            type="button"
-            onClick={() => setPlatform("win")}
-            className={`rounded px-2 py-0.5 font-medium transition-colors ${
-              platform === "win" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Windows
-          </button>
-          <button
-            type="button"
-            onClick={() => setPlatform("linux")}
-            className={`rounded px-2 py-0.5 font-medium transition-colors ${
-              platform === "linux" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Linux
-          </button>
+        {/* OS Switcher */}
+        <div className="flex items-center rounded-lg border border-[var(--code-border)] bg-[var(--code-surface)] p-0.5 text-xs shrink-0">
+          {(["mac", "win", "linux"] as const).map((os) => (
+            <button
+              key={os}
+              type="button"
+              onClick={() => setPlatform(os)}
+              className={`h-6 rounded-md px-2 text-[11px] font-medium transition-colors duration-150 ${
+                platform === os
+                  ? "bg-[var(--code-raised)] text-[var(--code-text)]"
+                  : "text-[var(--code-muted)] hover:text-[var(--code-text)]"
+              }`}
+            >
+              {os === "mac" ? "macOS" : os === "win" ? "Windows" : "Linux"}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Instruction Banner */}
-      <div className="border-b border-slate-800/80 bg-blue-950/40 px-4 py-2 text-xs flex items-center gap-2 text-blue-300">
-        <Laptop className="h-4 w-4 shrink-0 text-blue-400" />
-        <span className="leading-tight">
-          Execute these commands in your <strong>own computer terminal</strong> ({platform === "win" ? "PowerShell or Git Bash" : "Terminal"}).
+      {/* Instruction Note */}
+      <div className="border-b border-[var(--code-border)] bg-[var(--code-raised)] px-4 py-2 text-xs flex items-center gap-2 text-[var(--code-secondary)]">
+        <Laptop className="h-4 w-4 shrink-0 text-[var(--code-muted)]" strokeWidth={1.5} />
+        <span>
+          Run these commands in{" "}
+          <strong className="font-medium text-[var(--code-text)]">
+            {platform === "win" ? "PowerShell or Git Bash" : "Terminal"}
+          </strong>{" "}
+          on your machine
         </span>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {/* Section 1: Command Palette with Copy Buttons */}
+      {/* Scrollable Body */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-6">
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-              <span>Chapter {chapter.number} Command Clipboard</span>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-medium text-[var(--code-text)] font-mono tabular-nums">
+              Chapter {String(chapter.number).padStart(2, "0")} commands
             </h3>
-            <span className="text-[10px] text-slate-500 font-mono">Click to copy</span>
+            <span className="text-[11px] text-[var(--code-muted)] font-mono">
+              Click copy
+            </span>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {commands.map((item, idx) => (
               <div
                 key={idx}
-                className="group rounded-lg border border-slate-800 bg-[#0F1A36] p-3 transition-colors hover:border-slate-700 hover:bg-[#132247]"
+                className="rounded-xl border border-[var(--code-border)] bg-[var(--code-raised)] p-3"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-medium text-slate-300 mb-1 leading-snug">
+                    <p className="text-xs text-[var(--code-secondary)] mb-2 leading-snug">
                       {item.desc}
                     </p>
-                    <div className="flex items-center gap-2 font-mono text-xs text-emerald-400 bg-black/40 px-2.5 py-1.5 rounded border border-slate-800/60 overflow-x-auto">
-                      <span className="text-slate-500 select-none">$</span>
+                    <div className="flex items-center gap-2 font-mono text-xs text-[#4CC38A] bg-[var(--code-chrome)] px-3 py-2 rounded-lg border border-[var(--code-border)] overflow-x-auto">
+                      <span className="text-[var(--code-muted)] select-none">$</span>
                       <code className="select-all">{item.cmd}</code>
                     </div>
                   </div>
@@ -424,31 +412,30 @@ export function GitTerminalCompanion({
                   <button
                     type="button"
                     onClick={() => handleCopy(item.cmd, idx)}
-                    className="shrink-0 mt-6 inline-flex items-center gap-1 rounded bg-slate-800/80 px-2 py-1 text-[11px] font-medium text-slate-300 hover:bg-blue-600 hover:text-white transition-colors"
-                    title="Copy command to clipboard"
+                    className="shrink-0 mt-6 inline-flex h-7 items-center gap-1 rounded-md border border-[var(--code-border)] bg-[var(--code-surface)] px-2 text-[11px] font-medium text-[var(--code-secondary)] hover:text-[var(--code-text)] transition-colors duration-150"
+                    title="Copy command"
                   >
                     {copiedIndex === idx ? (
                       <>
-                        <Check className="h-3 w-3 text-emerald-400" />
-                        <span className="text-emerald-400">Copied!</span>
+                        <Check className="h-3.5 w-3.5 text-[#4CC38A]" strokeWidth={1.5} />
+                        <span className="text-[#4CC38A]">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="h-3 w-3" />
+                        <Copy className="h-3.5 w-3.5" strokeWidth={1.5} />
                         <span>Copy</span>
                       </>
                     )}
                   </button>
                 </div>
 
-                {/* Flag Breakdown & Expected Output */}
-                <div className="mt-2 pt-2 border-t border-slate-800/60 flex flex-col gap-1 text-[11px] text-slate-400">
-                  <span className="text-slate-500 font-mono text-[10px]">
-                    Note: <span className="text-slate-400">{item.flags}</span>
+                <div className="mt-2 pt-2 border-t border-[var(--code-border)] flex flex-col gap-1 text-[11px] font-mono text-[var(--code-muted)]">
+                  <span>
+                    Note: <span className="text-[var(--code-secondary)]">{item.flags}</span>
                   </span>
                   {item.output && (
-                    <span className="text-slate-500 font-mono text-[10px] truncate">
-                      Expected: <span className="text-slate-300">{item.output}</span>
+                    <span className="truncate">
+                      Output: <span className="text-[var(--code-text)]">{item.output}</span>
                     </span>
                   )}
                 </div>
@@ -457,11 +444,11 @@ export function GitTerminalCompanion({
           </div>
         </div>
 
-        {/* Section 2: Local PC Progress Checklist */}
-        <div className="rounded-lg border border-slate-800 bg-[#0E172E] p-3">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 uppercase tracking-wider font-mono mb-2">
-            <CheckSquare className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Local PC Verification Checklist</span>
+        {/* Checklist */}
+        <div className="rounded-xl border border-[var(--code-border)] bg-[var(--code-raised)] p-4">
+          <div className="flex items-center gap-2 text-xs font-medium text-[var(--code-text)] mb-3">
+            <CheckSquare className="h-4 w-4 text-[#4CC38A]" strokeWidth={1.5} />
+            <span>Verification checklist</span>
           </div>
 
           <div className="space-y-1.5">
@@ -472,77 +459,83 @@ export function GitTerminalCompanion({
                   key={item.id}
                   type="button"
                   onClick={() => toggleCheck(item.id)}
-                  className={`w-full flex items-center gap-2.5 rounded px-2.5 py-1.5 text-left text-xs transition-colors ${
+                  className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs transition-colors duration-150 ${
                     isChecked
-                      ? "bg-emerald-950/30 text-emerald-300 line-through"
-                      : "bg-slate-900/60 text-slate-300 hover:bg-slate-800/50"
+                      ? "bg-[#4CC38A]/10 text-[#4CC38A]"
+                      : "bg-[var(--code-chrome)] text-[var(--code-secondary)] hover:text-[var(--code-text)]"
                   }`}
                 >
                   {isChecked ? (
-                    <CheckSquare className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <CheckSquare className="h-4 w-4 text-[#4CC38A] shrink-0" strokeWidth={1.5} />
                   ) : (
-                    <Square className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                    <Square className="h-4 w-4 text-[var(--code-muted)] shrink-0" strokeWidth={1.5} />
                   )}
-                  <span className="flex-1">{item.label}</span>
+                  <span className={`flex-1 ${isChecked ? "line-through opacity-80" : ""}`}>
+                    {item.label}
+                  </span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Section 3: Troubleshooting Expandable Drawer */}
-        <div className="rounded-lg border border-slate-800 bg-[#0E172E] overflow-hidden">
+        {/* Troubleshooting */}
+        <div className="rounded-xl border border-[var(--code-border)] bg-[var(--code-raised)] overflow-hidden">
           <button
             type="button"
             onClick={() => setShowTroubleshooting(!showTroubleshooting)}
-            className="w-full flex items-center justify-between p-3 text-xs font-medium text-slate-300 hover:bg-slate-800/40 transition-colors"
+            className="w-full flex items-center justify-between p-4 text-xs font-medium text-[var(--code-text)] hover:bg-[var(--code-chrome)] transition-colors duration-150"
           >
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-3.5 w-3.5 text-amber-400" />
-              <span>Common Local Git Setup Errors &amp; Fixes</span>
+              <AlertCircle className="h-4 w-4 text-[#FBBF24]" strokeWidth={1.5} />
+              <span>Common local Git errors &amp; fixes</span>
             </div>
             {showTroubleshooting ? (
-              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className="h-4 w-4 text-[var(--code-muted)]" strokeWidth={1.5} />
             ) : (
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronRight className="h-4 w-4 text-[var(--code-muted)]" strokeWidth={1.5} />
             )}
           </button>
 
           {showTroubleshooting && (
-            <div className="border-t border-slate-800 p-3 space-y-3 text-xs text-slate-300">
-              <div className="rounded bg-black/40 p-2.5 border border-slate-800/80">
-                <span className="font-mono text-rose-400 font-semibold block mb-0.5">
+            <div className="border-t border-[var(--code-border)] p-4 space-y-3 text-xs">
+              <div className="rounded-lg bg-[var(--code-chrome)] p-3 border border-[var(--code-border)]">
+                <span className="font-mono text-[#FCA5A5] font-medium block mb-1">
                   1. &quot;command not found: git&quot;
                 </span>
-                <p className="text-[11px] text-slate-400">
-                  Git is not installed or your terminal session has not reloaded system PATH. Restart your terminal or reinstall Git via Homebrew / Git for Windows.
+                <p className="text-[var(--code-secondary)] leading-relaxed">
+                  Git is not installed or your terminal session has not reloaded PATH. Restart your terminal or install Git via Homebrew / Git for Windows.
                 </p>
               </div>
 
-              <div className="rounded bg-black/40 p-2.5 border border-slate-800/80">
-                <span className="font-mono text-rose-400 font-semibold block mb-0.5">
+              <div className="rounded-lg bg-[var(--code-chrome)] p-3 border border-[var(--code-border)]">
+                <span className="font-mono text-[#FCA5A5] font-medium block mb-1">
                   2. &quot;fatal: not a git repository&quot;
                 </span>
-                <p className="text-[11px] text-slate-400">
-                  You ran a Git command in a regular folder that has not been initialized. Run <code className="text-emerald-400 font-mono">git init</code> or navigate to your project directory with <code className="text-emerald-400 font-mono">cd &lt;path&gt;</code>.
+                <p className="text-[var(--code-secondary)] leading-relaxed">
+                  You ran a Git command outside a repository folder. Run{" "}
+                  <code className="text-[#4CC38A] font-mono">git init</code> or{" "}
+                  <code className="text-[#4CC38A] font-mono">cd &lt;path&gt;</code>.
                 </p>
               </div>
 
-              <div className="rounded bg-black/40 p-2.5 border border-slate-800/80">
-                <span className="font-mono text-rose-400 font-semibold block mb-0.5">
+              <div className="rounded-lg bg-[var(--code-chrome)] p-3 border border-[var(--code-border)]">
+                <span className="font-mono text-[#FCA5A5] font-medium block mb-1">
                   3. &quot;LF will be replaced by CRLF&quot;
                 </span>
-                <p className="text-[11px] text-slate-400">
-                  This is a harmless notification on Windows. Run <code className="text-emerald-400 font-mono">git config --global core.autocrlf true</code> to normalize line endings automatically.
+                <p className="text-[var(--code-secondary)] leading-relaxed">
+                  Line-ending normalization notice on Windows. Run{" "}
+                  <code className="text-[#4CC38A] font-mono">git config --global core.autocrlf true</code>.
                 </p>
               </div>
 
-              <div className="rounded bg-black/40 p-2.5 border border-slate-800/80">
-                <span className="font-mono text-rose-400 font-semibold block mb-0.5">
+              <div className="rounded-lg bg-[var(--code-chrome)] p-3 border border-[var(--code-border)]">
+                <span className="font-mono text-[#FCA5A5] font-medium block mb-1">
                   4. &quot;fatal: remote origin already exists&quot;
                 </span>
-                <p className="text-[11px] text-slate-400">
-                  You already linked an origin. Update it with <code className="text-emerald-400 font-mono">git remote set-url origin &lt;new-url&gt;</code> instead of <code className="text-emerald-400 font-mono">git remote add</code>.
+                <p className="text-[var(--code-secondary)] leading-relaxed">
+                  An origin remote is already configured. Update it with{" "}
+                  <code className="text-[#4CC38A] font-mono">git remote set-url origin &lt;new-url&gt;</code>.
                 </p>
               </div>
             </div>
@@ -550,13 +543,13 @@ export function GitTerminalCompanion({
         </div>
       </div>
 
-      {/* Bottom Footer */}
-      <div className="border-t border-slate-800 bg-[#070D1F] px-4 py-2.5 flex items-center justify-between text-[11px] text-slate-400">
-        <span className="flex items-center gap-1.5">
-          <GitBranch className="h-3 w-3 text-blue-400" />
-          <span>Workshop 02 · Local PC Workflow</span>
+      {/* Footer */}
+      <div className="border-t border-[var(--code-border)] bg-[var(--code-chrome)] px-4 py-3 flex items-center justify-between text-xs text-[var(--code-muted)]">
+        <span className="inline-flex items-center gap-1.5 font-mono tabular-nums">
+          <GitBranch className="h-4 w-4 text-[var(--code-secondary)]" strokeWidth={1.5} />
+          <span>Workshop 02 · Local PC</span>
         </span>
-        <span className="text-slate-500">Self-guided terminal mastery</span>
+        <span>Self-guided CLI</span>
       </div>
     </div>
   );

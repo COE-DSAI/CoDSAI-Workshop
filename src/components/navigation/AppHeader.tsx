@@ -3,12 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Search,
-  Menu,
-  X,
-  ChevronRight,
-} from "lucide-react";
+import { Search, Menu, X, ChevronRight } from "lucide-react";
 import { BrandHeader } from "@/components/branding/BrandHeader";
 import { getLearnerProgress } from "@/lib/storage/progress";
 
@@ -30,13 +25,15 @@ export function AppHeader() {
     return () => window.removeEventListener("coe_progress_updated", updateProgress);
   }, []);
 
-  // Keyboard shortcut for search (⌘K or /)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         router.push("/revision?tab=search");
-      } else if (e.key === "/" && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      } else if (
+        e.key === "/" &&
+        !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
+      ) {
         e.preventDefault();
         router.push("/revision?tab=search");
       }
@@ -46,105 +43,110 @@ export function AppHeader() {
   }, [router]);
 
   const navLinks = [
-    { href: "/workshops/python-foundations", label: "Curriculum" },
+    { href: "/workshops/python-foundations", label: "Python" },
+    { href: "/workshops/git-github", label: "Git & GitHub" },
     { href: "/projects/inbox-guardian", label: "Inbox Guardian" },
     { href: "/revision", label: "Revision" },
   ];
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href.startsWith("/workshops")) return pathname.startsWith("/workshops");
+    if (href === "/workshops/git-github") return pathname.startsWith("/workshops/git-github");
+    if (href === "/workshops/python-foundations") {
+      return (
+        pathname.startsWith("/workshops") &&
+        !pathname.startsWith("/workshops/git-github")
+      );
+    }
     return pathname.startsWith(href);
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left: Organization Logo & Identity */}
-        <div className="flex items-center">
+    <header className="sticky top-0 z-40 w-full border-b border-[var(--border-hairline)] bg-[var(--bg-surface)]">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-8">
           <BrandHeader />
+
+          <nav className="hidden md:flex items-center gap-6 text-sm" aria-label="Main Navigation">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative flex h-16 items-center transition-colors duration-150 ease-[var(--ease-out)] ${
+                    active
+                      ? "text-[var(--text-primary)] font-medium"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  }`}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)]" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Center / Right: Clean Text Navigation */}
-        <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium" aria-label="Main Navigation">
-          {navLinks.map((link) => {
-            const active = isActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative py-1 transition-colors ${
-                  active
-                    ? "text-slate-900 font-semibold"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {link.label}
-                {active && (
-                  <span className="absolute bottom-[-16px] left-0 right-0 h-[2px] bg-blue-600 rounded-full" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Far Right: Compact Search & Start Learning Action */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/revision?tab=search"
-            className="flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-slate-50/70 px-2.5 text-xs text-slate-500 hover:border-slate-300 hover:bg-white transition-colors"
-            title="Search curriculum (⌘K or /)"
-          >
-            <Search className="h-3.5 w-3.5 text-slate-400" />
-            <span className="hidden lg:inline text-slate-500">Search syntax & topics</span>
-            <span className="lg:hidden text-slate-500">Search</span>
-            <kbd className="rounded border border-slate-200 bg-white px-1 py-0.5 text-[10px] text-slate-400 font-mono">
-              ⌘K
-            </kbd>
-          </Link>
-
           {completedCount > 0 && (
             <Link
-              href="/revision"
-              className="text-[11px] font-medium text-slate-500 hover:text-slate-800 transition-colors hidden xl:inline"
-              title="Workshop 1 Completion Status"
+              href="/learn"
+              className="text-xs font-mono tabular-nums text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-150 hidden xl:inline"
+              title="Workshop progress"
             >
-              <span className="text-emerald-700 font-semibold">{completedCount}/8</span> completed
+              {completedCount}/13 done
             </Link>
           )}
 
           <Link
-            href="/workshops/python-foundations/introduction-to-python"
-            className="flex h-8.5 items-center justify-center rounded-md bg-blue-600 px-3.5 text-xs font-semibold text-white shadow-2xs hover:bg-blue-700 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            href="/revision?tab=search"
+            className="flex h-9 items-center gap-2 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-raised)] px-3 text-xs text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] transition-colors duration-150 ease-[var(--ease-out)]"
+            title="Search curriculum (⌘K)"
           >
-            Start Learning
+            <Search className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={1.5} />
+            <span>Search</span>
+            <kbd className="rounded border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-1.5 py-0.5 text-[11px] font-mono text-[var(--text-muted)]">
+              ⌘K
+            </kbd>
+          </Link>
+
+          <Link
+            href="/workshops/python-foundations/introduction-to-python"
+            className="flex h-9 items-center justify-center rounded-lg bg-[var(--accent)] px-4 text-xs font-medium text-white hover:bg-[var(--accent-hover)] active:scale-[0.98] transition-[background-color,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          >
+            Start learning
           </Link>
         </div>
 
-        {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 md:hidden">
           <Link
             href="/revision?tab=search"
-            className="p-2 text-slate-500 hover:text-slate-800"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-raised)]"
             aria-label="Search"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-4 w-4" strokeWidth={1.5} />
           </Link>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="inline-flex items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100 focus:outline-none"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? (
+              <X className="h-4 w-4" strokeWidth={1.5} />
+            ) : (
+              <Menu className="h-4 w-4" strokeWidth={1.5} />
+            )}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-b border-slate-200 bg-white px-4 pt-3 pb-5 md:hidden shadow-lg animate-in slide-in-from-top-2 duration-150">
+        <div className="border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 pt-2 pb-4 md:hidden">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -153,24 +155,24 @@ export function AppHeader() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex h-10 items-center justify-between rounded-lg px-3 text-sm transition-colors duration-150 ${
                     active
-                      ? "bg-slate-100 text-slate-900 font-semibold"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-[var(--bg-raised)] text-[var(--text-primary)] font-medium"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]"
                   }`}
                 >
                   <span>{link.label}</span>
-                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                  <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={1.5} />
                 </Link>
               );
             })}
-            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-2">
+            <div className="mt-3 pt-3 border-t border-[var(--border-hairline)]">
               <Link
                 href="/workshops/python-foundations/introduction-to-python"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center rounded-md bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-2xs hover:bg-blue-700"
+                className="flex h-10 w-full items-center justify-center rounded-lg bg-[var(--accent)] text-sm font-medium text-white hover:bg-[var(--accent-hover)]"
               >
-                Start Learning (Chapter 1)
+                Start learning
               </Link>
             </div>
           </div>

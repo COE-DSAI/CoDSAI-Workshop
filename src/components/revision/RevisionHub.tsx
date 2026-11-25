@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -10,7 +10,6 @@ import {
   AlertTriangle,
   Layers,
   ArrowRight,
-  ChevronRight,
 } from "lucide-react";
 import {
   getAllGlossaryTerms,
@@ -23,23 +22,27 @@ import { workshop1Python } from "@/content/workshops/workshop1-python";
 
 export function RevisionHub() {
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") || "summaries";
+  const urlTab = searchParams.get("tab");
 
-  const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [selectedTab, setSelectedTab] = useState<{ urlTab: string | null; tab: string }>({
+    urlTab,
+    tab: urlTab || "summaries",
+  });
+  const activeTab = selectedTab.urlTab === urlTab ? selectedTab.tab : urlTab || "summaries";
+  const setActiveTab = (tab: string) => setSelectedTab({ urlTab, tab });
+
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [glossaryFilter, setGlossaryFilter] = useState<string>("");
 
   const allGlossary = getAllGlossaryTerms();
   const allSyntax = getAllSyntaxReferences();
   const allMistakes = getAllCommonMistakes();
 
-  useEffect(() => {
+  const searchResults: SearchResult[] = useMemo(() => {
     if (searchQuery.trim().length >= 2) {
-      setSearchResults(searchCurriculum(searchQuery));
-    } else {
-      setSearchResults([]);
+      return searchCurriculum(searchQuery);
     }
+    return [];
   }, [searchQuery]);
 
   const filteredGlossary = allGlossary.filter(
@@ -48,211 +51,178 @@ export function RevisionHub() {
       g.definition.toLowerCase().includes(glossaryFilter.toLowerCase())
   );
 
+  const tabs = [
+    { id: "summaries", label: "Chapter summaries", icon: Layers },
+    { id: "search", label: "Search", icon: Search },
+    { id: "syntax", label: "Syntax reference", icon: Code2 },
+    { id: "glossary", label: `Glossary (${allGlossary.length})`, icon: BookOpen },
+    { id: "mistakes", label: "Common errors", icon: AlertTriangle },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Subtle Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-slate-800 transition-colors">
+      {/* Breadcrumb */}
+      <nav className="mb-6 flex items-center gap-2 text-xs text-[var(--text-muted)]" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-[var(--text-primary)] transition-colors duration-150">
           Home
         </Link>
-        <span className="text-slate-300">/</span>
-        <Link href="/workshops/python-foundations" className="hover:text-slate-800 transition-colors">
+        <span>/</span>
+        <Link
+          href="/workshops/python-foundations"
+          className="hover:text-[var(--text-primary)] transition-colors duration-150 font-mono tabular-nums"
+        >
           Workshop 01
         </Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-800 font-medium">Revision Hub</span>
+        <span>/</span>
+        <span className="text-[var(--text-primary)] font-medium">Revision</span>
       </nav>
 
-      {/* Hero Header */}
-      <div className="mb-8 pb-6 border-b border-slate-200/80">
-        <span className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold block mb-2">
-          WORKSHOP 01 REFERENCE HANDBOOK
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 leading-tight">
-          Python Foundations Revision Hub
+      {/* Header */}
+      <div className="mb-8 pb-6 border-b border-[var(--border-hairline)]">
+        <p className="text-xs font-mono text-[var(--accent)] mb-2">
+          Reference handbook
+        </p>
+        <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[var(--text-primary)] leading-tight">
+          Python foundations revision hub
         </h1>
-        <p className="mt-2 text-sm text-slate-600 max-w-2xl leading-relaxed">
-          Self-contained study resources for Workshop 1: chapter summaries, Python syntax reference, searchable glossary, common beginner errors, and full-text search across all 8 chapters.
+        <p className="mt-2 text-sm text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          Chapter summaries, syntax cards, glossary definitions, common debugging pitfalls, and full-text curriculum search
         </p>
 
-        {/* Tab Navigation */}
-        <div className="mt-6 flex flex-wrap gap-2 pt-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab("summaries")}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              activeTab === "summaries"
-                ? "bg-slate-900 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <Layers className="h-3.5 w-3.5" />
-            <span>Chapter Summaries</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("search")}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              activeTab === "search"
-                ? "bg-slate-900 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <Search className="h-3.5 w-3.5" />
-            <span>Search Lessons</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("syntax")}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              activeTab === "syntax"
-                ? "bg-slate-900 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <Code2 className="h-3.5 w-3.5" />
-            <span>Syntax Reference</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("glossary")}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              activeTab === "glossary"
-                ? "bg-slate-900 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            <span>Glossary ({allGlossary.length})</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("mistakes")}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              activeTab === "mistakes"
-                ? "bg-slate-900 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <AlertTriangle className="h-3.5 w-3.5" />
-            <span>Common Errors &amp; Fixes</span>
-          </button>
+        {/* Tabs */}
+        <div className="mt-6 flex flex-wrap gap-2">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`inline-flex h-9 items-center gap-2 rounded-lg px-3.5 text-xs font-medium transition-colors duration-150 ${
+                  active
+                    ? "bg-[var(--accent)] text-white"
+                    : "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                <Icon className="h-4 w-4" strokeWidth={1.5} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Tab 1: Chapter Summaries */}
       {activeTab === "summaries" && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {workshop1Python.chapters.map((ch) => (
-              <div
-                key={ch.id}
-                className="rounded-lg border border-slate-200/80 bg-white p-5 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 font-mono">
-                      Chapter {String(ch.number).padStart(2, "0")}
-                    </span>
-                    <span className="text-xs text-slate-400 font-mono">
-                      {ch.estimatedMinutes} mins
-                    </span>
-                  </div>
-
-                  <h3 className="text-sm font-semibold text-slate-900 mb-2">
-                    {ch.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                    {ch.introduction}
-                  </p>
-
-                  {ch.recap && (
-                    <div className="mb-4">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-1.5 font-semibold">
-                        Core Takeaways:
-                      </span>
-                      <ul className="space-y-1 text-xs text-slate-600">
-                        {ch.recap.keyConcepts.slice(0, 3).map((kc, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="text-blue-500 font-bold shrink-0">•</span>
-                            <span>{kc}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-400">
-                    {ch.sections.length} Sections • {ch.exercises.length} Exercises
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {workshop1Python.chapters.map((ch) => (
+            <div
+              key={ch.id}
+              className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between border-b border-[var(--border-hairline)] pb-3 mb-3 text-xs font-mono tabular-nums">
+                  <span className="font-medium text-[var(--accent)]">
+                    Chapter {String(ch.number).padStart(2, "0")}
                   </span>
-                  <Link
-                    href={`/workshops/${workshop1Python.slug}/${ch.slug}`}
-                    className="font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
-                  >
-                    <span>Read Lesson</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
+                  <span className="text-[var(--text-muted)]">{ch.estimatedMinutes} min</span>
                 </div>
+
+                <h3 className="text-base font-medium text-[var(--text-primary)] mb-2">
+                  {ch.title}
+                </h3>
+
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4">
+                  {ch.introduction}
+                </p>
+
+                {ch.recap && (
+                  <div className="mb-4">
+                    <span className="text-xs font-medium text-[var(--text-muted)] block mb-2">
+                      Takeaways
+                    </span>
+                    <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
+                      {ch.recap.keyConcepts.slice(0, 3).map((kc, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="font-mono tabular-nums text-[var(--accent)] shrink-0">
+                            {idx + 1}.
+                          </span>
+                          <span>{kc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
+
+              <div className="pt-4 border-t border-[var(--border-hairline)] flex items-center justify-between text-xs">
+                <span className="font-mono tabular-nums text-[var(--text-muted)]">
+                  {ch.sections.length} sections · {ch.exercises.length} exercises
+                </span>
+                <Link
+                  href={`/workshops/${workshop1Python.slug}/${ch.slug}`}
+                  className="font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1.5"
+                >
+                  <span>Read lesson</span>
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Tab 2: Full-Text Curriculum Search */}
+      {/* Tab 2: Search */}
       {activeTab === "search" && (
         <div className="space-y-6">
-          <div className="max-w-2xl">
+          <div className="max-w-xl">
             <div className="relative">
-              <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+              <Search
+                className="absolute left-3 top-2.5 h-4 w-4 text-[var(--text-muted)]"
+                strokeWidth={1.5}
+              />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Python syntax, statements, error types, concepts..."
-                className="w-full rounded-md border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                placeholder="Search syntax, concepts, or errors"
+                className="h-9 w-full rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] pl-10 pr-4 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none"
                 autoFocus
               />
             </div>
-            <p className="mt-2 text-xs text-slate-500">
-              Try searching for &quot;input&quot;, &quot;for loop&quot;, &quot;dictionary&quot;, &quot;syntax error&quot;, &quot;f-string&quot; or &quot;strip&quot;.
+            <p className="mt-2 text-xs text-[var(--text-muted)]">
+              Try &quot;input&quot;, &quot;for loop&quot;, &quot;dictionary&quot;, &quot;f-string&quot;, or &quot;git reset&quot;
             </p>
           </div>
 
           {searchQuery.trim().length >= 2 && (
             <div className="space-y-4">
-              <span className="text-xs font-semibold text-slate-700 block">
-                Found {searchResults.length} match{searchResults.length !== 1 ? "es" : ""} for &quot;{searchQuery}&quot;
+              <span className="text-xs font-mono tabular-nums text-[var(--text-secondary)] block">
+                {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &quot;{searchQuery}&quot;
               </span>
 
               {searchResults.length === 0 ? (
-                <div className="rounded-lg border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
-                  No matching lessons or syntax found. Try broader keywords.
+                <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-8 text-center text-xs text-[var(--text-muted)]">
+                  No matching lessons or syntax found
                 </div>
               ) : (
-                <div className="divide-y divide-slate-200/80 rounded-lg border border-slate-200/80 bg-white">
+                <div className="divide-y divide-[var(--border-hairline)] rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] overflow-hidden">
                   {searchResults.map((res, idx) => (
                     <Link
                       key={idx}
                       href={`/workshops/${res.workshopSlug}/${res.chapterSlug}`}
-                      className="block p-4 hover:bg-slate-50 transition-colors"
+                      className="block p-4 hover:bg-[var(--bg-raised)] transition-colors duration-150"
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase text-blue-800">
+                        <span className="rounded border border-[var(--accent-border)] bg-[var(--accent-tint)] px-2 py-0.5 text-[11px] font-mono font-medium text-[var(--accent)]">
                           {res.type}
                         </span>
-                        <h4 className="text-xs font-semibold text-slate-900 hover:text-blue-600">
+                        <h4 className="text-xs font-medium text-[var(--text-primary)]">
                           {res.title}
                         </h4>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed">
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                         {res.excerpt}
                       </p>
                     </Link>
@@ -264,40 +234,38 @@ export function RevisionHub() {
         </div>
       )}
 
-      {/* Tab 3: Python Syntax Reference */}
+      {/* Tab 3: Syntax Reference */}
       {activeTab === "syntax" && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {allSyntax.map((syn, idx) => (
-              <div
-                key={idx}
-                className="rounded-lg border border-slate-200/80 bg-white p-4"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-900">
-                    {syn.chapterTitle}
-                  </span>
-                  <Link
-                    href={`/workshops/${syn.workshopSlug}/${syn.chapterSlug}`}
-                    className="text-[10px] font-mono text-blue-600 hover:underline"
-                  >
-                    Open Lesson →
-                  </Link>
-                </div>
-                <code className="block rounded bg-slate-900 p-2 font-mono text-xs text-blue-400 mb-2 border border-slate-800">
-                  {syn.syntax}
-                </code>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {syn.description}
-                </p>
-                {syn.example && (
-                  <pre className="mt-2 rounded bg-slate-50 p-2 font-mono text-[11px] text-slate-700 border border-slate-200">
-                    {syn.example}
-                  </pre>
-                )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {allSyntax.map((syn, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-[var(--text-primary)]">
+                  {syn.chapterTitle}
+                </span>
+                <Link
+                  href={`/workshops/${syn.workshopSlug}/${syn.chapterSlug}`}
+                  className="text-xs font-mono text-[var(--accent)] hover:underline"
+                >
+                  Open lesson
+                </Link>
               </div>
-            ))}
-          </div>
+              <code className="block rounded-lg bg-[var(--code-surface)] p-3 font-mono text-xs text-[var(--code-text)] mb-2 border border-[var(--code-border)]">
+                {syn.syntax}
+              </code>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                {syn.description}
+              </p>
+              {syn.example && (
+                <pre className="mt-2 rounded-lg bg-[var(--bg-page)] p-3 font-mono text-xs text-[var(--text-primary)] border border-[var(--border-hairline)] overflow-x-auto">
+                  {syn.example}
+                </pre>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
@@ -309,8 +277,8 @@ export function RevisionHub() {
               type="text"
               value={glossaryFilter}
               onChange={(e) => setGlossaryFilter(e.target.value)}
-              placeholder="Filter glossary terms..."
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
+              placeholder="Filter terms"
+              className="h-9 w-full rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none"
             />
           </div>
 
@@ -318,16 +286,16 @@ export function RevisionHub() {
             {filteredGlossary.map((item, idx) => (
               <div
                 key={idx}
-                className="rounded-lg border border-slate-200/80 bg-white p-4"
+                className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4"
               >
-                <h4 className="font-mono text-xs font-bold text-slate-900 mb-1">
+                <h4 className="font-mono text-xs font-medium text-[var(--accent)] mb-1">
                   {item.term}
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed mb-2">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-2">
                   {item.definition}
                 </p>
                 {item.context && (
-                  <p className="text-[11px] text-slate-400 italic">
+                  <p className="text-xs text-[var(--text-muted)]">
                     Context: {item.context}
                   </p>
                 )}
@@ -337,36 +305,34 @@ export function RevisionHub() {
         </div>
       )}
 
-      {/* Tab 5: Common Mistakes & Debugging */}
+      {/* Tab 5: Common Mistakes */}
       {activeTab === "mistakes" && (
-        <div className="space-y-6">
-          <div className="space-y-4">
-            {allMistakes.map((mistake, idx) => (
-              <div
-                key={idx}
-                className="rounded-lg border border-slate-200/80 bg-white p-5"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
-                    <h3 className="text-sm font-semibold text-slate-900">
-                      {mistake.title}
-                    </h3>
-                  </div>
-                  <Link
-                    href={`/workshops/${mistake.workshopSlug}/${mistake.chapterSlug}`}
-                    className="text-xs font-semibold text-blue-600 hover:underline"
-                  >
-                    Ch: {mistake.chapterTitle} →
-                  </Link>
+        <div className="space-y-4">
+          {allMistakes.map((mistake, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-[var(--warning)] shrink-0" strokeWidth={1.5} />
+                  <h3 className="text-sm font-medium text-[var(--text-primary)]">
+                    {mistake.title}
+                  </h3>
                 </div>
-
-                <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line mt-2">
-                  {mistake.content}
-                </p>
+                <Link
+                  href={`/workshops/${mistake.workshopSlug}/${mistake.chapterSlug}`}
+                  className="text-xs font-medium text-[var(--accent)] hover:underline"
+                >
+                  {mistake.chapterTitle}
+                </Link>
               </div>
-            ))}
-          </div>
+
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line mt-2">
+                {mistake.content}
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </div>

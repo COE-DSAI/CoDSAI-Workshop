@@ -13,10 +13,8 @@ import {
   Check,
   Terminal,
   Clock,
-  Sparkles,
   ChevronDown,
   ChevronUp,
-  Cpu,
   HelpCircle,
 } from "lucide-react";
 import { usePythonRuntime } from "@/lib/runtime/usePythonRuntime";
@@ -34,7 +32,7 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({
-  initialCode = '# Write your Python code below\nprint("Hello from Center of Excellence!")\n',
+  initialCode = '# Write your Python code below\nprint("Hello from CoE | DSAI")\n',
   testCases,
   onCodeChange,
   title = "Python Workspace",
@@ -54,7 +52,6 @@ export function CodeEditor({
   const [testResultStatus, setTestResultStatus] = useState<"none" | "passed" | "failed">("none");
 
   const {
-    status,
     statusMessage,
     isRunning,
     outputItems,
@@ -64,7 +61,6 @@ export function CodeEditor({
     clearOutput,
   } = usePythonRuntime();
 
-  // Initialize CodeMirror 6
   useEffect(() => {
     if (!editorContainerRef.current) return;
 
@@ -80,6 +76,11 @@ export function CodeEditor({
       "&": {
         height: "100%",
         fontSize: "13px",
+        backgroundColor: "#171519",
+      },
+      ".cm-gutters": {
+        backgroundColor: "#121014",
+        borderRight: "1px solid rgba(243, 239, 242, 0.08)",
       },
       ".cm-scroller": {
         fontFamily: "var(--font-mono)",
@@ -112,9 +113,24 @@ export function CodeEditor({
       view.destroy();
       viewRef.current = null;
     };
-  }, []); // Run once on mount
+  }, []);
 
-  // Sync external initialCode change if reset
+  // Update editor document if parent loads a new snippet or exercise
+  useEffect(() => {
+    if (viewRef.current && initialCode !== currentCode) {
+      viewRef.current.dispatch({
+        changes: {
+          from: 0,
+          to: viewRef.current.state.doc.length,
+          insert: initialCode,
+        },
+      });
+      setCurrentCode(initialCode);
+      setTestResultStatus("none");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCode]);
+
   const handleResetCode = useCallback(() => {
     if (viewRef.current) {
       viewRef.current.dispatch({
@@ -147,17 +163,8 @@ export function CodeEditor({
       .map((l) => l.trim())
       .filter((l) => l.length > 0);
     runCode(currentCode, lines);
-
-    // If test cases exist, evaluate output after running
-    if (testCases && testCases.length > 0) {
-      // Evaluate asynchronously on output completion
-      setTimeout(() => {
-        // Will check test output matching
-      }, 500);
-    }
   };
 
-  // Check test cases when output items update
   useEffect(() => {
     if (!testCases || testCases.length === 0 || isRunning) return;
     if (outputItems.length === 0) return;
@@ -184,124 +191,127 @@ export function CodeEditor({
   }, [outputItems, isRunning, testCases, onSuccess]);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-slate-700 bg-slate-900 text-slate-100 shadow-md">
-      {/* Top Header / Action Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950 px-3 py-2 text-xs">
-        <div className="flex items-center gap-2">
-          <Terminal className="h-3.5 w-3.5 text-blue-400" />
-          <span className="font-semibold text-slate-200">{title}</span>
-          <span className="flex items-center gap-1 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
-            <Cpu className="h-2.5 w-2.5 text-emerald-400" />
-            Python 3.11
+    <div className="flex h-full flex-col overflow-hidden bg-[var(--code-surface)] text-[var(--code-text)]">
+      {/* Top Bar */}
+      <div className="flex h-12 items-center justify-between border-b border-[var(--code-border)] bg-[var(--code-chrome)] px-4 text-xs shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <Terminal className="h-4 w-4 text-[var(--code-secondary)] shrink-0" strokeWidth={1.5} />
+          <span className="font-medium text-[var(--code-text)] truncate">{title}</span>
+          <span className="hidden sm:inline font-mono text-[11px] tabular-nums text-[var(--code-muted)]">
+            · Python 3.11
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2 shrink-0">
           <button
+            type="button"
             onClick={() => setShowStdin(!showStdin)}
-            className={`flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition-colors ${
+            className={`flex h-7 items-center gap-1 rounded-md border px-2 text-xs font-mono tabular-nums transition-colors duration-150 ${
               showStdin || stdinText.length > 0
-                ? "bg-blue-900/60 text-blue-200 border border-blue-700"
-                : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                ? "border-[var(--code-border)] bg-[var(--code-raised)] text-[var(--code-text)]"
+                : "border-transparent text-[var(--code-secondary)] hover:bg-[var(--code-raised)] hover:text-[var(--code-text)]"
             }`}
-            title="Configure queued input() lines for interactive programs"
+            title="Queued input() lines"
           >
-            <span>Input ({stdinText.split("\n").filter(Boolean).length})</span>
-            {showStdin ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            <span>stdin ({stdinText.split("\n").filter(Boolean).length})</span>
+            {showStdin ? (
+              <ChevronUp className="h-3.5 w-3.5" strokeWidth={1.5} />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" strokeWidth={1.5} />
+            )}
           </button>
 
           <button
+            type="button"
             onClick={handleCopyCode}
-            className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-            title="Copy code to clipboard"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--code-secondary)] hover:bg-[var(--code-raised)] hover:text-[var(--code-text)] transition-colors duration-150"
+            title="Copy code"
+            aria-label="Copy code"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? (
+              <Check className="h-4 w-4 text-[#4CC38A]" strokeWidth={1.5} />
+            ) : (
+              <Copy className="h-4 w-4" strokeWidth={1.5} />
+            )}
           </button>
 
           <button
+            type="button"
             onClick={handleResetCode}
-            className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-            title="Reset code to starter template"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--code-secondary)] hover:bg-[var(--code-raised)] hover:text-[var(--code-text)] transition-colors duration-150"
+            title="Reset code"
+            aria-label="Reset code"
           >
-            <RotateCcw className="h-3.5 w-3.5" />
+            <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
           </button>
 
           <button
+            type="button"
             onClick={handleExecute}
             disabled={isRunning}
-            className={`flex items-center gap-1.5 rounded bg-blue-600 px-3 py-1 font-semibold text-white shadow-xs transition-colors ${
-              isRunning ? "opacity-75 cursor-not-allowed" : "hover:bg-blue-500 active:bg-blue-700"
+            className={`flex h-7 items-center gap-1.5 rounded-md bg-[var(--code-text)] px-3 text-xs font-medium text-[var(--code-chrome)] transition-opacity duration-150 ${
+              isRunning ? "opacity-60 cursor-not-allowed" : "hover:opacity-90 active:scale-[0.98]"
             }`}
           >
-            <Play className={`h-3 w-3 fill-white ${isRunning ? "animate-pulse" : ""}`} />
-            <span>{isRunning ? "Running..." : "Run"}</span>
+            <Play className="h-3.5 w-3.5" strokeWidth={1.5} />
+            <span>{isRunning ? "Running" : "Run"}</span>
           </button>
         </div>
       </div>
 
-      {/* Queued STDIN Drawer */}
+      {/* Queued STDIN */}
       {showStdin && (
-        <div className="border-b border-slate-800 bg-slate-950/90 p-2.5 text-xs">
-          <div className="flex items-center justify-between pb-1.5">
-            <span className="font-semibold text-slate-300">Queued Program Input (stdin)</span>
-            <span className="text-[10px] text-slate-400">One line per input() call</span>
+        <div className="border-b border-[var(--code-border)] bg-[var(--code-chrome)] p-3 text-xs">
+          <div className="flex items-center justify-between pb-2">
+            <span className="font-medium text-[var(--code-text)]">Queued input (stdin)</span>
+            <span className="text-[11px] text-[var(--code-muted)]">One line per input() call</span>
           </div>
           <textarea
             value={stdinText}
             onChange={(e) => setStdinText(e.target.value)}
-            placeholder="Line 1: first input()&#10;Line 2: second input()&#10;Line 3: third input()"
+            placeholder={"Line 1: first input()\nLine 2: second input()"}
             rows={3}
-            className="w-full rounded border border-slate-700 bg-slate-900 p-2 font-mono text-xs text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-[var(--code-border)] bg-[var(--code-raised)] p-2 font-mono text-xs text-[var(--code-text)] placeholder-[var(--code-muted)] focus:border-[var(--code-secondary)] focus:outline-none"
           />
-          <p className="mt-1 text-[10px] text-slate-400">
-            Note: When your Python code calls <code className="text-blue-300">input()</code>, lines are consumed sequentially from this queue.
-          </p>
         </div>
       )}
 
-      {/* Code Editor Surface */}
-      <div className="relative min-h-[260px] flex-1 overflow-auto bg-[#282c34]">
+      {/* CodeMirror Surface */}
+      <div className="relative min-h-[240px] flex-1 overflow-auto bg-[var(--code-surface)]">
         <div ref={editorContainerRef} className="h-full" />
       </div>
 
-      {/* Progressive Hints & Solution Panel (if provided for exercise) */}
+      {/* Hints & Solution */}
       {hints && (
-        <div className="border-t border-slate-800 bg-slate-950 px-3 py-2 text-xs">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1 font-medium text-slate-300">
-              <HelpCircle className="h-3.5 w-3.5 text-amber-400" />
-              Need Help?
+        <div className="border-t border-[var(--code-border)] bg-[var(--code-chrome)] px-4 py-2 text-xs">
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-1.5 font-medium text-[var(--code-secondary)]">
+              <HelpCircle className="h-4 w-4 text-[var(--code-muted)]" strokeWidth={1.5} />
+              <span>Hints</span>
             </span>
             <div className="flex items-center gap-1">
-              <button
-                onClick={() => setActiveHintIndex(activeHintIndex === 0 ? -1 : 0)}
-                className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                  activeHintIndex >= 0 ? "bg-amber-950 text-amber-300 border border-amber-800" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                }`}
-              >
-                Hint 1: Concept
-              </button>
-              <button
-                onClick={() => setActiveHintIndex(activeHintIndex === 1 ? -1 : 1)}
-                className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                  activeHintIndex >= 1 ? "bg-amber-950 text-amber-300 border border-amber-800" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                }`}
-              >
-                Hint 2: Approach
-              </button>
-              <button
-                onClick={() => setActiveHintIndex(activeHintIndex === 2 ? -1 : 2)}
-                className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                  activeHintIndex >= 2 ? "bg-amber-950 text-amber-300 border border-amber-800" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                }`}
-              >
-                Hint 3: Detail
-              </button>
+              {(["Concept", "Approach", "Detail"] as const).map((label, idx) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setActiveHintIndex(activeHintIndex === idx ? -1 : idx)}
+                  className={`h-6 rounded px-2 text-[11px] font-mono tabular-nums transition-colors duration-150 ${
+                    activeHintIndex === idx
+                      ? "bg-[var(--code-raised)] text-[#FBBF24] border border-[#FBBF24]/30"
+                      : "bg-[var(--code-surface)] text-[var(--code-secondary)] hover:text-[var(--code-text)]"
+                  }`}
+                >
+                  {idx + 1}. {label}
+                </button>
+              ))}
               {solution && (
                 <button
+                  type="button"
                   onClick={() => setShowSolution(!showSolution)}
-                  className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                    showSolution ? "bg-emerald-950 text-emerald-300 border border-emerald-800" : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                  className={`h-6 rounded px-2 text-[11px] font-mono transition-colors duration-150 ${
+                    showSolution
+                      ? "bg-[#15251C] text-[#4CC38A] border border-[#4CC38A]/30"
+                      : "bg-[var(--code-surface)] text-[var(--code-secondary)] hover:text-[var(--code-text)]"
                   }`}
                 >
                   Solution
@@ -311,17 +321,18 @@ export function CodeEditor({
           </div>
 
           {activeHintIndex >= 0 && (
-            <div className="mt-2 rounded bg-amber-950/40 p-2 text-xs text-amber-200 border border-amber-800/60">
-              <span className="font-semibold">Hint {activeHintIndex + 1}: </span>
+            <div className="mt-2 rounded-lg bg-[var(--code-raised)] p-3 text-xs text-[var(--code-text)] border border-[var(--code-border)]">
+              <span className="font-mono text-[#FBBF24] mr-2">Hint {activeHintIndex + 1}</span>
               {hints[activeHintIndex]}
             </div>
           )}
 
           {showSolution && solution && (
-            <div className="mt-2 rounded bg-emerald-950/40 p-2.5 text-xs text-emerald-200 border border-emerald-800/60">
-              <div className="flex items-center justify-between pb-1">
-                <span className="font-semibold text-emerald-300">Reference Solution</span>
+            <div className="mt-2 rounded-lg bg-[var(--code-raised)] p-3 text-xs border border-[var(--code-border)]">
+              <div className="flex items-center justify-between pb-2">
+                <span className="font-medium text-[#4CC38A]">Reference solution</span>
                 <button
+                  type="button"
                   onClick={() => {
                     if (viewRef.current) {
                       viewRef.current.dispatch({
@@ -333,16 +344,16 @@ export function CodeEditor({
                       });
                     }
                   }}
-                  className="rounded bg-emerald-800 px-2 py-0.5 text-[10px] text-white hover:bg-emerald-700"
+                  className="rounded border border-[var(--code-border)] bg-[var(--code-surface)] px-2 py-0.5 text-[11px] text-[var(--code-text)] hover:bg-[var(--accent)]"
                 >
-                  Insert Solution into Editor
+                  Insert into editor
                 </button>
               </div>
-              <pre className="mt-1 overflow-x-auto rounded bg-slate-900 p-2 font-mono text-[11px] text-emerald-300">
+              <pre className="overflow-x-auto rounded bg-[var(--code-chrome)] p-2 font-mono text-xs text-[#4CC38A]">
                 {solution}
               </pre>
               {solutionExplanation && (
-                <p className="mt-2 text-[11px] text-emerald-300/90 leading-relaxed">
+                <p className="mt-2 text-xs text-[var(--code-secondary)] leading-relaxed">
                   {solutionExplanation}
                 </p>
               )}
@@ -352,53 +363,56 @@ export function CodeEditor({
       )}
 
       {/* Output Console */}
-      <div className="flex flex-col border-t border-slate-800 bg-slate-950">
-        <div className="flex items-center justify-between border-b border-slate-800/80 px-3 py-1.5 text-[11px] text-slate-400">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-slate-300">Console Output</span>
+      <div className="flex flex-col border-t border-[var(--code-border)] bg-[var(--code-chrome)]">
+        <div className="flex h-9 items-center justify-between border-b border-[var(--code-border)] px-4 text-xs text-[var(--code-secondary)]">
+          <div className="flex items-center gap-3">
+            <span className="font-medium text-[var(--code-text)]">Console</span>
             {executionTimeMs !== null && (
-              <span className="flex items-center gap-1 text-[10px] text-slate-400">
-                <Clock className="h-3 w-3" />
-                {executionTimeMs}ms
+              <span className="inline-flex items-center gap-1 font-mono text-[11px] tabular-nums text-[var(--code-muted)]">
+                <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
+                <span>{executionTimeMs}ms</span>
               </span>
             )}
             {testResultStatus === "passed" && (
-              <span className="flex items-center gap-1 rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-800">
-                <Check className="h-2.5 w-2.5" />
-                Tests Passed!
+              <span className="inline-flex items-center gap-1 rounded border border-[#4CC38A]/30 bg-[#4CC38A]/10 px-2 py-0.5 text-[11px] font-medium text-[#4CC38A]">
+                <Check className="h-3.5 w-3.5" strokeWidth={1.5} />
+                <span>Tests passed</span>
               </span>
             )}
             {testResultStatus === "failed" && (
-              <span className="rounded bg-rose-950 px-1.5 py-0.5 text-[10px] font-semibold text-rose-400 border border-rose-800">
-                Output Mismatch
+              <span className="rounded border border-[#E5484D]/30 bg-[#E5484D]/10 px-2 py-0.5 text-[11px] font-medium text-[#FCA5A5]">
+                Output mismatch
               </span>
             )}
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-slate-500">{statusMessage}</span>
+            <span className="text-[11px] text-[var(--code-muted)]">{statusMessage}</span>
             <button
+              type="button"
               onClick={clearOutput}
-              className="rounded p-1 text-slate-500 hover:text-slate-300"
-              title="Clear console output"
+              className="flex h-6 w-6 items-center justify-center rounded text-[var(--code-muted)] hover:text-[var(--code-text)]"
+              title="Clear console"
+              aria-label="Clear console"
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
             </button>
             <button
+              type="button"
               onClick={resetEnvironment}
-              className="rounded p-1 text-rose-400 hover:text-rose-300 hover:bg-rose-950/50"
-              title="Terminate worker & reset Python environment"
+              className="flex h-6 w-6 items-center justify-center rounded text-[var(--code-muted)] hover:text-[#FCA5A5]"
+              title="Reset Python runtime"
+              aria-label="Reset Python runtime"
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.5} />
             </button>
           </div>
         </div>
 
-        {/* Scrollable console stream */}
-        <div className="h-36 overflow-y-auto p-3 font-mono text-xs leading-relaxed">
+        <div className="h-36 overflow-y-auto p-4 font-mono text-xs leading-relaxed">
           {outputItems.length === 0 ? (
-            <div className="text-slate-600 italic select-none">
-              Console output will appear here after clicking 'Run'...
+            <div className="text-[var(--code-muted)] select-none">
+              Run code to view output
             </div>
           ) : (
             outputItems.map((item) => (
@@ -406,10 +420,10 @@ export function CodeEditor({
                 key={item.id}
                 className={`whitespace-pre-wrap font-mono ${
                   item.type === "stderr"
-                    ? "text-rose-400"
+                    ? "text-[#FCA5A5]"
                     : item.type === "system"
-                    ? "text-blue-400 font-semibold"
-                    : "text-slate-200"
+                    ? "text-[var(--code-secondary)]"
+                    : "text-[var(--code-text)]"
                 }`}
               >
                 {item.text}

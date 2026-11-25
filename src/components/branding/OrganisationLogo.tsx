@@ -18,31 +18,30 @@ export function OrganisationLogo({
   showTagline = false,
 }: OrganisationLogoProps) {
   const [imageError, setImageError] = useState(false);
-  const [useFallbackJpg, setUseFallbackJpg] = useState(false);
+  const [useFallbackPath, setUseFallbackPath] = useState(false);
 
-  // Proportions matching the official horizontal brand asset (405x88)
   const dimensions = {
-    header: { width: 175, height: 38 },
-    footer: { width: 156, height: 34 },
-    hero: { width: 220, height: 48 },
+    header: { width: 160, height: 36 },
+    footer: { width: 148, height: 32 },
+    hero: { width: 208, height: 44 },
   }[variant];
 
-  const currentSrc = useFallbackJpg
+  const currentSrc = useFallbackPath
     ? BRANDING.logo.fallbackPath
     : BRANDING.logo.primaryPath;
 
   const handleImageError = () => {
-    if (!useFallbackJpg) {
-      setUseFallbackJpg(true);
+    if (!useFallbackPath) {
+      setUseFallbackPath(true);
     } else {
       setImageError(true);
     }
   };
 
   return (
-    <div className={`inline-flex items-center gap-2.5 ${className}`}>
+    <div className={`inline-flex items-center gap-3 ${className}`}>
       <div
-        className="relative flex items-center justify-center shrink-0 transition-all duration-150"
+        className="relative flex items-center justify-center shrink-0 transition-opacity duration-150 ease-[var(--ease-out)]"
         style={{
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
@@ -61,15 +60,15 @@ export function OrganisationLogo({
           />
         ) : (
           <div
-            className={`flex h-full w-full items-center justify-center rounded px-2.5 select-none ${
+            className={`flex h-full w-full items-center justify-center rounded-lg px-3 select-none ${
               surface === "dark"
-                ? "border border-slate-700 bg-slate-800 text-slate-300"
-                : "border border-[#EADCE8] bg-[#FBF5FA] text-[#541F4A] shadow-2xs"
+                ? "border border-[var(--code-border)] bg-[var(--code-raised)] text-[var(--code-text)]"
+                : "border border-[var(--border-hairline)] bg-[var(--bg-raised)] text-[var(--accent)]"
             }`}
             title={BRANDING.organisationShort}
             aria-label={`Official ${BRANDING.organisationShort} Logo`}
           >
-            <span className="text-sm font-bold tracking-tight text-[#541F4A]">
+            <span className="text-base font-semibold tracking-[-0.01em]">
               {BRANDING.organisationShort}
             </span>
           </div>
@@ -77,11 +76,11 @@ export function OrganisationLogo({
       </div>
 
       {showTagline && (
-        <div className="flex flex-col border-l border-slate-200 pl-2.5">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-900">
+        <div className="flex flex-col border-l border-[var(--border-hairline)] pl-3">
+          <span className="text-xs font-medium text-[var(--text-primary)]">
             {BRANDING.organisationLine1}
           </span>
-          <span className="text-[10px] font-medium tracking-wide text-slate-500">
+          <span className="text-[11px] text-[var(--text-muted)]">
             {BRANDING.organisationLine2}
           </span>
         </div>

@@ -1,67 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FBF8FA;
-  --surface: #FFFFFF;
-  --primary-text: #191018;
-  --secondary-text: #635362;
-  --border-color: #EADCE8;
-  --primary-plum: #541F4A;
-  --primary-plum-hover: #3E1536;
-  --accent-coral: #E01830;
-  --accent-crimson: #C81848;
-  --success-green: #15803D;
-  --warning-amber: #D97706;
-  --error-red: #DC2626;
-  --code-bg: #0F172A;
-  --code-fg: #F8FAFC;
+  /* Warm paper-plum neutral ramp */
+  --bg-page: #FAF9FA;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #F3EFF2;
+  --bg-subtle: #EAE5E8;
+  --text-primary: #181417;
+  --text-secondary: #564E53;
+  --text-muted: #72696F;
+  --border-hairline: rgba(24, 20, 23, 0.09);
+  --border-strong: rgba(24, 20, 23, 0.16);
+
+  /* Brand accent (CoE | DSAI Plum) */
+  --accent: #541F4A;
+  --accent-hover: #3F1637;
+  --accent-tint: rgba(84, 31, 74, 0.07);
+  --accent-border: rgba(84, 31, 74, 0.22);
+
+  /* Semantic roles */
+  --positive: #16803C;
+  --positive-tint: #EFF8F2;
+  --positive-border: rgba(22, 128, 60, 0.22);
+  --warning: #B45309;
+  --warning-tint: #FDF7ED;
+  --warning-border: rgba(180, 83, 9, 0.24);
+  --negative: #DC2626;
+  --negative-tint: #FEF2F2;
+  --negative-border: rgba(220, 38, 38, 0.22);
+
+  /* Unified dark workbench ramp (code editor & terminal) */
+  --code-chrome: #121014;
+  --code-surface: #171519;
+  --code-raised: #211E24;
+  --code-border: rgba(243, 239, 242, 0.10);
+  --code-text: #EEEAEF;
+  --code-secondary: #A7A0A9;
+  --code-muted: #7C757F;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-primary-text: var(--primary-text);
-  --color-secondary-text: var(--secondary-text);
-  --color-border-color: var(--border-color);
-
-  /* Official CoDSAI Plum Brand Theme Scale */
-  --color-blue-50: #FAF4F9;
-  --color-blue-100: #F3E4F1;
-  --color-blue-200: #E7C9E3;
-  --color-blue-300: #D4A3CE;
-  --color-blue-400: #933882;
-  --color-blue-500: #6E2861;
-  --color-blue-600: #541F4A;
-  --color-blue-700: #3E1536;
-  --color-blue-800: #2C0E26;
-  --color-blue-900: #1C0918;
-  --color-blue-950: #120510;
-
-  /* Accent Rose & Coral Brand Accents */
-  --color-brand: #541F4A;
-  --color-brand-hover: #3E1536;
-  --color-brand-accent: #E01830;
-  --color-brand-crimson: #C81848;
-  --color-brand-light: #FBF5FA;
-  --color-brand-border: #EADCE8;
-
-  --color-primary-blue: #541F4A;
-  --color-primary-blue-hover: #3E1536;
-  --color-success-green: var(--success-green);
-  --color-warning-amber: var(--warning-amber);
-  --color-error-red: var(--error-red);
+  --color-background: var(--bg-page);
+  --color-surface: var(--bg-surface);
+  --color-raised: var(--bg-raised);
+  --color-primary-text: var(--text-primary);
+  --color-secondary-text: var(--text-secondary);
+  --color-muted-text: var(--text-muted);
+  --color-border-hairline: var(--border-hairline);
+  --color-brand: var(--accent);
+  --color-brand-hover: var(--accent-hover);
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--primary-text);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom scrollbars for code and learning panels */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Quiet scrollbars for code and reading panels */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -72,71 +79,20 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: rgba(24, 20, 23, 0.16);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: rgba(24, 20, 23, 0.28);
 }
 
-/* Atmospheric Smoke / Cloud Keyframes for mystery locked workshops */
-@keyframes smokeFloat1 {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.55;
-  }
-  33% {
-    transform: translate(8px, -5px) scale(1.08);
-    opacity: 0.75;
-  }
-  66% {
-    transform: translate(-6px, 4px) scale(0.96);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.55;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
-
-@keyframes smokeFloat2 {
-  0% {
-    transform: translate(0, 0) scale(1.05);
-    opacity: 0.65;
-  }
-  50% {
-    transform: translate(-10px, -6px) scale(1.15);
-    opacity: 0.85;
-  }
-  100% {
-    transform: translate(0, 0) scale(1.05);
-    opacity: 0.65;
-  }
-}
-
-@keyframes cloudDrift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-smoke-1 {
-  animation: smokeFloat1 7s ease-in-out infinite;
-}
-
-.animate-smoke-2 {
-  animation: smokeFloat2 10s ease-in-out infinite alternate;
-}
-
-.animate-cloud-drift {
-  background-size: 200% 200%;
-  animation: cloudDrift 14s ease infinite;
-}
-

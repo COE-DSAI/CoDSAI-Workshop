@@ -62,7 +62,6 @@ export function ChapterExperienceView({
     });
   };
 
-  // Keyboard shortcut: Cmd+B or Ctrl+B to toggle sidebar independently
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
@@ -73,12 +72,12 @@ export function ChapterExperienceView({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-  
+
   const defaultCode = chapter.assignment
     ? chapter.assignment.starterCode
     : chapter.exercises && chapter.exercises.length > 0
     ? chapter.exercises[0].starterCode
-    : '# Python 3 Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '!")\n';
+    : '# Python 3 Interactive Workspace\nprint("Hello from Chapter ' + chapter.number + '")\n';
 
   const [editorCode, setEditorCode] = useState<string>(defaultCode);
   const [editorHints, setEditorHints] = useState<readonly [string, string, string] | undefined>(
@@ -112,7 +111,7 @@ export function ChapterExperienceView({
   const [editorTitle, setEditorTitle] = useState<string>(
     chapter.assignment
       ? `Assignment — ${chapter.assignment.title}`
-      : `Python 3 Workspace — Ch ${chapter.number}`
+      : `Python 3 Workspace — Ch ${String(chapter.number).padStart(2, "0")}`
   );
 
   const chapterKey = `${workshop.slug}/${chapter.slug}`;
@@ -135,7 +134,7 @@ export function ChapterExperienceView({
 
   const handleSelectCodeExample = (code: string) => {
     setEditorCode(code);
-    setEditorTitle(`Python 3 Code Snippet`);
+    setEditorTitle("Python 3 snippet");
     setMobileTab("editor");
   };
 
@@ -150,8 +149,7 @@ export function ChapterExperienceView({
   };
 
   return (
-    <div className="flex h-[calc(100vh-72px)] overflow-hidden bg-[#FBF8FA]">
-      {/* 1. Left Sidebar Navigation */}
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-[var(--bg-page)]">
       {!focusMode && (
         <SidebarNav
           workshop={workshop}
@@ -163,111 +161,105 @@ export function ChapterExperienceView({
         />
       )}
 
-      {/* 2. Central Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top Status Bar */}
-        <div className="flex h-11 items-center justify-between border-b border-slate-200/80 bg-white px-3 sm:px-4 shrink-0">
-          <div className="flex items-center gap-2.5 min-w-0">
-            {/* Independent Sidebar Toggle Button */}
+        {/* Status Bar */}
+        <div className="flex h-12 items-center justify-between border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
             {!focusMode && (
               <button
                 type="button"
                 onClick={handleToggleSidebar}
-                className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                className={`inline-flex h-8 items-center gap-2 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ease-[var(--ease-out)] ${
                   sidebarCollapsed
-                    ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    ? "border-[var(--accent-border)] bg-[var(--accent-tint)] text-[var(--accent)]"
+                    : "border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]"
                 }`}
                 title={sidebarCollapsed ? "Expand sidebar (⌘B)" : "Collapse sidebar (⌘B)"}
                 aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               >
                 {sidebarCollapsed ? (
-                  <>
-                    <PanelLeftOpen className="h-3.5 w-3.5 text-blue-600" />
-                    <span className="hidden md:inline font-semibold">Sidebar</span>
-                  </>
+                  <PanelLeftOpen className="h-4 w-4" strokeWidth={1.5} />
                 ) : (
-                  <>
-                    <PanelLeftClose className="h-3.5 w-3.5 text-slate-500" />
-                    <span className="hidden md:inline">Sidebar</span>
-                  </>
+                  <PanelLeftClose className="h-4 w-4" strokeWidth={1.5} />
                 )}
+                <span className="hidden md:inline">Sidebar</span>
               </button>
             )}
 
-            {!focusMode && <span className="h-4 w-px bg-slate-200 hidden sm:inline-block" />}
+            {!focusMode && <span className="h-4 w-px bg-[var(--border-hairline)] hidden sm:inline-block" />}
 
-            <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
-              <span className="font-semibold text-slate-900 truncate">
-                Chapter {String(chapter.number).padStart(2, "0")}: {chapter.title}
+            <div className="flex items-center gap-2 text-xs truncate">
+              <span className="font-mono tabular-nums text-[var(--text-muted)] shrink-0">
+                Ch {String(chapter.number).padStart(2, "0")}
+              </span>
+              <span className="font-medium text-[var(--text-primary)] truncate">
+                {chapter.title}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Mobile / Tablet Tab Switcher */}
-            <div className="flex items-center rounded-md border border-slate-200 bg-slate-50 p-0.5 xl:hidden">
+            {/* Mobile / Tablet Switcher */}
+            <div className="flex items-center rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-raised)] p-0.5 xl:hidden">
               <button
                 type="button"
                 onClick={() => setMobileTab("reading")}
-                className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                className={`flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs transition-colors duration-150 ${
                   mobileTab === "reading"
-                    ? "bg-white text-slate-900 shadow-2xs font-semibold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[var(--bg-surface)] text-[var(--text-primary)] font-medium"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
-                <BookOpen className="h-3 w-3" />
+                <BookOpen className="h-3.5 w-3.5" strokeWidth={1.5} />
                 <span>Reading</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setMobileTab("editor")}
-                className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                className={`flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs transition-colors duration-150 ${
                   mobileTab === "editor"
-                    ? "bg-white text-slate-900 shadow-2xs font-semibold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[var(--bg-surface)] text-[var(--text-primary)] font-medium"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
                 {workshop.executionMode === "local-project" ? (
                   <>
-                    <Terminal className="h-3 w-3 text-blue-500" />
-                    <span>Terminal Guide</span>
+                    <Terminal className="h-3.5 w-3.5" strokeWidth={1.5} />
+                    <span>Terminal guide</span>
                   </>
                 ) : (
                   <>
-                    <Code2 className="h-3 w-3" />
-                    <span>Python Editor</span>
+                    <Code2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+                    <span>Python editor</span>
                   </>
                 )}
               </button>
             </div>
 
-            {/* Focus Mode Toggle */}
             <button
               type="button"
               onClick={() => setFocusMode(!focusMode)}
-              className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
-              title={focusMode ? "Exit focus mode" : "Enter focus mode (full-width)"}
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-2.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)] transition-colors duration-150"
+              title={focusMode ? "Exit focus mode" : "Enter focus mode"}
             >
               {focusMode ? (
                 <>
-                  <Minimize2 className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Exit Focus</span>
+                  <Minimize2 className="h-4 w-4" strokeWidth={1.5} />
+                  <span className="hidden sm:inline">Exit focus</span>
                 </>
               ) : (
                 <>
-                  <Maximize2 className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Focus Mode</span>
+                  <Maximize2 className="h-4 w-4" strokeWidth={1.5} />
+                  <span className="hidden sm:inline">Focus mode</span>
                 </>
               )}
             </button>
           </div>
         </div>
 
-        {/* Split View Container */}
+        {/* Split View */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Main Reading Area */}
           <main
             className={`flex-1 overflow-y-auto ${
               mobileTab === "reading" ? "block" : "hidden xl:block"
@@ -285,21 +277,17 @@ export function ChapterExperienceView({
             />
           </main>
 
-          {/* Right Workspace Panel */}
           {(!focusMode || mobileTab === "editor") && (
             <aside
-              className={`flex-col border-l border-slate-200 bg-slate-900 shrink-0 ${
+              className={`flex-col border-l border-[var(--border-hairline)] bg-[var(--code-surface)] shrink-0 ${
                 mobileTab === "editor"
-                  ? "flex flex-1 xl:w-[500px] 2xl:w-[580px] xl:flex-none"
-                  : "hidden xl:flex w-[500px] 2xl:w-[580px]"
+                  ? "flex flex-1 xl:w-[480px] 2xl:w-[560px] xl:flex-none"
+                  : "hidden xl:flex w-[480px] 2xl:w-[560px]"
               }`}
             >
               <div className="h-full flex-1">
                 {workshop.executionMode === "local-project" ? (
-                  <GitTerminalCompanion
-                    workshop={workshop}
-                    chapter={chapter}
-                  />
+                  <GitTerminalCompanion workshop={workshop} chapter={chapter} />
                 ) : (
                   <CodeEditor
                     initialCode={editorCode}

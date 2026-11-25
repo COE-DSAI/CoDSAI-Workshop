@@ -5,121 +5,131 @@ import { OrganisationLogo } from "@/components/branding/OrganisationLogo";
 
 export function AppFooter() {
   return (
-    <footer className="mt-auto border-t border-slate-200/80 bg-white text-slate-600">
+    <footer className="mt-auto border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-secondary)]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
-          {/* Col 1 & 2: Brand Identity */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center">
               <OrganisationLogo variant="footer" />
             </div>
 
-            <p className="mt-3 text-xs text-slate-500 font-medium">
+            <p className="mt-3 text-xs font-medium text-[var(--text-primary)]">
               {BRANDING.programmeTitle}
             </p>
 
-            <p className="mt-2 text-xs leading-relaxed text-slate-500 max-w-md">
-              Official interactive learning platform for Workshop 1: Python Foundations. Built for live instructor delivery, independent practice, comprehensive revision, and rule-based security capstone engineering.
+            <p className="mt-2 text-xs leading-relaxed text-[var(--text-secondary)] max-w-md">
+              Interactive curriculum for Workshop 01 (Python Foundations) and Workshop 02 (Git &amp; GitHub), built for live instructor delivery, guided practice, and the Inbox Guardian capstone.
             </p>
           </div>
 
-          {/* Col 3: Workshop 1 Chapters */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
-              Curriculum (8 Chapters)
+            <h4 className="text-xs font-medium text-[var(--text-primary)]">
+              Workshop 01 chapters
             </h4>
-            <ul className="mt-3 space-y-1.5 text-xs text-slate-600">
+            <ul className="mt-3 space-y-2 text-xs text-[var(--text-secondary)]">
               <li>
-                <Link href="/workshops/python-foundations/introduction-to-python" className="hover:text-blue-600 transition-colors">
-                  01. Introduction to Python
+                <Link href="/workshops/python-foundations/introduction-to-python" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">01</span>
+                  Introduction to Python
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/variables-data-types-and-io" className="hover:text-blue-600 transition-colors">
-                  02. Variables & Data Types
+                <Link href="/workshops/python-foundations/variables-data-types-and-io" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">02</span>
+                  Variables &amp; data types
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/strings-and-text-processing" className="hover:text-blue-600 transition-colors">
-                  03. Strings & Text Processing
+                <Link href="/workshops/python-foundations/strings-and-text-processing" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">03</span>
+                  Strings &amp; text processing
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/conditional-logic" className="hover:text-blue-600 transition-colors">
-                  04. Conditional Logic
+                <Link href="/workshops/python-foundations/conditional-logic" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">04</span>
+                  Conditional logic
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/loops-and-repetition" className="hover:text-blue-600 transition-colors">
-                  05. Loops & Repetition
+                <Link href="/workshops/python-foundations/loops-and-repetition" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">05</span>
+                  Loops &amp; repetition
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/collections-lists-and-dictionaries" className="hover:text-blue-600 transition-colors">
-                  06. Collections: Lists & Dicts
+                <Link href="/workshops/python-foundations/collections-lists-and-dictionaries" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">06</span>
+                  Collections: lists &amp; dicts
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/functions-and-code-organisation" className="hover:text-blue-600 transition-colors">
-                  07. Functions & Organisation
+                <Link href="/workshops/python-foundations/functions-and-code-organisation" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  <span className="font-mono tabular-nums text-[var(--text-muted)] mr-2">07</span>
+                  Functions &amp; organisation
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations/capstone-inbox-guardian" className="hover:text-blue-600 transition-colors font-medium text-slate-900">
-                  08. Capstone: Inbox Guardian
+                <Link href="/workshops/python-foundations/capstone-inbox-guardian" className="hover:text-[var(--accent)] transition-colors duration-150 font-medium text-[var(--text-primary)]">
+                  <span className="font-mono tabular-nums text-[var(--accent)] mr-2">08</span>
+                  Capstone: Inbox Guardian
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Platform Resources */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
-              Learning Resources
+            <h4 className="text-xs font-medium text-[var(--text-primary)]">
+              Workshops &amp; reference
             </h4>
-            <ul className="mt-3 space-y-1.5 text-xs text-slate-600">
+            <ul className="mt-3 space-y-2 text-xs text-[var(--text-secondary)]">
               <li>
-                <Link href="/projects/inbox-guardian" className="hover:text-blue-600 transition-colors font-medium text-slate-900">
-                  Inbox Guardian Project
+                <Link href="/workshops/git-github" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  Workshop 02: Git &amp; GitHub
                 </Link>
               </li>
               <li>
-                <Link href="/workshops/python-foundations" className="hover:text-blue-600 transition-colors">
-                  Workshop Overview & Timetable
+                <Link href="/projects/inbox-guardian" className="hover:text-[var(--accent)] transition-colors duration-150 font-medium text-[var(--text-primary)]">
+                  Inbox Guardian workspace
                 </Link>
               </li>
               <li>
-                <Link href="/revision" className="hover:text-blue-600 transition-colors">
-                  Revision Hub & Glossary
+                <Link href="/workshops/python-foundations" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  Python syllabus
                 </Link>
               </li>
               <li>
-                <Link href="/revision?tab=syntax" className="hover:text-blue-600 transition-colors">
-                  Python Syntax Reference
+                <Link href="/revision" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  Revision hub &amp; glossary
                 </Link>
               </li>
               <li>
-                <Link href="/revision?tab=mistakes" className="hover:text-blue-600 transition-colors">
-                  Common Mistakes & Fixes
+                <Link href="/revision?tab=syntax" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  Python syntax reference
+                </Link>
+              </li>
+              <li>
+                <Link href="/learn" className="hover:text-[var(--accent)] transition-colors duration-150">
+                  Progress dashboard
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400">
+        <div className="mt-10 border-t border-[var(--border-hairline)] pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[var(--text-muted)]">
           <p>
-            Official curriculum of {BRANDING.organisationName} ({BRANDING.organisationShort}).
+            {BRANDING.organisationName} ({BRANDING.organisationShort})
           </p>
           <div className="mt-2 sm:mt-0 flex items-center gap-3">
-            <span>Educational resource for students and workshop attendees.</span>
-            <span className="text-slate-300">•</span>
+            <span>Student &amp; workshop learning portal</span>
+            <span className="text-[var(--border-strong)]">·</span>
             <Link
               href="/admin"
-              className="text-slate-400 hover:text-slate-600 transition-colors underline-offset-2 hover:underline"
-              title="Restricted Staff & Facilitator Access"
+              className="hover:text-[var(--text-primary)] transition-colors duration-150 underline-offset-2 hover:underline"
+              title="Restricted staff and facilitator access"
             >
-              Staff Portal
+              Staff portal
             </Link>
           </div>
         </div>

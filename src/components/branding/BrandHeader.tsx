@@ -12,7 +12,7 @@ export function BrandHeader({ compact = false, className = "" }: BrandHeaderProp
   return (
     <Link
       href="/"
-      className={`group flex items-center gap-2 rounded-md py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#541F4A] ${className}`}
+      className={`group flex items-center gap-2 rounded-lg py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${className}`}
       title={BRANDING.organisationName}
     >
       <OrganisationLogo variant={compact ? "header" : "header"} />

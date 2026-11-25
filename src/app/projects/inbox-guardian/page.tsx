@@ -5,7 +5,7 @@ import { InboxGuardianPage } from "@/components/projects/InboxGuardianPage";
 
 export default function DedicatedInboxGuardianPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
+    <div className="flex min-h-screen flex-col bg-[var(--bg-page)]">
       <AppHeader />
       <main className="flex-1 py-6">
         <InboxGuardianPage />

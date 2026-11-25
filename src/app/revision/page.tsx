@@ -5,10 +5,10 @@ import { RevisionHub } from "@/components/revision/RevisionHub";
 
 export default function RevisionPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F8FA]">
+    <div className="flex min-h-screen flex-col bg-[var(--bg-page)]">
       <AppHeader />
       <main className="flex-1 py-6">
-        <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Loading Revision Hub...</div>}>
+        <Suspense fallback={<div className="p-8 text-center text-xs text-[var(--text-muted)]">Loading revision hub</div>}>
           <RevisionHub />
         </Suspense>
       </main>
